@@ -1,0 +1,48 @@
+/* cspell:word pressura */
+
+:root {
+  --fs-big: 1.5em;
+  --fs-medium: 1.25em;
+  --fs-small: 1em;
+
+  --bars-height: 4em;
+  --bars-color: rgb(0, 0, 0, 0.75);
+  --bars-back-blur: 7px;
+
+  --back-color: #2c2a2a;
+  --text-color: #f1f1f1;
+  --theme-color: #ff9900;
+
+  --theme-shadow: 0 0.5em 1em 0px rgb(0 0 0 / 50%);
+
+  --fonts: 'GT Pressura', sans-serif;
+  
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'GT Pressura';
+  src: url(/fonts/GT-Corporate-Web.woff2) format('woff2'),
+    url(/fonts/GT-Corporate-Web.woff) format('woff');
+}
+
+body {
+  margin: 0;
+  color: var(--text-color);
+  background-color: var(--back-color);
+  font-family: var(--fonts);
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+h1 {
+  font-size: var(--fs-big);
+}
+
+h1, h2, p {
+  margin: 0;
+}
