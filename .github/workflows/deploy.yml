@@ -29,3 +29,4 @@ jobs:
         with:
           project: "musicale-test"
           entrypoint: "./dist/server.ts"
+          root: "./dist"
