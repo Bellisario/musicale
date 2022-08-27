@@ -7,13 +7,19 @@
   let search: HTMLInputElement;
 
   function submit() {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
+    blur();
     dispatch('submit');
   }
 
+  function blur() {
+    search.blur();
+  }
+
   export let query = '';
+  export let inputFocus: boolean;
+
+  $: inputFocus === false && blur();
+
   let isSmall = false;
 
   document.addEventListener('scroll', function () {

@@ -19,6 +19,7 @@
   });
 
   let query = '';
+  let inputFocus = true;
   let toSearch = '';
 
   // function resultSelect() {
@@ -43,6 +44,7 @@
     const hash = window.location.hash.slice(1);
     if (hash && hash.startsWith('search=')) {
       query = decodeURIComponent(hash.slice('search='.length));
+      inputFocus = false;
     } else {
       query = '';
     }
@@ -64,6 +66,7 @@
   <AudioPlayer />
   <Toolbar
     bind:query
+    bind:inputFocus
     on:submit={submit}
     on:home={() => {
       query = '';
