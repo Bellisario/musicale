@@ -10,7 +10,6 @@
   let range: HTMLDivElement;
   let progressChanging = false;
 
-  let canAutoClose = true;
   // let changingPreview = 0;
 
   $: progress = $volume;
