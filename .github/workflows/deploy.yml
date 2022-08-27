@@ -28,5 +28,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "musicale-test"
-          entrypoint: "./dist/server.ts"
           root: "./dist"
+          entrypoint: "./server.ts"
