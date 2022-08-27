@@ -46,11 +46,13 @@
     <div class="toolbar__hero" on:click={heroClick}>Musicale</div>
   </div>
   <div class="toolbar__right">
-    <form
-      class="toolbar__search"
-      on:submit|preventDefault={submit}
-    >
-      <input type="text" placeholder="Search" bind:value={query} bind:this={search} />
+    <form class="toolbar__search" on:submit|preventDefault={submit}>
+      <input
+        type="text"
+        placeholder="Search"
+        bind:value={query}
+        bind:this={search}
+      />
     </form>
   </div>
 </div>

@@ -16,7 +16,7 @@
   --theme-shadow: 0 0.5em 1em 0px rgb(0 0 0 / 50%);
 
   --fonts: 'GT Pressura', sans-serif;
-  
+
   color-scheme: dark;
 }
 
@@ -43,6 +43,8 @@ h1 {
   font-size: var(--fs-big);
 }
 
-h1, h2, p {
+h1,
+h2,
+p {
   margin: 0;
 }

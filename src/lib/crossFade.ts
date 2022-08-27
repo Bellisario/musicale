@@ -1,5 +1,7 @@
 // cspell:word crossfade
 
+// not used yet, should use after loading screen to match logo animation
+
 // code from: https://dev.to/buhrmi/svelte-component-transitions-5ie
 import { quintOut } from 'svelte/easing';
 import { crossfade } from 'svelte/transition';
@@ -20,4 +22,4 @@ const [send, receive] = crossfade({
     }
 });
 
-export {send, receive};
+export { send, receive };

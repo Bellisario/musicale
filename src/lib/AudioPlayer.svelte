@@ -1,12 +1,5 @@
 <script lang="ts" context="module">
   import { currentTime, duration, paused, volume } from './player';
-  // import { onMount } from 'svelte';
-
-  // let el: HTMLAudioElement;
-
-  // export let paused = false;
-  // export let source: string = '';
-  // export let volume: number = 1;
 
   let el: HTMLAudioElement;
 
@@ -27,7 +20,14 @@
   }
 </script>
 
-<audio id="audio-player" bind:this={el} bind:currentTime={$currentTime} bind:duration={$duration} bind:paused={$paused} bind:volume={$volume} />
+<audio
+  id="audio-player"
+  bind:this={el}
+  bind:currentTime={$currentTime}
+  bind:duration={$duration}
+  bind:paused={$paused}
+  bind:volume={$volume}
+/>
 
 <style>
   #audio-player {

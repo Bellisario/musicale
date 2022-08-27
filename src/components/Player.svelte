@@ -59,7 +59,7 @@
     </svg>
     {#if volumeRangeShowing}
       <div class="volume__container" transition:fade>
-        <VolumeRange on:autoClose={() => volumeRangeShowing = false} />
+        <VolumeRange on:autoClose={() => (volumeRangeShowing = false)} />
       </div>
     {/if}
   </div>
@@ -111,12 +111,10 @@
     position: relative;
 
     transition: transform 0.3s ease-in-out;
-    /* overflow: hidden; */
   }
   .player__play-pause {
     display: inline-block;
     position: relative;
-    /* vertical-align: middle; */
   }
   .player__play-pause::before {
     content: '';
@@ -160,17 +158,14 @@
     vertical-align: middle;
   }
   .player__volume {
-    /* width: 1.75em;
-    height: 1.75em; */
-
     position: relative;
     isolation: isolate;
   }
+  /* adds some more click radius to button */
   .player__volume::before {
     content: '';
     position: absolute;
     inset: -0.5em;
-    /* background-color: rgb(255, 0, 0, 0.322); */
     border-radius: 50%;
   }
   .volume__container {

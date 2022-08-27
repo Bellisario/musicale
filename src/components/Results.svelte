@@ -12,9 +12,6 @@
 
   import truncate from 'just-truncate';
 
-  // import results_data from './example_results.json';
-  // const delayedFade = (node: Element) => fade(node, { delay: 500 });
-
   export let query = '';
   export let type: ResultsStatus = 'ready';
 
@@ -24,7 +21,6 @@
 
   let selectedResult = {
     id: -1,
-    // withQuery: '',
     uuid: '',
   };
 
@@ -32,11 +28,9 @@
 
   async function wantPlay(result: Result, selectedId: number) {
     $musicTitle = result.title;
-    // document.title = `${result.title} | Musicale`;
 
     const currentResult = {
       id: selectedId,
-      // withQuery,
       uuid: result.url,
     };
 
@@ -61,7 +55,6 @@
     useSource(streamUrl);
     play();
     canReplaySong = true;
-    // alert($toPlay);
   }
 
   async function findResults(query: string) {
@@ -210,8 +203,6 @@
     box-shadow: var(--theme-shadow);
 
     overflow: hidden;
-    /* background-image: var(--img); */
-    /* background-size: cover; */
   }
   .result__img {
     width: 6em;

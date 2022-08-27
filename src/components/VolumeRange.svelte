@@ -10,8 +10,6 @@
   let range: HTMLDivElement;
   let progressChanging = false;
 
-  // let changingPreview = 0;
-
   $: progress = $volume;
 
   {
@@ -24,7 +22,7 @@
     volume.subscribe(() => {
       clearTimeout(clock);
       clock = dispatchAutoClose();
-    })
+    });
   }
 
   // if volume < 0 || > 1, set to 0 or 1
@@ -37,7 +35,7 @@
   onMount(() => {
     // listen for click start
     range.addEventListener('mousedown', (e) => {
-      if (e.which === 2 || e.which === 3) {
+      if (e.button === 1 || e.button === 2) {
         return;
       }
       progressChanging = true;
@@ -59,7 +57,7 @@
     });
     // listen for click end
     range.addEventListener('mouseup', (e) => {
-      if (e.which === 2 || e.which === 3) {
+      if (e.button === 1 || e.button === 2) {
         return;
       }
       progressChanging = false;
@@ -106,12 +104,12 @@
     width: 100%;
     height: 400%;
     background-color: transparent;
-    /* background-color: rgb(255, 0, 0, 0.322); */
     vertical-align: middle;
   }
   .volume-range__selector:hover + .volume-range__main {
     transform: scaleY(1.5);
   }
+  /* progress bar container */
   .volume-range__main {
     display: inline-block;
     position: absolute;
@@ -127,16 +125,15 @@
   .volume-range__main:hover {
     transform: scaleY(1.5);
   }
+  /* progress bar */
   .volume-range__main::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    /* width: calc(100% * var(--progress)); */
     width: 100%;
     height: 100%;
     transform: translateX(calc(100% * var(--progress) - 100%));
-    /* background-color: rgb(0, 255, 0, 0.322); */
     background-color: var(--theme-color);
     vertical-align: middle;
     border-radius: var(--b-radius);
