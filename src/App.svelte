@@ -36,6 +36,9 @@
       }
     } else {
       location.hash = '';
+      if ($paused) {
+        document.title = DOCUMENT_ORIGINAL_TITLE;
+      }
     }
     // alert(toSearch);
   }

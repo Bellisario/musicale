@@ -2,9 +2,12 @@
   // cspell:word instanceof keydown
   import { createEventDispatcher } from 'svelte';
   import { onMount } from 'svelte';
+  import Autocomplete from './Autocomplete.svelte';
+
   const dispatch = createEventDispatcher();
 
   let search: HTMLInputElement;
+  let searchFocus = false;
 
   function submit() {
     blur();
@@ -33,6 +36,12 @@
   // focus on "/" key press and after loading
   onMount(() => {
     search.focus();
+    search.onfocus = () => {
+      searchFocus = true;
+    }
+    search.onblur = () => {
+      searchFocus = false;
+    }
     window.addEventListener('keydown', (e) => {
       if (e.key === '/' && document.activeElement === document.body) {
         e.preventDefault();
@@ -59,6 +68,7 @@
         bind:value={query}
         bind:this={search}
       />
+      <Autocomplete bind:query on:submit={submit} bind:searchFocus />
     </form>
   </div>
 </div>
@@ -100,6 +110,7 @@
     align-items: center;
     justify-content: center;
     flex-grow: 1;
+    position: relative;
   }
   .toolbar__search input {
     border: none;
