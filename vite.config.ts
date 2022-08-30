@@ -8,6 +8,9 @@ export default defineConfig({
     outDir: './dist/public',
   },
   plugins: [svelte(), VitePWA({
+    includeAssets: [
+      "./fonts/*"
+    ],
     devOptions: {
       enabled: true,
     },
