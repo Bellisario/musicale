@@ -4,7 +4,9 @@
   import Toolbar from './components/Toolbar.svelte';
   import Results from './components/Results.svelte';
   import Player from './components/Player.svelte';
+  import SwManager from './components/SWManager.svelte';
   import AudioPlayer from './lib/AudioPlayer.svelte';
+
   import { onMount } from 'svelte';
   import { musicTitle, paused } from './lib/player';
 
@@ -66,6 +68,7 @@
 </script>
 
 <main>
+  <SwManager />
   <AudioPlayer />
   <Toolbar
     bind:query

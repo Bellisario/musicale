@@ -24,3 +24,6 @@ dist-ssr
 
 # Build will go here
 dist/public
+
+# vite-plugin-pwa dev files
+dev-dist
