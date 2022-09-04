@@ -48,3 +48,16 @@ h2,
 p {
   margin: 0;
 }
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  font-size: calc(var(--fs-big) * 2);
+  inset: 0;
+  margin: auto;
+  z-index: 9999;
+  background-color: var(--back-color);
+}

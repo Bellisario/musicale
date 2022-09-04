@@ -12,11 +12,10 @@ const [send, receive] = crossfade({
         const transform = style.transform === 'none' ? '' : style.transform;
 
         return {
-            duration: 600,
+            duration: 1000,
             easing: quintOut,
             css: t => `
                 transform: ${transform} scale(${t});
-                opacity: ${t}
             `
         };
     }

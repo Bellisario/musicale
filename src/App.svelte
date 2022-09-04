@@ -10,6 +10,9 @@
   import { onMount } from 'svelte';
   import { musicTitle, paused } from './lib/player';
 
+  import { send } from './lib/crossFade';
+  import { fade } from 'svelte/transition';
+
   const DOCUMENT_ORIGINAL_TITLE = document.title;
 
   paused.subscribe(() => {
@@ -23,6 +26,8 @@
   let query = '';
   let inputFocus = true;
   let toSearch = '';
+
+  let loading = true;
 
   // function resultSelect() {
   //   audioInterface.source = this.dataset.source;
@@ -65,20 +70,33 @@
   window.onhashchange = () => {
     lookupHash();
   };
+
+  onMount(() => {
+    (document.querySelector('.loading-screen') as HTMLDivElement).style.display = 'none';
+  }),
+
+  // loading hide
+  setTimeout(() => {
+    loading = false;
+  }, 1000);
 </script>
 
 <main>
-  <SwManager />
-  <AudioPlayer />
-  <Toolbar
-    bind:query
-    bind:inputFocus
-    on:submit={submit}
-    on:home={() => {
-      query = '';
-      submit();
-    }}
-  />
-  <Results type={toSearch ? 'success' : 'empty'} bind:query={toSearch} />
-  <Player />
+  {#if loading}
+    <div class="loading-screen" out:fade><span>Musicale</span></div>
+  {:else}
+    <SwManager />
+    <AudioPlayer />
+    <Toolbar
+      bind:query
+      bind:inputFocus
+      on:submit={submit}
+      on:home={() => {
+        query = '';
+        submit();
+      }}
+    />
+    <Results type={toSearch ? 'success' : 'empty'} bind:query={toSearch} />
+    <Player />
+  {/if}
 </main>

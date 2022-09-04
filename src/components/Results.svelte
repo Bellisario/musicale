@@ -6,9 +6,12 @@
   import { play, useSource, reset } from '../lib/AudioPlayer.svelte';
   import resultsGetter from '../lib/resultsGetter';
   import IntersectionObserver from '../lib/IntersectionObserver.svelte';
-  import { musicTitle, poster, artist } from '../lib/player';
+  import { musicTitle, poster, artist, paused } from '../lib/player';
   import { fade } from 'svelte/transition';
   import PlayingPreview from './PlayingPreview.svelte';
+  import FrequencyBars from './FrequencyBars.svelte';
+
+  let barsVisible = false;
 
   import truncate from 'just-truncate';
 
@@ -41,7 +44,7 @@
     canReplaySong = false;
 
     selectedResult = currentResult;
-    // pause the current audio stream
+    // reset the current audio stream
     reset();
     const id = urlToId(result.url);
     const apiRes = await audioStreamGetter(id);
@@ -85,7 +88,15 @@
 
 <div class="container">
   <div class="playing-grid">
-    <PlayingPreview />
+    <PlayingPreview bind:barsVisible />
+    <!-- poster changes every music, so it's the same as using the music UUID -->
+    {#key $poster}
+      {#if barsVisible && !$paused}
+        <div class="frequency-bars" transition:fade>
+          <FrequencyBars />
+        </div>
+      {/if}
+    {/key}
   </div>
   <div class="results-grid">
     {#if type === 'ready'}
@@ -196,8 +207,8 @@
 
   .result__grid1 {
     grid-column: 1;
-    min-width: 6em;
-    min-height: 6em;
+    width: 6em;
+    height: 6em;
     background-color: var(--bars-color);
     border-radius: 10%;
     box-shadow: var(--theme-shadow);
@@ -216,5 +227,12 @@
   .result__grid2 {
     grid-column: 2;
     margin-block: auto;
+  }
+  .frequency-bars {
+    position: fixed;
+    bottom: 4em;
+    left: 0.5em;
+    z-index: -1;
+    width: 30vw;
   }
 </style>

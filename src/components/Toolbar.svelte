@@ -4,6 +4,8 @@
   import { onMount } from 'svelte';
   import Autocomplete from './Autocomplete.svelte';
 
+  import { receive } from '../lib/crossFade';
+
   const dispatch = createEventDispatcher();
 
   let search: HTMLInputElement;
@@ -21,7 +23,7 @@
   export let query = '';
   export let inputFocus: boolean;
 
-  $: inputFocus === false && blur();
+  $: inputFocus === false && onMount(() => blur());
 
   let isSmall = false;
 
@@ -58,7 +60,7 @@
 
 <div class="toolbar {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
-    <div class="toolbar__hero" on:click={heroClick}>Musicale</div>
+    <div class="toolbar__hero" on:click={heroClick} transition:receive="{{key: 'loading-screen', duration: 1000}}">Musicale</div>
   </div>
   <div class="toolbar__right">
     <form class="toolbar__search" on:submit|preventDefault={submit}>

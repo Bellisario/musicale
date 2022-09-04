@@ -27,6 +27,7 @@
   bind:duration={$duration}
   bind:paused={$paused}
   bind:volume={$volume}
+  crossorigin="anonymous"
 />
 
 <style>
