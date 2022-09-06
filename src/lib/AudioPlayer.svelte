@@ -2,6 +2,7 @@
   import { currentTime, duration, paused, volume } from './player';
 
   let el: HTMLAudioElement;
+  
 
   export function play() {
     // prevent play if there is no source set

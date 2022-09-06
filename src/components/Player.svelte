@@ -1,9 +1,17 @@
 <script type="ts">
-  // cspell:word xlink spacebar keydown mousedown mousemove mouseup keyframes
+  // cspell:word xlink spacebar keydown mousedown mousemove mouseup keyframes webp seekbackward seekforward
 
   import Range from './Range.svelte';
   import VolumeRange from './VolumeRange.svelte';
-  import { currentTime, duration, secondsToTime, paused } from '../lib/player';
+  import {
+    currentTime,
+    duration,
+    secondsToTime,
+    paused,
+    musicTitle,
+    artist,
+    poster,
+  } from '../lib/player';
   import { play, pause } from '../lib/AudioPlayer.svelte';
 
   import { readable } from 'svelte/store';
@@ -27,6 +35,37 @@
       }, 300);
     });
   });
+
+  paused.subscribe(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: $musicTitle,
+        artist: $artist,
+        album: '',
+        artwork: [
+          {
+            src: $poster,
+            sizes: '1280x720',
+            type: 'image/webp',
+          },
+        ],
+      });
+    }
+  });
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.setActionHandler('play', () => {
+      play();
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      pause();
+    });
+    navigator.mediaSession.setActionHandler('seekbackward', () => {
+      currentTime.set($currentTime - 10);
+    });
+    navigator.mediaSession.setActionHandler('seekforward', () => {
+      currentTime.set($currentTime + 10);
+    });
+  }
 
   function toggle() {
     $type === 'play' ? play() : pause();

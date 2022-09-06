@@ -48,6 +48,7 @@
     reset();
     const id = urlToId(result.url);
     const apiRes = await audioStreamGetter(id);
+
     $poster = apiRes.thumbnailUrl;
     $artist = result.uploaderName;
 
