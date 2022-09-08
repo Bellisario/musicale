@@ -1,13 +1,27 @@
 <script type="ts">
-  // cspell:word analyser
+  // cspell:word analyser Unsubscriber
 
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import type { Unsubscriber } from 'svelte/store';
   import { currentTime, paused } from '../lib/player';
 
   let el: HTMLCanvasElement;
   let audio: HTMLAudioElement;
 
+  let backColor: string;
+  let themeColor: string;
+
+  let animationFrame1: number;
+  let animationFrame2: number;
+
+  let stream: MediaElementAudioSourceNode;
+
+  let currentTimeUnsubscribe: Unsubscriber;
+
   onMount(() => {
+    backColor = getComputedStyle(document.body).getPropertyValue('--back-color');
+    themeColor = getComputedStyle(document.body).getPropertyValue('--theme-color');
+
     audio = document.querySelector('#audio-player') as HTMLAudioElement;
 
     const audioCtx = new AudioContext();
@@ -18,7 +32,7 @@
     analyser.maxDecibels = 100;
     analyser.smoothingTimeConstant = 0.85;
 
-    currentTime.subscribe(() => {
+    currentTimeUnsubscribe = currentTime.subscribe(() => {
       if (audio.currentTime > 0) {
         dataAudio.currentTime = audio.currentTime;
       }
@@ -36,13 +50,13 @@
 
     let hasPlayed = false;
 
-    dataAudio.onplay = () => {
+    dataAudio.addEventListener('play', () => {
       if (hasPlayed) return;
       hasPlayed = true;
-      const stream = audioCtx.createMediaElementSource(dataAudio);
+      stream = audioCtx.createMediaElementSource(dataAudio);
 
       stream.connect(analyser);
-    };
+    });
 
     visualize();
 
@@ -53,7 +67,7 @@
 
       draw();
       function draw() {
-        requestAnimationFrame(draw);
+        animationFrame1 = requestAnimationFrame(draw);
 
         analyser.getFloatFrequencyData(dataArray);
         update(dataArray.map((x) => (x + 100) * 2.5));
@@ -74,7 +88,7 @@
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
     function draw(similarity: Float32Array) {
-      ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--back-color');
+      ctx.fillStyle = backColor;
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
       var barWidth = WIDTH / bufferLength;
@@ -88,7 +102,7 @@
         const newHeight = ((barHeight / 256) * HEIGHT) >> 0;
 
         // ctx.fillStyle = 'rgb(' + (barHeight * 3 + 100) + ',50,50)';
-        ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--theme-color');
+        ctx.fillStyle = themeColor;
         ctx.fillRect(x, HEIGHT - newHeight, barWidth, newHeight);
         x += barWidth; // + 1;
       }
@@ -103,11 +117,19 @@
         if (value_changed) return;
         value_changed = true;
 
-        requestAnimationFrame(function () {
+        animationFrame2 = requestAnimationFrame(function () {
           draw(freq_arr);
         });
       }
     }
+  });
+
+  // prevent memory leak
+  onDestroy(() => {
+    cancelAnimationFrame(animationFrame1);
+    cancelAnimationFrame(animationFrame2);
+    stream.disconnect();
+    currentTimeUnsubscribe();
   });
 </script>
 
