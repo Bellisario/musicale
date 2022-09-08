@@ -10,7 +10,6 @@
   import { onMount } from 'svelte';
   import { musicTitle, paused } from './lib/player';
 
-  import { send } from './lib/crossFade';
   import { fade } from 'svelte/transition';
 
   const DOCUMENT_ORIGINAL_TITLE = document.title;

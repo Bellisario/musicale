@@ -1,3 +1,7 @@
+// cspell:word ungap
+
+import any from '@ungap/promise-any';
+
 import type AudioStreamResponse from 'src/types/AudioStreamResponse';
 
 
@@ -41,7 +45,7 @@ export default async function audioStreamGetter(id: string): Promise<AudioStream
 
     let res: Response;
     try {
-        res = await Promise.any(promises as unknown[] as Response[]);
+        res = await any(promises as unknown[] as Response[]);
     } catch (err) {
         if (err instanceof Error) {
             if (err.name === 'AggregateError') {

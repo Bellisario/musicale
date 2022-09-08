@@ -1,4 +1,6 @@
 <script type="ts">
+  // cspell:word mousedown mouseup mouseleave HTMLUListElement
+
   import { createEventDispatcher, onMount } from 'svelte';
   import truncate from 'just-truncate';
   
@@ -69,13 +71,13 @@
   }
 
   onMount(() => {
-    el.addEventListener('mousedown', (e) => {
+    el.addEventListener('mousedown', (_) => {
       choosing = true;
     });
-    el.addEventListener('mouseup', (e) => {
+    el.addEventListener('mouseup', (_) => {
       choosing = false;
     });
-    el.addEventListener('mouseleave', (e) => {
+    el.addEventListener('mouseleave', (_) => {
       choosing = false;
     });
   });
