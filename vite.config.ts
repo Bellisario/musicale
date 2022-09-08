@@ -10,6 +10,11 @@ export default defineConfig({
     outDir: './dist/public',
   },
   plugins: [svelte(), VitePWA({
+    manifest: {
+      name: 'Musicale',
+      short_name: 'Musicale',
+      theme_color: '#ff9900',
+    },
     includeAssets: [
       "./fonts/*"
     ],

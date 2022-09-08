@@ -60,4 +60,5 @@ p {
   margin: auto;
   z-index: 9999;
   background-color: var(--back-color);
+  transition: all 0.5s ease-in-out;
 }

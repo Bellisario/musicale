@@ -27,6 +27,7 @@
   let toSearch = '';
 
   let loading = true;
+  let loadingHiding = false;
 
   // function resultSelect() {
   //   audioInterface.source = this.dataset.source;
@@ -72,9 +73,12 @@
 
   onMount(() => {
     (document.querySelector('.loading-screen') as HTMLDivElement).style.display = 'none';
-  }),
+  });
 
   // loading hide
+  setTimeout(() => {
+    loadingHiding = true;
+  }, 500);
   setTimeout(() => {
     loading = false;
   }, 1000);
@@ -82,8 +86,8 @@
 
 <main>
   {#if loading}
-    <div class="loading-screen" out:fade><span>Musicale</span></div>
-  {:else}
+  <div class="loading-screen" class:hiding={loadingHiding}><span>Musicale</span></div>
+  {/if}
     <SwManager />
     <AudioPlayer />
     <Toolbar
@@ -97,5 +101,10 @@
     />
     <Results type={toSearch ? 'success' : 'empty'} bind:query={toSearch} />
     <Player />
-  {/if}
 </main>
+
+<style>
+  .hiding {
+    opacity: 0;
+  }
+</style>
