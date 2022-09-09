@@ -1,5 +1,5 @@
 <script type="ts">
-  // cspell:word instanceof keydown
+  // cspell:word instanceof keydown onfocus onblur
   import { createEventDispatcher } from 'svelte';
   import { onMount } from 'svelte';
   import Autocomplete from './Autocomplete.svelte';
@@ -27,23 +27,30 @@
 
   let isSmall = false;
 
-  document.addEventListener('scroll', function () {
-    if (window.scrollY > 10) {
-      isSmall = true;
-    } else {
-      isSmall = false;
-    }
-  });
+  function isTouch() {
+    return window.matchMedia('(any-hover: none)').matches;
+  }
+
+  // allow small toolbar only on non-touch devices
+  if (!isTouch()) {
+    document.addEventListener('scroll', function () {
+      if (window.scrollY > 10) {
+        isSmall = true;
+      } else {
+        isSmall = false;
+      }
+    });
+  }
 
   // focus on "/" key press and after loading
   onMount(() => {
     search.focus();
     search.onfocus = () => {
       searchFocus = true;
-    }
+    };
     search.onblur = () => {
       searchFocus = false;
-    }
+    };
     window.addEventListener('keydown', (e) => {
       if (e.key === '/' && document.activeElement === document.body) {
         e.preventDefault();
@@ -60,7 +67,13 @@
 
 <div class="toolbar {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
-    <div class="toolbar__hero" on:click={heroClick} transition:receive="{{key: 'loading-screen', duration: 1000}}">Musicale</div>
+    <div
+      class="toolbar__hero"
+      on:click={heroClick}
+      transition:receive={{ key: 'loading-screen', duration: 1000 }}
+    >
+      Musicale
+    </div>
   </div>
   <div class="toolbar__right">
     <form class="toolbar__search" on:submit|preventDefault={submit}>

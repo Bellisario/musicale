@@ -1,5 +1,5 @@
 <script type="ts">
-  // cspell:word xlink spacebar keydown mousedown mousemove mouseup
+  // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
   import { currentTime, duration } from '../lib/player';
   import { onMount } from 'svelte';
 
@@ -40,6 +40,19 @@
       }
       progressChanging = false;
       $currentTime = changingPreview;
+    });
+
+    range.addEventListener('mouseleave', (_) => {
+      if (!progressChanging) return;
+
+      if (progress <= 0.05 || progress >= 0.95) {
+        if (progress <= 0.1) {
+          $currentTime = 0;
+        } else if (progress >= 0.9) {
+          $currentTime = $duration;
+        }
+        progressChanging = false;
+      }
     });
   });
 </script>
