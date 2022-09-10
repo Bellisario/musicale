@@ -8,6 +8,7 @@ export const volume = writable(0.75);
 
 export const poster = writable('');
 export const artist = writable('');
+export const source = writable('');
 
 export function secondsToTime(seconds: number) {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0'),

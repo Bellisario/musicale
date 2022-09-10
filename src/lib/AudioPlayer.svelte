@@ -1,5 +1,7 @@
 <script lang="ts" context="module">
-  import { currentTime, duration, paused, volume } from './player';
+  // cspell:word crossorigin
+
+  import { currentTime, duration, paused, volume, source } from './player';
 
   let el: HTMLAudioElement;
   
@@ -18,6 +20,7 @@
   }
   export function useSource(src: string) {
     el.src = src;
+    source.set(src);
   }
 </script>
 

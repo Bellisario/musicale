@@ -1,7 +1,7 @@
 <script type="ts">
   // cspell:word keyframes xlink
 
-  import { poster, musicTitle, artist } from '../lib/player';
+  import { poster, musicTitle, artist, source } from '../lib/player';
   import { fade } from 'svelte/transition';
 
   let localPoster: string;
@@ -17,6 +17,14 @@
     } catch {
       // do nothing
     }
+  }
+
+  function downloadSource() {
+    const a = document.createElement('a');
+    a.href = $source;
+    a.download = `${$musicTitle}.mp4`;
+    a.target = '_blank';
+    a.click();
   }
 
   poster.subscribe(async () => {
@@ -55,9 +63,21 @@
   </div>
   {#if $musicTitle !== '' && $artist !== ''}
     <div class="preview-info" transition:fade>
-      <div class="bars-button" class:enabled={barsVisible} on:click={() => (barsVisible = !barsVisible)}>
+      <div
+        class="bars-button"
+        class:enabled={barsVisible}
+        on:click={() => (barsVisible = !barsVisible)}
+      >
         <svg class="bars-icon">
           <use xlink:href="#bars" />
+        </svg>
+      </div>
+      <div
+        class="download-button"
+        on:click={() => downloadSource()}
+      >
+        <svg class="download-icon">
+          <use xlink:href="#download" />
         </svg>
       </div>
       <div class="preview-info__title">{$musicTitle}</div>
@@ -75,8 +95,11 @@
         d="m13 16.745c0-.414-.336-.75-.75-.75h-9.5c-.414 0-.75.336-.75.75s.336.75.75.75h9.5c.414 0 .75-.336.75-.75zm9-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75zm-4-5c0-.414-.336-.75-.75-.75h-14.5c-.414 0-.75.336-.75.75s.336.75.75.75h14.5c.414 0 .75-.336.75-.75z"
         fill-rule="nonzero"
       />
-    </symbol></svg
-  >
+    </symbol>
+    <symbol id="download" viewBox="0 0 24 24">
+      <path d="M16 11h5l-9 10-9-10h5v-11h8v11zm1 11h-10v2h10v-2z" />
+    </symbol>
+  </svg>
 </div>
 
 <style>
@@ -156,13 +179,16 @@
     background-color: var(--bars-color);
     border-radius: 50%;
     cursor: pointer;
-    transition: background-color 0.25s ease-in-out;
+    transition: background-color, opacity 0.25s ease-in-out;
   }
   .bars-button.enabled {
     background-color: var(--theme-color);
   }
   .bars-button.enabled .bars-icon {
     fill: var(--bars-color);
+  }
+  .bars-button:hover {
+    opacity: 0.75;
   }
   .bars-icon {
     width: 2em;
@@ -171,4 +197,28 @@
     fill: var(--theme-color);
     transition: background-color 0.25s ease-in-out;
   }
-</style>
+  .download-button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    top: -5em;
+    left: -2.5em;
+    background-color: var(--bars-color);
+    fill: var(--theme-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: opacity 0.25s ease-in-out;
+  }
+  .download-button:hover {
+    opacity: 0.75;
+  }
+  .download-icon {
+    width: 1.25em;
+    height: 1.25em;
+    transition: background-color 0.25s ease-in-out;
+  }
+  </style>
+
