@@ -19,7 +19,7 @@ export default defineConfig({
       "./fonts/*"
     ],
     devOptions: {
-      enabled: true,
+      // enabled: true,
     },
   })],
   css: {

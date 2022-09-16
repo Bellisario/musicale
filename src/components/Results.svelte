@@ -18,6 +18,12 @@
   export let query = '';
   export let type: ResultsStatus = 'ready';
 
+  let smallScreen = false;
+
+  window.addEventListener('resize', () => {
+    smallScreen = window.innerWidth < 900;
+  });
+
   $: query, findResults(query);
 
   let results: Result[];
@@ -70,6 +76,7 @@
     const [apiRes, err] = await resultsGetter(query);
     if (err) {
       type = 'error';
+      console.error(err);
       return;
     }
     results = apiRes.items;
@@ -88,7 +95,7 @@
 </script>
 
 <div class="container">
-  <div class="playing-grid">
+  <div class="playing-grid" class:hiding={smallScreen}>
     <PlayingPreview bind:barsVisible />
     <!-- poster changes every music, so it's the same as using the music UUID -->
     {#key $poster}
@@ -235,5 +242,8 @@
     left: 0.5em;
     z-index: -1;
     width: 30vw;
+  }
+  .playing-grid.hiding {
+    display: none;
   }
 </style>

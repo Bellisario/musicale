@@ -18,6 +18,12 @@
   import { fade } from 'svelte/transition';
   import clickOutside from '../lib/clickOutside';
 
+  let smallScreen = false;
+
+  window.addEventListener('resize', () => {
+    smallScreen = window.innerWidth < 900;
+  });
+
   let progressChanging = false;
   let changingPreview = 0;
 
@@ -90,6 +96,7 @@
   <!-- svelte-ignore a11y-mouse-events-have-key-events -->
   <div
     class="player__volume"
+    class:hiding={smallScreen}
     on:mouseover={() => (volumeRangeShowing = true)}
     use:clickOutside={() => (volumeRangeShowing = false)}
   >
@@ -144,7 +151,8 @@
   .player__range {
     --b-radius: 1em;
     display: inline-block;
-    width: 75vw;
+    min-width: 30%;
+    width: 75%;
     height: 0.4em;
 
     position: relative;
@@ -199,6 +207,9 @@
   .player__volume {
     position: relative;
     isolation: isolate;
+  }
+  .player__volume.hiding {
+    display: none;
   }
   /* adds some more click radius to button */
   .player__volume::before {
