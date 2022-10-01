@@ -1,10 +1,16 @@
 <script lang="ts" context="module">
   // cspell:word crossorigin
 
-  import { currentTime, duration, paused, volume, source } from './player';
+  import {
+    currentTime,
+    duration,
+    paused,
+    volume,
+    source,
+    ended,
+  } from './player';
 
   let el: HTMLAudioElement;
-  
 
   export function play() {
     // prevent play if there is no source set
@@ -31,6 +37,7 @@
   bind:duration={$duration}
   bind:paused={$paused}
   bind:volume={$volume}
+  bind:ended={$ended}
   crossorigin="anonymous"
 />
 

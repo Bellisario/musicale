@@ -1,6 +1,7 @@
 /* cspell:word pressura */
 
 :root {
+  --fs-biggest: 1.75em;
   --fs-big: 1.5em;
   --fs-medium: 1.25em;
   --fs-small: 1em;

@@ -2,15 +2,20 @@
   // cspell:word onpopstate onhashchange
 
   import Toolbar from './components/Toolbar.svelte';
-  import Results from './components/Results.svelte';
   import Player from './components/Player.svelte';
   import SwManager from './components/SWManager.svelte';
   import AudioPlayer from './lib/AudioPlayer.svelte';
 
   import { onMount } from 'svelte';
-  import { musicTitle, paused } from './lib/player';
+  import {
+    musicTitle,
+    paused,
+    query,
+    toSearch,
+    favoritesActive,
+  } from './lib/player';
 
-  import { fade } from 'svelte/transition';
+  import MainLayout from './components/MainLayout.svelte';
 
   const DOCUMENT_ORIGINAL_TITLE = document.title;
 
@@ -22,24 +27,20 @@
     document.title = `${$musicTitle} | Musicale`;
   });
 
-  let query = '';
   let inputFocus = true;
-  let toSearch = '';
 
   let loading = true;
   let loadingHiding = false;
 
-  // function resultSelect() {
-  //   audioInterface.source = this.dataset.source;
-  //   audioInterface.play();
-  // }
-
-  function submit() {
-    toSearch = query;
-    if (query.trim() !== '') {
-      location.hash = '#search=' + query;
+  function submit(firstLoad = false) {
+    if ($query.trim() !== '') {
+      location.hash = '#search=' + $query;
       if ($paused) {
-        document.title = `"${query}" on Musicale`;
+        document.title = `"${$query}" on Musicale`;
+      }
+      $toSearch = $query;
+      if (!firstLoad) {
+        $favoritesActive = false;
       }
     } else {
       location.hash = '';
@@ -47,22 +48,32 @@
         document.title = DOCUMENT_ORIGINAL_TITLE;
       }
     }
-    // alert(toSearch);
   }
 
-  function lookupHash() {
-    const hash = window.location.hash.slice(1);
-    if (hash && hash.startsWith('search=')) {
-      query = decodeURIComponent(hash.slice('search='.length));
+  function getParameters() {
+    const hash = location.hash;
+    try {
+      const params = new URLSearchParams(hash.slice(1));
+      const search = params.get('search');
+      return { search };
+    } catch {
+      return { search: '' };
+    }
+  }
+
+  function lookupHash(firstLoad = false) {
+    const { search } = getParameters();
+    if (search !== null) {
+      $query = decodeURIComponent(search);
       inputFocus = false;
     } else {
-      query = '';
+      $query = '';
     }
-    submit();
+    submit(firstLoad);
   }
 
   onMount(() => {
-    lookupHash();
+    lookupHash(true);
   });
   window.onpopstate = () => {
     lookupHash();
@@ -72,7 +83,9 @@
   };
 
   onMount(() => {
-    (document.querySelector('.loading-screen') as HTMLDivElement).style.display = 'none';
+    (
+      document.querySelector('.loading-screen') as HTMLDivElement
+    ).style.display = 'none';
   });
 
   // loading hide
@@ -86,21 +99,24 @@
 
 <main>
   {#if loading}
-  <div class="loading-screen" class:hiding={loadingHiding}><span>Musicale</span></div>
+    <div class="loading-screen" class:hiding={loadingHiding}>
+      <span>Musicale</span>
+    </div>
   {/if}
-    <SwManager />
-    <AudioPlayer />
-    <Toolbar
-      bind:query
-      bind:inputFocus
-      on:submit={submit}
-      on:home={() => {
-        query = '';
-        submit();
-      }}
-    />
-    <Results type={toSearch ? 'success' : 'empty'} bind:query={toSearch} />
-    <Player />
+  <SwManager />
+  <AudioPlayer />
+  <Toolbar
+    bind:inputFocus
+    on:submit={() => submit()}
+    on:home={() => {
+      $query = '';
+      $toSearch = '';
+      $favoritesActive = false;
+      submit();
+    }}
+  />
+  <MainLayout />
+  <Player />
 </main>
 
 <style>

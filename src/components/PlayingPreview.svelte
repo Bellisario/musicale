@@ -1,8 +1,23 @@
 <script type="ts">
   // cspell:word keyframes xlink
 
-  import { poster, musicTitle, artist, source } from '../lib/player';
+  import {
+    poster,
+    smallPoster,
+    musicTitle,
+    artist,
+    source,
+    currentID,
+    favorites,
+  } from '../lib/player';
+  import type { FavoriteStore } from '../types/FavoritesStore';
   import { fade } from 'svelte/transition';
+
+  // just for demo purposes
+  let loving = false;
+
+  // check if the current song is in favorites
+  $: loving = $favorites.some((favorite) => favorite.id === $currentID);
 
   let localPoster: string;
   let posterHidden = true;
@@ -16,6 +31,21 @@
       URL.revokeObjectURL(localPoster);
     } catch {
       // do nothing
+    }
+  }
+
+  function favoritesToggle() {
+    // loving = !loving;
+    if (!loving) {
+      const favorite: FavoriteStore = {
+        id: $currentID,
+        title: $musicTitle,
+        artist: $artist,
+        poster: $smallPoster,
+      };
+      $favorites = [favorite, ...$favorites];
+    } else {
+      $favorites = $favorites.filter((favorite) => favorite.id !== $currentID);
     }
   }
 
@@ -67,6 +97,7 @@
         class="bars-button"
         class:enabled={barsVisible}
         on:click={() => (barsVisible = !barsVisible)}
+        title="{barsVisible ? 'Hide' : 'Show'} bars"
       >
         <svg class="bars-icon">
           <use xlink:href="#bars" />
@@ -75,9 +106,21 @@
       <div
         class="download-button"
         on:click={() => downloadSource()}
+        title="Download current music"
       >
         <svg class="download-icon">
           <use xlink:href="#download" />
+        </svg>
+      </div>
+      <div
+        class="love-button"
+        class:loving
+        class:disabled={$currentID === ''}
+        on:click={favoritesToggle}
+        title="{loving ? 'Remove from' : 'Add to'} favorites"
+      >
+        <svg class="love-icon">
+          <use xlink:href="#love" />
         </svg>
       </div>
       <div class="preview-info__title">{$musicTitle}</div>
@@ -98,6 +141,11 @@
     </symbol>
     <symbol id="download" viewBox="0 0 24 24">
       <path d="M16 11h5l-9 10-9-10h5v-11h8v11zm1 11h-10v2h10v-2z" />
+    </symbol>
+    <symbol id="love" viewBox="0 0 24 24">
+      <path
+        d="M19.5 10c-2.483 0-4.5 2.015-4.5 4.5s2.017 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.017-4.5-4.5-4.5zm2.5 5h-2v2h-1v-2h-2v-1h2v-2h1v2h2v1zm-6.527 4.593c-1.108 1.086-2.275 2.219-3.473 3.407-6.43-6.381-12-11.147-12-15.808 0-6.769 8.852-8.346 12-2.944 3.125-5.362 12-3.848 12 2.944 0 .746-.156 1.496-.423 2.253-1.116-.902-2.534-1.445-4.077-1.445-3.584 0-6.5 2.916-6.5 6.5 0 2.063.97 3.901 2.473 5.093z"
+      />
     </symbol>
   </svg>
 </div>
@@ -129,9 +177,6 @@
     top: 20vh;
     transition: transform 0.5s ease-in-out;
   }
-  /* .playing-preview.small {
-    transform: translateY(-5vh) scale(0.95);
-  } */
   .preview-poster {
     width: var(--content-size);
     padding-bottom: var(--content-size);
@@ -177,9 +222,17 @@
     top: -2.5em;
     left: -2.5em;
     background-color: var(--bars-color);
+    fill: var(--theme-color);
     border-radius: 50%;
     cursor: pointer;
     transition: background-color, opacity 0.25s ease-in-out;
+  }
+  .bars-icon {
+    width: 2em;
+    height: 1.5em;
+    transform: rotate(-90deg);
+    fill: var(--theme-color);
+    transition: fill 0.25s ease-in-out;
   }
   .bars-button.enabled {
     background-color: var(--theme-color);
@@ -189,13 +242,6 @@
   }
   .bars-button:hover {
     opacity: 0.75;
-  }
-  .bars-icon {
-    width: 2em;
-    height: 1.5em;
-    transform: rotate(-90deg);
-    fill: var(--theme-color);
-    transition: background-color 0.25s ease-in-out;
   }
   .download-button {
     position: absolute;
@@ -220,5 +266,38 @@
     height: 1.25em;
     transition: background-color 0.25s ease-in-out;
   }
-  </style>
-
+  .love-button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    top: -7.5em;
+    left: -2.5em;
+    background-color: var(--bars-color);
+    fill: var(--theme-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color, opacity 0.25s ease-in-out;
+  }
+  .love-button:hover {
+    opacity: 0.75;
+  }
+  .love-button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .love-icon {
+    width: 1.2em;
+    height: 1.2em;
+    transition: fill 0.25s ease-in-out;
+    transform: translateY(0.08em);
+  }
+  .love-button.loving {
+    background-color: var(--theme-color);
+  }
+  .love-button.loving .love-icon {
+    fill: var(--bars-color);
+  }
+</style>

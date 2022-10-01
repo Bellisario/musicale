@@ -1,10 +1,12 @@
 <script type="ts">
-  // cspell:word instanceof keydown onfocus onblur
+  // cspell:word instanceof keydown onfocus onblur xlink
   import { createEventDispatcher } from 'svelte';
   import { onMount } from 'svelte';
   import Autocomplete from './Autocomplete.svelte';
 
   import { receive } from '../lib/crossFade';
+
+  import { favoritesActive, query } from '../lib/player';
 
   const dispatch = createEventDispatcher();
 
@@ -17,13 +19,17 @@
   }
 
   function blur() {
+    try {
+      search.blur();
+    } catch {
+      onMount(() => search.blur());
+    }
     search.blur();
   }
 
-  export let query = '';
   export let inputFocus: boolean;
 
-  $: inputFocus === false && onMount(() => blur());
+  $: inputFocus === false && blur();
 
   let isSmall = false;
 
@@ -76,16 +82,33 @@
     </div>
   </div>
   <div class="toolbar__right">
+    <div
+      class="toolbar__favorites"
+      on:click={() => ($favoritesActive = !$favoritesActive)}
+      class:active={$favoritesActive}
+      title="{$favoritesActive ? 'Close' : 'Open'} favorites"
+    >
+      <svg class="favorites__icon">
+        <use xlink:href="#favorites" />
+      </svg>
+    </div>
     <form class="toolbar__search" on:submit|preventDefault={submit}>
       <input
         type="text"
         placeholder="Search"
-        bind:value={query}
+        bind:value={$query}
         bind:this={search}
       />
-      <Autocomplete bind:query on:submit={submit} bind:searchFocus />
+      <Autocomplete bind:query={$query} on:submit={submit} bind:searchFocus />
     </form>
   </div>
+  <svg style="display:none;">
+    <symbol id="favorites" viewBox="0 0 24 24">
+      <path
+        d="M12 21h-12v-2h12v2zm4-9l8-1v6.681c-.002 1.555-1.18 2.319-2.257 2.319-.907 0-1.743-.542-1.743-1.61 0-.96.903-1.852 2-2.073v-2.317l-4 .5v4.181c-.002 1.555-1.18 2.319-2.257 2.319-.907 0-1.743-.542-1.743-1.61 0-.96.903-1.852 2-2.073v-5.317zm-4 4.976h-12v-2h12v2zm0-3.976h-12v-2h12v2zm12-4h-24v-2h24v2zm0-4h-24v-2h24v2z"
+      />
+    </symbol>
+  </svg>
 </div>
 
 <style>
@@ -138,5 +161,29 @@
   }
   .toolbar__small {
     font-size: 0.85em;
+  }
+  .toolbar__favorites {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1em;
+    position: relative;
+    background-color: var(--back-color);
+    padding: 0.5em;
+    border-radius: 50%;
+    transition: background-color 0.25s ease-in-out;
+    cursor: pointer;
+  }
+  .favorites__icon {
+    width: 1.15em;
+    height: 1.15em;
+    fill: var(--text-color);
+    transition: fill 0.25s ease-in-out;
+  }
+  .toolbar__favorites.active {
+    background-color: var(--theme-color);
+  }
+  .toolbar__favorites.active .favorites__icon {
+    fill: var(--back-color);
   }
 </style>

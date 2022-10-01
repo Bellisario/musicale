@@ -6,25 +6,21 @@
   import { play, useSource, reset } from '../lib/AudioPlayer.svelte';
   import resultsGetter from '../lib/resultsGetter';
   import IntersectionObserver from '../lib/IntersectionObserver.svelte';
-  import { musicTitle, poster, artist, paused } from '../lib/player';
+  import {
+    musicTitle,
+    poster,
+    artist,
+    toSearch,
+    currentID,
+    smallPoster,
+  } from '../lib/player';
   import { fade } from 'svelte/transition';
-  import PlayingPreview from './PlayingPreview.svelte';
-  import FrequencyBars from './FrequencyBars.svelte';
-
-  let barsVisible = false;
 
   import truncate from 'just-truncate';
 
-  export let query = '';
   export let type: ResultsStatus = 'ready';
 
-  let smallScreen = false;
-
-  window.addEventListener('resize', () => {
-    smallScreen = window.innerWidth < 900;
-  });
-
-  $: query, findResults(query);
+  $: findResults($toSearch);
 
   let results: Result[];
 
@@ -36,11 +32,16 @@
   let canReplaySong = true;
 
   async function wantPlay(result: Result, selectedId: number) {
+    // reset currentID while fetching
+    $currentID = '';
+
+    const id = urlToId(result.url);
+
     $musicTitle = result.title;
 
     const currentResult = {
       id: selectedId,
-      uuid: result.url,
+      uuid: id,
     };
 
     // prevent song replay if clicks on the same song again before loading
@@ -52,10 +53,10 @@
     selectedResult = currentResult;
     // reset the current audio stream
     reset();
-    const id = urlToId(result.url);
     const apiRes = await audioStreamGetter(id);
 
     $poster = apiRes.thumbnailUrl;
+    $smallPoster = result.thumbnail;
     $artist = result.uploaderName;
 
     const streamUrl = apiRes.audioStreams.filter(
@@ -65,6 +66,7 @@
     useSource(streamUrl);
     play();
     canReplaySong = true;
+    $currentID = id;
   }
 
   async function findResults(query: string) {
@@ -94,87 +96,63 @@
   };
 </script>
 
-<div class="container">
-  <div class="playing-grid" class:hiding={smallScreen}>
-    <PlayingPreview bind:barsVisible />
-    <!-- poster changes every music, so it's the same as using the music UUID -->
-    {#key $poster}
-      {#if barsVisible && !$paused}
-        <div class="frequency-bars" transition:fade>
-          <FrequencyBars />
+<div class="results-grid">
+  {#if type === 'ready'}
+    <div class="default" in:fade>
+      <h1>Search for something</h1>
+      <p>Try searching for something to see results there.</p>
+    </div>
+  {:else if type === 'loading'}
+    <div in:fade={{ delay: 1000 }} class="loading">
+      Loading... <span in:fade={{ delay: 4000 }}
+        >this seems to take some more time...</span
+      ><br /><span in:fade={{ delay: 7000 }}
+        >Maybe there is a problem with API? Anyway no error for now. Working
+        on...</span
+      >
+    </div>
+  {:else if type === 'success'}
+    {#each results as result, id}
+      <div
+        in:fade
+        class="result"
+        class:selected={$currentID === urlToId(result.url)}
+        data-id={id}
+        on:click={() => wantPlay(result, id)}
+      >
+        <div class="result__grid1" style="--img: url('{result.thumbnail}')">
+          <IntersectionObserver let:intersecting top={150} once={true}>
+            <img
+              src={intersecting ? result.thumbnail : ''}
+              alt={result.title}
+              class="result__img"
+              use:lazyLoad
+            />
+          </IntersectionObserver>
         </div>
-      {/if}
-    {/key}
-  </div>
-  <div class="results-grid">
-    {#if type === 'ready'}
-      <div class="default" in:fade>
-        <h1>Search for something</h1>
-        <p>Try searching for something to see results there.</p>
-      </div>
-    {:else if type === 'loading'}
-      <div in:fade={{ delay: 1000 }} class="loading">
-        Loading... <span in:fade={{ delay: 4000 }}
-          >this seems to take some more time...</span
-        ><br /><span in:fade={{ delay: 7000 }}
-          >Maybe there is a problem with API? Anyway no error for now. Working
-          on...</span
-        >
-      </div>
-    {:else if type === 'success'}
-      {#each results as result, id}
-        <div
-          in:fade
-          class="result {selectedResult.id === id &&
-          selectedResult.uuid === result.url
-            ? 'selected'
-            : ''}"
-          data-id={id}
-          on:click={() => wantPlay(result, id)}
-        >
-          <div class="result__grid1" style="--img: url('{result.thumbnail}')">
-            <IntersectionObserver let:intersecting top={150} once={true}>
-              <img
-                src={intersecting ? result.thumbnail : ''}
-                alt={result.title}
-                class="result__img"
-                use:lazyLoad
-              />
-            </IntersectionObserver>
-          </div>
-          <div class="result__grid2">
-            <h2>{truncate(result.title, 40)}</h2>
-            <p>{result.uploaderName}</p>
-          </div>
+        <div class="result__grid2">
+          <h2>{truncate(result.title, 40)}</h2>
+          <p>{result.uploaderName}</p>
         </div>
-      {/each}
-    {:else if type === 'empty'}
-      <div class="empty" in:fade>
-        <h1>No result</h1>
-        <p>
-          Seems there is no result for your query, try with different words.
-        </p>
       </div>
-    {:else if type === 'error'}
-      <div class="error" in:fade>
-        <h1>Something went wrong</h1>
-        <p>Try again.</p>
-      </div>
-    {/if}
-  </div>
+    {/each}
+  {:else if type === 'empty'}
+    <div class="empty" in:fade>
+      <h1>No result</h1>
+      <p>Seems there is no result for your query, try with different words.</p>
+    </div>
+  {:else if type === 'error'}
+    <div class="error" in:fade>
+      <h1>Something went wrong</h1>
+      <p>Try again.</p>
+    </div>
+  {/if}
 </div>
 
 <style>
   img {
     user-select: none;
     pointer-events: none;
-  }
-  .container {
-    /* prevents toolbar hiding content */
-    margin-top: 4em;
-
-    display: grid;
-    grid-template-columns: 30vw 70vw;
   }
   .results-grid {
     display: grid;
@@ -203,7 +181,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 0.1em;
+    height: 0.1rem;
     background-color: var(--theme-color);
     opacity: 0;
     transition: opacity 300ms, transform 300ms;
@@ -235,15 +213,5 @@
   .result__grid2 {
     grid-column: 2;
     margin-block: auto;
-  }
-  .frequency-bars {
-    position: fixed;
-    bottom: 4em;
-    left: 0.5em;
-    z-index: -1;
-    width: 30vw;
-  }
-  .playing-grid.hiding {
-    display: none;
   }
 </style>
