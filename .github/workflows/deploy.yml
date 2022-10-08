@@ -27,6 +27,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "musicale-test"
+          project: "musicale"
           root: "./dist"
           entrypoint: "./server.ts"
