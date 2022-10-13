@@ -100,7 +100,7 @@
 <main>
   {#if loading}
     <div class="loading-screen" class:hiding={loadingHiding}>
-      <span>Musicale</span>
+      <img src="/logo.svg" alt="Logo" class="loading__logo">
     </div>
   {/if}
   <SwManager />

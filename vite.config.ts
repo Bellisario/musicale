@@ -16,7 +16,10 @@ export default defineConfig({
       theme_color: '#ff9900',
     },
     includeAssets: [
-      "./fonts/*"
+      "./fonts/*",
+      // temp fix (finding a better way)
+      "./*.png",
+      "./*.svg",
     ],
     devOptions: {
       // enabled: true,

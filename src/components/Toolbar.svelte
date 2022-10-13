@@ -8,6 +8,8 @@
 
   import { favoritesActive, query } from '../lib/player';
 
+  import Logo from '../assets/logo.svg?raw';
+
   const dispatch = createEventDispatcher();
 
   let search: HTMLInputElement;
@@ -78,7 +80,9 @@
       on:click={heroClick}
       transition:receive={{ key: 'loading-screen', duration: 1000 }}
     >
-      Musicale
+    <div class="hero__img">
+      {@html Logo}
+    </div>
     </div>
   </div>
   <div class="toolbar__right">
@@ -142,6 +146,9 @@
     font-size: var(--fs-big);
 
     cursor: pointer;
+  }
+  .hero__img {
+    height: 1.5em;
   }
   .toolbar__search {
     display: flex;

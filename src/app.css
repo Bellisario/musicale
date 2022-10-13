@@ -63,3 +63,12 @@ p {
   background-color: var(--back-color);
   transition: all 0.5s ease-in-out;
 }
+
+.loading__logo {
+  width: 5em;
+}
+
+.no-script {
+  padding: 1rem 0;
+  font-size: 1rem;
+}
