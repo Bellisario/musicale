@@ -5,7 +5,8 @@ export const duration = writable(0);
 export const currentTime = writable(0);
 export const paused = writable(true);
 export const musicTitle = writable('');
-export const volume = writable(0.75);
+export const volume = writable(Number(localStorage.getItem('volume')) || 0.7);
+volume.subscribe((value) => localStorage.setItem('volume', String(value)));
 export const ended = writable(false);
 
 export const poster = writable('');
