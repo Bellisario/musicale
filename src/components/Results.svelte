@@ -113,6 +113,7 @@
     </div>
   {:else if type === 'success'}
     {#each results as result, id}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         in:fade
         class="result"

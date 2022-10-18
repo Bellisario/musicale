@@ -93,6 +93,7 @@
   </div>
   {#if $musicTitle !== '' && $artist !== ''}
     <div class="preview-info" transition:fade>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         class="bars-button"
         class:enabled={barsVisible}
@@ -103,6 +104,7 @@
           <use xlink:href="#bars" />
         </svg>
       </div>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         class="download-button"
         on:click={() => downloadSource()}
@@ -112,6 +114,7 @@
           <use xlink:href="#download" />
         </svg>
       </div>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         class="love-button"
         class:loving

@@ -75,6 +75,7 @@
 
 <div class="toolbar {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       class="toolbar__hero"
       on:click={heroClick}
@@ -86,6 +87,7 @@
     </div>
   </div>
   <div class="toolbar__right">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       class="toolbar__favorites"
       on:click={() => ($favoritesActive = !$favoritesActive)}

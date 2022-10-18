@@ -3,6 +3,7 @@
   export let active = false;
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="btn" class:btn--active={active} on:click>
   <span class="btn__span">{title}</span>
 </div>

@@ -88,6 +88,7 @@
   class:visible={items.length !== 0 && (searchFocus || choosing)}
 >
   {#each items as item}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <li on:click={() => submit(item)}>{truncate(item, 33)}</li>
   {/each}
 </ul>

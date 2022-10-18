@@ -87,6 +87,7 @@
 </script>
 
 <div class="player">
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="player__play-pause" on:click={toggle}>
     <div
       class="play-pause__icon {$type} {playPauseChanging ? 'changing' : ''}"
