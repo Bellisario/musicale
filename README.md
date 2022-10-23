@@ -4,6 +4,8 @@
 
 Musicale is a music player for the web. It's built with Svelte, Vite and TypeScript for the best user and dev experience.
 
+> Try it on [musicale.tk](https://musicale.tk)
+
 ## Features
 
 - Simple and clean UI
