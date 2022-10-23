@@ -1,48 +1,51 @@
-# Svelte + TS + Vite
+# Musicale
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+> Music, with style.
 
-## Recommended IDE Setup
+Musicale is a music player for the web. It's built with Svelte, Vite and TypeScript for the best user and dev experience.
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## Features
 
-## Need an official Svelte framework?
+- Simple and clean UI
+- Search musics and preview their thumbnail
+- Click on a result to play in a snap
+- App loads fully offline (with SW) _(note results and music playing requires an internet connection)_
+- Frequency bars with a click _(YouTube Music doesn't have this feature)_
+- Favorite musics (with local storage and shuffle option)
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+Why don't see any photo?
 
-## Technical considerations
+> Because you can see and try by yourself on https://musicale.tk
 
-**Why use this over SvelteKit?**
+## Why?
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-  `vite dev` and `vite build` wouldn't work in a SvelteKit environment, for example.
+Today music players are slow (also on loading) and interrupt you with ads audios if free or let you pay for a premium account.
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+Musicale is a free and open source alternative to those players and streams music from YouTube Music _(through a third party API)_.
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+## API
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+The interesting thing about Musicale is that there is no backend and the API it's from [Piped](https://github.com/TeamPiped/Piped) (a privacy-friendly alternative YouTube frontend), which is well documented [here](https://piped-docs.kavin.rocks/).
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+There is also an autocomplete API, made by me, to get the search suggestions. You can find more info about it [here](https://musicautocomplete.deno.dev/) and the source code [here](https://github.com/Bellisario/musicautocomplete).
 
-**Why include `.vscode/extensions.json`?**
+## Legal
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+We do NOT host or scrape any Youtube Music content, we use a PUBLIC available API to provide user a playable URL of the music through a good-looking interface, WITHOUT violating any laws.
 
-**Why enable `allowJs` in the TS template?**
+Musicale is NOT affiliated with Piped, YouTube, YouTube Music or Google in any way. All the content played on Musicale is offered by third parties and is NOT hosted by Musicale.
 
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
+If you suspect a violation of your rights, you should contact the respective third party providers.
 
-**Why is HMR not preserving my local component state?**
+> **Note:** Musicale uses Piped as API but servers used may NOT be affiliated with Piped itself.
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+## Contributing
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+We :heart: contributions!\
+Feel free to open an [issue](https://github.com/Bellisario/musicale/issues) or a [pull request](https://github.com/Bellisario/musicale/pulls) but follow [Contributing Guidelines](https://github.com/Bellisario/musicale/blob/main/CONTRIBUTING.md).
 
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+> **Tip:** if you don't know where to start, check out the [help wanted issues](https://github.com/Bellisario/musicale/labels/help%20wanted)!
+
+## License
+
+MIT License [here](https://github.com/Bellisario/musicale/blob/main/LICENSE).
