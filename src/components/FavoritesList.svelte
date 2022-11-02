@@ -20,6 +20,8 @@
 
   import truncate from 'just-truncate';
 
+  import Footer from './Footer.svelte';
+
   let resultIndex = -1;
 
   let autoplay = false;
@@ -132,11 +134,14 @@
 </script>
 
 <div class="container">
-  <div class="results-flex">
+  <div class="results-grid" class:align-center={$favorites.length !== 0}>
     {#if $favorites.length === 0}
-      <div class="default" in:fade>
-        <h1>No favorite music</h1>
-        <p>Mark a music as favorite to have it here.</p>
+      <div class="default grid-content" in:fade>
+        <div class="texts">
+          <h1>No favorite music</h1>
+          <p>Mark a music as favorite to have it here.</p>
+        </div>
+        <Footer size="small" />
       </div>
     {:else}
       <div class="title">Favorites</div>
@@ -177,6 +182,7 @@
           </div>
         </div>
       {/each}
+      <Footer size="small" />
     {/if}
   </div>
 </div>
@@ -191,17 +197,20 @@
     pointer-events: none;
   }
   .container {
-    display: grid;
-    grid-template-columns: 30vw 70vw;
     scroll-margin-top: calc(var(--bars-height) + 2rem);
   }
-  .results-flex {
-    display: flex;
+  .results-grid {
+    display: grid;
     gap: 1em;
     padding: 2em;
     min-height: calc(100vh - var(--bars-height) * 2);
+  }
+  .results-grid.align-center {
     align-content: center;
-    flex-direction: column;
+  }
+  .results-grid .grid-content {
+    display: grid;
+    grid-template-rows: 1fr min-content;
   }
   .result {
     display: grid;

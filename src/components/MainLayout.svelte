@@ -7,16 +7,10 @@
   import FavoritesList from './FavoritesList.svelte';
 
   let barsVisible = false;
-
-  let smallScreen = false;
-
-  window.addEventListener('resize', () => {
-    smallScreen = window.innerWidth < 900;
-  });
 </script>
 
 <div class="container">
-  <div class="playing-grid" class:hiding={smallScreen}>
+  <div class="playing-grid">
     <PlayingPreview bind:barsVisible />
     <!-- poster changes every music, so it's the same as using the music UUID -->
     {#key $poster}
@@ -52,7 +46,12 @@
     z-index: -1;
     width: 30vw;
   }
-  .playing-grid.hiding {
-    display: none;
+  @media (max-width: 900px) {
+    .container {
+      grid-template-columns: 1fr;
+    }
+    .playing-grid {
+      display: none;
+    }
   }
 </style>
