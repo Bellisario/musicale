@@ -17,6 +17,7 @@
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
+  import Footer from './Footer.svelte';
 
   export let type: ResultsStatus = 'ready';
 
@@ -98,9 +99,12 @@
 
 <div class="results-grid">
   {#if type === 'ready'}
-    <div class="default" in:fade>
-      <h1>Search for something</h1>
-      <p>Try searching for something to see results there.</p>
+    <div class="default grid-content" in:fade>
+      <div class="texts">
+        <h1>Search for something</h1>
+        <p>Try searching for something to see results there.</p>
+      </div>
+      <Footer size="small" />
     </div>
   {:else if type === 'loading'}
     <div in:fade={{ delay: 1000 }} class="loading">
@@ -137,15 +141,24 @@
         </div>
       </div>
     {/each}
+    <Footer />
   {:else if type === 'empty'}
-    <div class="empty" in:fade>
-      <h1>No result</h1>
-      <p>Seems there is no result for your query, try with different words.</p>
+    <div class="empty grid-content" in:fade>
+      <div class="texts">
+        <h1>No result</h1>
+        <p>
+          Seems there is no result for your query, try with different words.
+        </p>
+      </div>
+      <Footer size="small" />
     </div>
   {:else if type === 'error'}
-    <div class="error" in:fade>
-      <h1>Something went wrong</h1>
-      <p>Try again.</p>
+    <div class="error grid-content" in:fade>
+      <div class="texts">
+        <h1>Something went wrong</h1>
+        <p>Try again.</p>
+      </div>
+      <Footer size="small" />
     </div>
   {/if}
 </div>
@@ -214,5 +227,10 @@
   .result__grid2 {
     grid-column: 2;
     margin-block: auto;
+  }
+
+  .results-grid .grid-content {
+    display: grid;
+    grid-template-rows: 1fr min-content;
   }
 </style>
