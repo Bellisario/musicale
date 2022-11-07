@@ -6,7 +6,7 @@
 
   import { receive } from '../lib/crossFade';
 
-  import { favoritesActive, query } from '../lib/player';
+  import { favoritesActive, settingsActive, query } from '../lib/player';
 
   import Logo from '../assets/logo.svg?raw';
 
@@ -81,12 +81,23 @@
       on:click={heroClick}
       transition:receive={{ key: 'loading-screen', duration: 1000 }}
     >
-    <div class="hero__img">
-      {@html Logo}
-    </div>
+      <div class="hero__img">
+        {@html Logo}
+      </div>
     </div>
   </div>
   <div class="toolbar__right">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="toolbar__settings"
+      on:click={() => ($settingsActive = !$settingsActive)}
+      class:active={$settingsActive}
+      title="{$settingsActive ? 'Close' : 'Open'} settings"
+    >
+      <svg class="settings__icon">
+        <use xlink:href="#settings" />
+      </svg>
+    </div>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       class="toolbar__favorites"
@@ -112,6 +123,11 @@
     <symbol id="favorites" viewBox="0 0 24 24">
       <path
         d="M12 21h-12v-2h12v2zm4-9l8-1v6.681c-.002 1.555-1.18 2.319-2.257 2.319-.907 0-1.743-.542-1.743-1.61 0-.96.903-1.852 2-2.073v-2.317l-4 .5v4.181c-.002 1.555-1.18 2.319-2.257 2.319-.907 0-1.743-.542-1.743-1.61 0-.96.903-1.852 2-2.073v-5.317zm-4 4.976h-12v-2h12v2zm0-3.976h-12v-2h12v2zm12-4h-24v-2h24v2zm0-4h-24v-2h24v2z"
+      />
+    </symbol>
+    <symbol id="settings" viewBox="0 0 24 24">
+      <path
+        d="M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z"
       />
     </symbol>
   </svg>
@@ -171,7 +187,8 @@
   .toolbar__small {
     font-size: 0.85em;
   }
-  .toolbar__favorites {
+  .toolbar__favorites,
+  .toolbar__settings {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -183,16 +200,19 @@
     transition: background-color 0.25s ease-in-out;
     cursor: pointer;
   }
-  .favorites__icon {
+  .favorites__icon,
+  .settings__icon {
     width: 1.15em;
     height: 1.15em;
     fill: var(--text-color);
     transition: fill 0.25s ease-in-out;
   }
-  .toolbar__favorites.active {
+  .toolbar__favorites.active,
+  .toolbar__settings.active {
     background-color: var(--theme-color);
   }
-  .toolbar__favorites.active .favorites__icon {
+  .toolbar__favorites.active .favorites__icon,
+  .toolbar__settings.active .settings__icon {
     fill: var(--back-color);
   }
 </style>

@@ -19,6 +19,12 @@ export const query = writable('');
 export const toSearch = writable('');
 
 export const favoritesActive = writable(localStorage.getItem('favoritesActive') === 'true');
+export const settingsActive = writable(false);
+
+// if settings active, reset favorites active to false
+settingsActive.subscribe((value) => value === true ? favoritesActive.set(false) : null);
+// if favorites active, reset settings active to false
+favoritesActive.subscribe((value) => value === true ? settingsActive.set(false) : null);
 
 favoritesActive.subscribe((value) => {
     localStorage.setItem('favoritesActive', value.toString());

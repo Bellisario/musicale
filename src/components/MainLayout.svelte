@@ -1,10 +1,16 @@
 <script type="ts">
-  import { poster, paused, favoritesActive } from '../lib/player';
+  import {
+    poster,
+    paused,
+    favoritesActive,
+    settingsActive,
+  } from '../lib/player';
   import { fade } from 'svelte/transition';
   import PlayingPreview from './PlayingPreview.svelte';
   import FrequencyBars from './FrequencyBars.svelte';
   import Results from './Results.svelte';
   import FavoritesList from './FavoritesList.svelte';
+  import Settings from './Settings.svelte';
 
   let barsVisible = false;
 </script>
@@ -21,12 +27,14 @@
       {/if}
     {/key}
   </div>
-  <!-- here goes results/favorites -->
+  <!-- here goes results/favorites/settings -->
   <div transition:fade>
-    {#if !$favoritesActive}
+    {#if !$favoritesActive && !$settingsActive}
       <Results />
-    {:else}
+    {:else if $favoritesActive}
       <FavoritesList />
+    {:else if $settingsActive}
+      <Settings />
     {/if}
   </div>
 </div>

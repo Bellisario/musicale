@@ -1,17 +1,40 @@
 <script type="ts">
   export let title = '<empty>';
   export let active = false;
+  export let color: string = null;
+  export let fitContent = true;
+  export let scale: string = null;
+
+  let styles = {
+    'theme-color': color,
+    fs: scale,
+  };
+
+  function getStyle(properties: { [key: string]: string }) {
+    return Object.entries(properties)
+      .filter(([_, value]) => value !== null)
+      .map(([key, value]) => `--${key}: ${value};`)
+      .join(' ');
+  }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="btn" class:btn--active={active} on:click>
+<button
+  class="btn"
+  class:btn--active={active}
+  on:click
+  style={getStyle(styles)}
+  class:fitContent
+>
   <span class="btn__span">{title}</span>
-</div>
+</button>
 
 <style>
   .btn {
+    all: unset;
+
+    font-size: calc(var(--fs, 1) * 1em);
+
     height: 2.8em;
-    width: fit-content;
     min-width: 8.5em;
     padding: 0 0.5em;
     border-radius: 0.5em;
@@ -23,6 +46,9 @@
     transition-property: color, background-color, opacity;
     transition-duration: 300ms;
     transition-timing-function: ease-in-out;
+  }
+  .btn.fitContent {
+    width: fit-content;
   }
   .btn:hover {
     opacity: 0.8;

@@ -13,6 +13,7 @@
     query,
     toSearch,
     favoritesActive,
+    settingsActive,
   } from './lib/player';
 
   import MainLayout from './components/MainLayout.svelte';
@@ -41,6 +42,7 @@
       $toSearch = $query;
       if (!firstLoad) {
         $favoritesActive = false;
+        $settingsActive = false;
       }
     } else {
       location.hash = '';
@@ -100,7 +102,7 @@
 <main>
   {#if loading}
     <div class="loading-screen" class:hiding={loadingHiding}>
-      <img src="/logo.svg" alt="Logo" class="loading__logo">
+      <img src="/logo.svg" alt="Logo" class="loading__logo" />
     </div>
   {/if}
   <SwManager />
@@ -112,6 +114,7 @@
       $query = '';
       $toSearch = '';
       $favoritesActive = false;
+      $settingsActive = false;
       submit();
     }}
   />
