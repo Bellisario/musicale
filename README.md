@@ -11,7 +11,7 @@ Musicale is a music player for the web. It's built with Svelte, Vite and TypeScr
 - Click on a result to play in a snap
 - App loads fully offline (with SW) _(note results and music playing requires an internet connection)_
 - Frequency bars with a click _(YouTube Music doesn't have this feature)_
-- Favorite musics (with local storage and shuffle option)
+- Favorite musics (with local storage and shuffle option + import/export on settings)
 - Free server on the Edge (thanks to [Deno Deploy](https://deno.com/deploy))
 
 Why don't see any photo?
