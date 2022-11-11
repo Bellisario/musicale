@@ -11,6 +11,7 @@
     musicTitle,
     artist,
     poster,
+    volume,
   } from '../lib/player';
   import { play, pause } from '../lib/AudioPlayer.svelte';
 
@@ -79,9 +80,68 @@
 
   // listen for spacebar
   window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && document.activeElement === document.body) {
+    // if focusing elements (ex. input) don't do anything
+    if (document.activeElement !== document.body) return;
+
+    if (e.code === 'Space') {
       e.preventDefault();
       toggle();
+
+      return;
+    }
+
+    if (e.key === 'ArrowRight') {
+      // e.preventDefault();
+      let newTime = $currentTime + 5;
+
+      // prevent going over duration
+      if (newTime > $duration) newTime = $duration;
+
+      $currentTime = newTime;
+
+      return;
+    }
+
+    if (e.key === 'ArrowLeft') {
+      // e.preventDefault();
+      let newTime = $currentTime - 5;
+
+      // prevent going under 0
+      if (newTime < 0) newTime = 0;
+
+      $currentTime = newTime;
+
+      return;
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      let newVolume = $volume + 0.01;
+
+      // prevent going over 1
+      if (newVolume > 1) newVolume = 1;
+
+      // show volume range
+      volumeRangeShowing = true;
+
+      $volume = newVolume;
+
+      return;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      let newVolume = $volume - 0.01;
+
+      // prevent going under 0
+      if (newVolume < 0) newVolume = 0;
+
+      // show volume range
+      volumeRangeShowing = true;
+
+      $volume = newVolume;
+
+      return;
     }
   });
 </script>

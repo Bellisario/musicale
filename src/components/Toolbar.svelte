@@ -6,7 +6,13 @@
 
   import { receive } from '../lib/crossFade';
 
-  import { favoritesActive, settingsActive, query } from '../lib/player';
+  import {
+    favoritesActive,
+    settingsActive,
+    query,
+    currentTime,
+    duration,
+  } from '../lib/player';
 
   import Logo from '../assets/logo.svg?raw';
 
@@ -60,7 +66,10 @@
       searchFocus = false;
     };
     window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement === document.body) {
+      // if focusing elements (ex. input) don't do anything
+      if (document.activeElement !== document.body) return;
+
+      if (e.key === '/') {
         e.preventDefault();
         search.focus();
         search.select();
