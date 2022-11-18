@@ -54,9 +54,14 @@
     // pause if play button is pressed
     pause();
   }
+
+  let shuffleFavorites: number[] = [];
+  let lastShuffleIndex = -1;
+
   function toggleShuffle() {
     shuffle = !shuffle;
     if (shuffle) {
+      shuffleFavorites = getShuffle();
       // reset autoplay
       autoplay = false;
       shufflePlay();
@@ -65,14 +70,36 @@
     // pause if play button is pressed
     pause();
   }
-  function shufflePlay() {
-    const _resultIndex = Math.floor(Math.random() * $favorites.length);
-    // if same, re-roll
-    if (resultIndex === _resultIndex && $favorites.length !== 1)
-      return shufflePlay();
 
-    resultIndex = _resultIndex;
-    wantPlay($favorites[resultIndex], resultIndex);
+  function getShuffle(): number[] {
+    // prevent unexpected behavior with 1 item
+    if ($favorites.length === 1) return [0];
+
+    // fill array with favorites indexes
+    let arr = [];
+    for (let i = 0; i < $favorites.length; i++) {
+      arr.push(i);
+    }
+
+    // randomly shuffle the array
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    // invalidate shuffle if first item is the same as the last
+    if (lastShuffleIndex === arr[0]) return getShuffle();
+
+    lastShuffleIndex = arr[arr.length - 1];
+
+    return arr;
+  }
+  function shufflePlay() {
+    // if empty, re-roll
+    if (shuffleFavorites.length === 0) shuffleFavorites = getShuffle();
+
+    let i = shuffleFavorites.shift();
+
+    wantPlay($favorites[i], i);
   }
 
   let selectedResult = {
