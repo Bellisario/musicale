@@ -136,7 +136,13 @@
           </IntersectionObserver>
         </div>
         <div class="result__grid2">
-          <h2>{truncate(result.title, 40)}</h2>
+          <h2
+            title={result.title !== truncate(result.title, 40)
+              ? result.title
+              : null}
+          >
+            {truncate(result.title, 40)}
+          </h2>
           <p>{result.uploaderName}</p>
         </div>
       </div>

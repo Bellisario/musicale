@@ -12,6 +12,7 @@
   } from '../lib/player';
   import type { FavoriteStore } from '../types/FavoritesStore';
   import { fade } from 'svelte/transition';
+  import truncate from 'just-truncate';
 
   // just for demo purposes
   let loving = false;
@@ -126,7 +127,12 @@
           <use xlink:href="#love" />
         </svg>
       </div>
-      <div class="preview-info__title">{$musicTitle}</div>
+      <div
+        class="preview-info__title"
+        title={$musicTitle !== truncate($musicTitle, 60) ? $musicTitle : null}
+      >
+        {truncate($musicTitle, 60)}
+      </div>
       <div class="preview-info__artist">{$artist}</div>
     </div>
   {/if}

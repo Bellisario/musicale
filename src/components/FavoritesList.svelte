@@ -204,7 +204,13 @@
             </IntersectionObserver>
           </div>
           <div class="result__grid2">
-            <h2>{truncate(favorite.title, 40)}</h2>
+            <h2
+              title={favorite.title !== truncate(favorite.title, 40)
+                ? favorite.title
+                : null}
+            >
+              {truncate(favorite.title, 40)}
+            </h2>
             <p>{favorite.artist}</p>
           </div>
         </div>
