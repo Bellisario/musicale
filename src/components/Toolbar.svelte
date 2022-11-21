@@ -10,8 +10,6 @@
     favoritesActive,
     settingsActive,
     query,
-    currentTime,
-    duration,
   } from '../lib/player';
 
   import Logo from '../assets/logo.svg?raw';
