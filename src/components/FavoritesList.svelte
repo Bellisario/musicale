@@ -15,6 +15,7 @@
     smallPoster,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
 
   import type { FavoriteStore } from '../types/FavoritesStore';
 
@@ -184,10 +185,11 @@
           active={shuffle}
         />
       </div>
-      {#each $favorites as favorite, id}
+      {#each $favorites as favorite, id (favorite.id)}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div
-          in:fade
+          animate:flip={{ duration: 250 }}
+          transition:fade|local={{ duration: 150 }}
           class="result"
           class:selected={$currentID === favorite.id}
           data-id={id}
