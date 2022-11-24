@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://musicale.tk">
-    <img src="https://github.com/Bellisario/musicale/blob/logo-for-github/.github/musicale-github.png" alt="musicale-logo"></img>
+    <img src="https://github.com/Bellisario/musicale/blob/main/.github/musicale-github.png" alt="musicale-logo"></img>
   </a>
 </div>
 <br>
