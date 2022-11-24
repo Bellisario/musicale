@@ -1,4 +1,9 @@
-![musicale](https://socialify.git.ci/Bellisario/musicale/image?description=1&logo=https%3A%2F%2Fgithub.com%2FBellisario%2Fmusicale%2Fraw%2Fmain%2Fpublic%2Flogo.svg&name=1&owner=1&pattern=Solid&theme=Dark)
+<div align="center">
+  <a href="https://musicale.tk">
+    <img src="https://github.com/Bellisario/musicale/blob/logo-for-github/.github/musicale-github.png" alt="musicale-logo"></img>
+  </a>
+</div>
+<br>
 
 Musicale is a music player for the web. It's built with Svelte, Vite and TypeScript for the best user and dev experience.
 
