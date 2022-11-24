@@ -129,9 +129,9 @@
       </div>
       <div
         class="preview-info__title"
-        title={$musicTitle !== truncate($musicTitle, 60) ? $musicTitle : null}
+        title={$musicTitle !== truncate($musicTitle, 55) ? $musicTitle : null}
       >
-        {truncate($musicTitle, 60)}
+        {truncate($musicTitle, 55)}
       </div>
       <div class="preview-info__artist">{$artist}</div>
     </div>
