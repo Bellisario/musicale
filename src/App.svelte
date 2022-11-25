@@ -5,6 +5,8 @@
   import Player from './components/Player.svelte';
   import SwManager from './components/SWManager.svelte';
   import AudioPlayer from './lib/AudioPlayer.svelte';
+  import Modal from './components/Modal.svelte';
+  import ActionButton from './lib/ActionButton.svelte';
 
   import { onMount } from 'svelte';
   import {
@@ -32,6 +34,8 @@
 
   let loading = true;
   let loadingHiding = false;
+
+  let mobileModal = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   function submit(firstLoad = false) {
     if ($query.trim() !== '') {
@@ -105,6 +109,24 @@
       <img src="/logo.svg" alt="Logo" class="loading__logo" />
     </div>
   {/if}
+  <!-- modal displayed on load for mobile devices -->
+  <Modal closed={!mobileModal}>
+    <div slot="title">Mobile device detected</div>
+    <p>
+      Musicale is not optimized for mobile devices.<br />You can still use it,
+      but it's really suggested to get a computer to enjoy the full experience.
+    </p>
+    <div slot="content__bottom">
+      <ActionButton
+        title="Close"
+        backgroundColor="var(--back-color)"
+        scale="0.8"
+        on:click={() => {
+          mobileModal = false;
+        }}
+      />
+    </div>
+  </Modal>
   <SwManager />
   <AudioPlayer />
   <Toolbar

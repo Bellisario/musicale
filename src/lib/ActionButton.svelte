@@ -2,11 +2,13 @@
   export let title = '<empty>';
   export let active = false;
   export let color: string = null;
+  export let backgroundColor: string = null;
   export let fitContent = true;
   export let scale: string = null;
 
   let styles = {
     'theme-color': color,
+    'bars-color': backgroundColor,
     fs: scale,
   };
 
