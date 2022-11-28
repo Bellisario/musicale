@@ -43,6 +43,10 @@
         <div class="content__bottom-center">
           <slot name="content__bottom_center" />
         </div>
+      {:else if $$slots.content__bottom_small}
+        <div class="content__bottom-small">
+          <slot name="content__bottom_small" />
+        </div>
       {/if}
     </div>
   </div>
@@ -105,5 +109,9 @@
     margin-top: 1rem;
     display: flex;
     justify-content: center;
+  }
+  .content__bottom-small {
+    margin-top: 1rem;
+    font-size: 0.8rem;
   }
 </style>

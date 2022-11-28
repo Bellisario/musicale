@@ -36,6 +36,8 @@
   let loadingHiding = false;
 
   let mobileModal = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  let isOnline = navigator.onLine;
+  $: isOnline = navigator.onLine;
 
   function submit(firstLoad = false) {
     if ($query.trim() !== '') {
@@ -103,6 +105,11 @@
   }, 1000);
 </script>
 
+<svelte:window
+  on:online={() => (isOnline = true)}
+  on:offline={() => (isOnline = false)}
+/>
+
 <main>
   {#if loading}
     <div class="loading-screen" class:hiding={loadingHiding}>
@@ -125,6 +132,17 @@
           mobileModal = false;
         }}
       />
+    </div>
+  </Modal>
+  <Modal closed={isOnline}>
+    <div slot="title">No Internet connection</div>
+    <p>
+      Musicale needs an Internet connection to work.<br />Please check your
+      connection and try again.
+    </p>
+    <div slot="content__bottom_small">
+      This popup will automatically disappear as soon as the connection is back
+      again.
     </div>
   </Modal>
   <SwManager />
