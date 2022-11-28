@@ -43,6 +43,10 @@
         <div class="content__bottom-center">
           <slot name="content__bottom_center" />
         </div>
+      {:else if $$slots.content__bottom_small}
+        <div class="content__bottom-small">
+          <slot name="content__bottom_small" />
+        </div>
       {/if}
     </div>
   </div>
@@ -63,6 +67,7 @@
   }
   .modal__content {
     background-color: var(--bars-color);
+    backdrop-filter: blur(var(--bars-back-blur));
     border-radius: 0.7em;
     padding: 1rem 1.5rem;
     width: 90%;
@@ -105,5 +110,9 @@
     margin-top: 1rem;
     display: flex;
     justify-content: center;
+  }
+  .content__bottom-small {
+    margin-top: 1rem;
+    font-size: 0.8rem;
   }
 </style>
