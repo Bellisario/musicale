@@ -67,6 +67,7 @@
   }
   .modal__content {
     background-color: var(--bars-color);
+    backdrop-filter: blur(var(--bars-back-blur));
     border-radius: 0.7em;
     padding: 1rem 1.5rem;
     width: 90%;
