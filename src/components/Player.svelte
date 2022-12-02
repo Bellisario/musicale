@@ -209,6 +209,10 @@
   .player__current-time {
     margin-right: -0.25em;
   }
+  .info__divider {
+    color: var(--theme-color);
+    font-weight: 800;
+  }
   .player__range {
     --b-radius: 1em;
     display: inline-block;
