@@ -29,7 +29,7 @@ function APIFetch(url: string, id: string) {
 export default async function audioStreamGetter(id: string): Promise<AudioStreamResponse> {
     const APIs = [
         APIFetch('https://pipedapi.kavin.rocks', id),
-        APIFetch('https://pipedapi.moomoo.me', id),
+        // APIFetch('https://pipedapi.moomoo.me', id),
         APIFetch('https://de-api-piped.shimul.me', id),
         APIFetch('https://papius.palash.dev', id),
         APIFetch('https://piped-api.garudalinux.org', id),
