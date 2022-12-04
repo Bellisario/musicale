@@ -13,11 +13,13 @@
     toSearch,
     currentID,
     smallPoster,
+    favorites,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
   import Footer from './Footer.svelte';
+  import loveIcon from '../assets/love.svg?raw';
 
   export let type: ResultsStatus = 'ready';
 
@@ -136,13 +138,20 @@
           </IntersectionObserver>
         </div>
         <div class="result__grid2">
-          <h2
-            title={result.title !== truncate(result.title, 40)
-              ? result.title
-              : null}
-          >
-            {truncate(result.title, 40)}
-          </h2>
+          <div class="result__title">
+            <h2
+              title={result.title !== truncate(result.title, 40)
+                ? result.title
+                : null}
+            >
+              {truncate(result.title, 40)}
+            </h2>
+            {#if $favorites.map((a) => a.id).includes(urlToId(result.url))}
+              <div class="result__loved" transition:fade>
+                {@html loveIcon}
+              </div>
+            {/if}
+          </div>
           <p>{result.uploaderName}</p>
         </div>
       </div>
@@ -189,14 +198,16 @@
   .result > * {
     cursor: pointer;
   }
-
-  .result__grid2 > h2 {
+  .result__title {
+    position: relative;
+  }
+  .result__title > h2 {
     overflow: hidden;
     position: relative;
     /* prevent text overflow by allowing a little more space */
     width: calc(100% + 0.1em);
   }
-  .result__grid2 > h2::after {
+  .result__title > h2::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -206,7 +217,7 @@
     opacity: 0;
     transition: opacity 300ms, transform 300ms;
   }
-  .result.selected .result__grid2 > h2::after {
+  .result.selected .result__title > h2::after {
     transform: translate3d(-100%, 0, 0);
     opacity: 1;
   }
@@ -233,6 +244,18 @@
   .result__grid2 {
     grid-column: 2;
     margin-block: auto;
+  }
+  .result__loved {
+    position: absolute;
+    top: calc(50% - 0.5em);
+    right: -1.5em;
+
+    width: 1em;
+    display: inline-block;
+    /* vertical-align: middle; */
+    fill: var(--theme-color);
+
+    pointer-events: none;
   }
 
   .results-grid .grid-content {
