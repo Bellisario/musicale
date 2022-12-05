@@ -200,6 +200,7 @@
   }
   .result__title {
     position: relative;
+    width: max-content;
   }
   .result__title > h2 {
     overflow: hidden;
