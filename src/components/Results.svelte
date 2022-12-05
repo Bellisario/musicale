@@ -147,7 +147,7 @@
               {truncate(result.title, 40)}
             </h2>
             {#if $favorites.map((a) => a.id).includes(urlToId(result.url))}
-              <div class="result__loved" transition:fade>
+              <div class="result__loved" transition:fade|local>
                 {@html loveIcon}
               </div>
             {/if}
