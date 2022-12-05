@@ -17,7 +17,7 @@
     "postcss": "^8.4.19",
     "postcss-logical": "^5.0.4",
     "svelte": "^3.53.1",
-    "svelte-check": "^2.9.2",
+    "svelte-check": "^2.10.0",
     "svelte-preprocess": "^4.10.7",
     "svelte-sortable-list": "^1.1.0",
     "tslib": "^2.4.1",
