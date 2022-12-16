@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   import Footer from './Footer.svelte';
   import { favorites } from '../lib/player';
   import type { FavoriteStore } from 'src/types/FavoritesStore';

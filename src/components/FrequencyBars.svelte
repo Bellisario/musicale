@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word analyser Unsubscriber
 
   import { onMount, onDestroy } from 'svelte';

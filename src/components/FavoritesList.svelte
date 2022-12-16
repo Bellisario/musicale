@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word autoplay
   import audioStreamGetter from '../lib/audioStreamGetter';
   import { play, useSource, reset, pause } from '../lib/AudioPlayer.svelte';

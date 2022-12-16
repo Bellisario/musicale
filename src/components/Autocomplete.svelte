@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word mousedown mouseup mouseleave HTMLUListElement
 
   import { createEventDispatcher, onMount } from 'svelte';

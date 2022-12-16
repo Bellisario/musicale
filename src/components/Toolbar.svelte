@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word instanceof keydown onfocus onblur xlink
   import { createEventDispatcher } from 'svelte';
   import { onMount } from 'svelte';
