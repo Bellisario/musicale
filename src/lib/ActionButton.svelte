@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   export let title = '<empty>';
   export let active = false;
   export let color: string = null;

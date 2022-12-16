@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   type Size = 'normal' | 'small';
   export let size: Size = 'normal';
 </script>

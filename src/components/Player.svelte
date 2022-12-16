@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup keyframes webp seekbackward seekforward
 
   import Range from './Range.svelte';

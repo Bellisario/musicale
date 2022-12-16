@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   import type ResultsStatus from 'src/types/ResultsStatus';
   import type { Result } from 'src/types/Results';
   import urlToId from '../lib/urlToId';

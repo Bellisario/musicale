@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word evenodd linejoin miterlimit
 
   import { fade } from 'svelte/transition';

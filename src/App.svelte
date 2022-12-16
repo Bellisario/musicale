@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   // cspell:word onpopstate onhashchange
 
   import Toolbar from './components/Toolbar.svelte';
