@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   import type { Result } from 'src/types/Results';
   import urlToId from '../lib/urlToId';
   import audioStreamGetter from '../lib/audioStreamGetter';
@@ -34,7 +34,7 @@
 
   let loved: Boolean;
 
-  $: loved = $favorites.map((a) => a.id).includes(resultID)
+  $: loved = $favorites.map((a) => a.id).includes(resultID);
 
   async function wantPlay(result: Result, selectedId: number) {
     // reset currentID while fetching

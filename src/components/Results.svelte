@@ -2,13 +2,11 @@
   import type ResultsStatus from 'src/types/ResultsStatus';
   import type { Result } from 'src/types/Results';
   import resultsGetter from '../lib/resultsGetter';
-  import {
-    toSearch,
-  } from '../lib/player';
+  import { toSearch } from '../lib/player';
   import { fade } from 'svelte/transition';
 
   import Footer from './Footer.svelte';
-    import ResultsItem from './ResultsItem.svelte';
+  import ResultsItem from './ResultsItem.svelte';
 
   export let type: ResultsStatus = 'ready';
 
