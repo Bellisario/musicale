@@ -13,7 +13,7 @@
     "@sveltejs/vite-plugin-svelte": "^1.4.0",
     "@tsconfig/svelte": "^3.0.0",
     "@ungap/promise-any": "^1.1.1",
-    "just-truncate": "^2.1.1",
+    "just-truncate": "^2.2.0",
     "postcss": "^8.4.20",
     "postcss-logical": "^5.0.4",
     "svelte": "^3.55.0",
