@@ -15,7 +15,6 @@
   } from '../lib/player';
   import { play, pause } from '../lib/AudioPlayer.svelte';
 
-  import { readable } from 'svelte/store';
   import { fade } from 'svelte/transition';
   import clickOutside from '../lib/clickOutside';
 
@@ -28,20 +27,7 @@
   let progressChanging = false;
   let changingPreview = 0;
 
-  let playPauseChanging = false;
   let volumeRangeShowing = false;
-
-  const type = readable('play', (set) => {
-    paused.subscribe((paused) => {
-      playPauseChanging = true;
-      setTimeout(() => {
-        set(paused ? 'play' : 'pause');
-      }, 150);
-      setTimeout(() => {
-        playPauseChanging = false;
-      }, 300);
-    });
-  });
 
   paused.subscribe(() => {
     if ('mediaSession' in navigator) {
@@ -75,7 +61,7 @@
   }
 
   function toggle() {
-    $type === 'play' ? play() : pause();
+    $paused ? play() : pause();
   }
 
   // listen for spacebar
@@ -150,7 +136,7 @@
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="player__play-pause" on:click={toggle}>
     <div
-      class="play-pause__icon {$type} {playPauseChanging ? 'changing' : ''}"
+      class="play-pause__icon" class:pause={!$paused}
     />
   </div>
   <Range />
@@ -213,17 +199,6 @@
     color: var(--theme-color);
     font-weight: 800;
   }
-  .player__range {
-    --b-radius: 1em;
-    display: inline-block;
-    min-width: 30%;
-    width: 75%;
-    height: 0.4em;
-
-    position: relative;
-
-    transition: transform 0.3s ease-in-out;
-  }
   .player__play-pause {
     display: inline-block;
     position: relative;
@@ -238,29 +213,12 @@
     background-color: var(--theme-color);
     width: 1.75em;
     height: 1.75em;
-  }
-  .play-pause__icon.changing {
-    animation: play-pause-icon-animation 0.3s ease-in-out;
-  }
-  @keyframes play-pause-icon-animation {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  .play-pause__icon.play {
-    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    clip-path: polygon(5% 0%,100% 50%,100% 50%,5% 100%,5% 0%,5% 0%,5% 100%,5% 100%,5% 0%);
+
+    transition: 250ms ease;
   }
   .play-pause__icon.pause {
-    clip-path: polygon(
-      30% 0,
-      30% 100%,
-      10% 100%,
-      10% 0,
-      70% 0,
-      70% 100%,
-      90% 100%,
-      90% 0
-    );
+    clip-path: polygon(70% 0%,95% 0%,95% 100%,70% 100%,70% 0%,30% 0%,30% 100%,5% 100%,5% 0%);
   }
   .volume-icon {
     display: inline-block;
