@@ -6,16 +6,7 @@
   
   const dispatch = createEventDispatcher();
 
-  type ApiResponse =
-    | {
-        error: true;
-        type: 'no-query' | 'invalid' | 'server-error';
-        results: [];
-      }
-    | {
-        error: false;
-        results: string[];
-      };
+  type ApiResponse = string[]
 
   export let query: string;
   export let searchFocus: boolean;
@@ -43,7 +34,7 @@
     controller = new AbortController();
     try {
       response = await fetch(
-      `https://musicautocomplete.deno.dev/search?q=${encodeURIComponent(query)}`,
+      `https://pipedapi.kavin.rocks/suggestions?query=${encodeURIComponent(query.trim())}`,
       {
         signal: controller.signal,
       }
@@ -53,8 +44,9 @@
         return;
       }
     }
+    if (response === undefined) return items = []
     const data: ApiResponse = await response.json();
-    items = data.results.slice(0, 5);
+    items = data.slice(0, 5);
   }
 
   // function updateFocus() {
