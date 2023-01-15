@@ -33,8 +33,6 @@ Musicale is a free and open source alternative to those players and streams musi
 
 The interesting thing about Musicale is that there is no backend and the API it's from [Piped](https://github.com/TeamPiped/Piped) (a privacy-friendly alternative YouTube frontend), which is well documented [here](https://piped-docs.kavin.rocks/).
 
-There is also an autocomplete API, made by me, to get the search suggestions. You can find more info about it [here](https://musicautocomplete.deno.dev/) and the source code [here](https://github.com/Bellisario/musicautocomplete).
-
 ## Legal
 
 We do NOT host or scrape any Youtube Music content, we use a PUBLIC available API to provide user a playable URL of the music through a good-looking interface, WITHOUT violating any laws.
