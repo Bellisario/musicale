@@ -56,6 +56,13 @@ export default defineConfig({
       "./fonts/*",
       "./logo.svg",
     ],
+    workbox: {
+      navigateFallbackDenylist: [
+        // don't cache robots.txt and sitemap.txt
+        /robots\.txt$/,
+        /sitemap\.txt$/,
+      ]
+    },
     devOptions: {
       // enabled: true,
     },
