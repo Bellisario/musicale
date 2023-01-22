@@ -58,9 +58,9 @@ export default defineConfig({
     ],
     workbox: {
       navigateFallbackDenylist: [
-        // don't cache robots.txt and sitemap.txt
+        // don't cache robots.txt and sitemap.xml
         /robots\.txt$/,
-        /sitemap\.txt$/,
+        /sitemap\.xml$/,
       ]
     },
     devOptions: {
