@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://musicale.tk/sitemap.txt
+Sitemap: https://musicale.tk/sitemap.xml
