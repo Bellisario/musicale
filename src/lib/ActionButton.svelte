@@ -6,6 +6,12 @@
   export let fitContent = true;
   export let scale: string = null;
 
+  /**
+   * **warning:** disabled property won't prevent the click behavior from being fired but just style the element
+   */
+  export let disabled = false;
+  export let hoverTitle: string = null;
+
   let styles = {
     'theme-color': color,
     'bars-color': backgroundColor,
@@ -21,8 +27,10 @@
 </script>
 
 <button
+  title={hoverTitle}
   class="btn"
   class:btn--active={active}
+  class:btn--disabled={disabled}
   on:click
   style={getStyle(styles)}
   class:fitContent
@@ -66,5 +74,13 @@
   }
   .btn--active .btn__span {
     color: var(--bars-color);
+  }
+
+  .btn--disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .btn--disabled:hover {
+    opacity: 0.5;
   }
 </style>
