@@ -5,6 +5,8 @@
   import ActionButton from '../lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
 
+  import Modal from './Modal.svelte';
+
   const favoritesVersion = '1.0.0';
   interface FavoritesExport {
     __app__: 'musicale';
@@ -12,6 +14,11 @@
     favorites: FavoriteStore[];
   }
   let importMessage = '';
+  let displayImportWarning = false;
+
+  let noFavorites = true;
+
+  $: noFavorites = $favorites.length === 0 ? true : false
 
   function exportFavorites() {
     const data = JSON.stringify({
@@ -27,7 +34,11 @@
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
-  function importFavorites() {
+  function importFavorites(force) {
+    if (!noFavorites && force !== true) {
+      displayImportWarning = true;
+      return;
+    }
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/json';
@@ -58,6 +69,38 @@
 </script>
 
 <main>
+  <!-- modal displayed to alert favorites import will remove the present ones -->
+  <Modal closed={!displayImportWarning} closable={false}>
+    <div slot="title">Favorites already present</div>
+    <p>
+      Seems there are some favorites already saved on Musicale.<br />By importing
+      new ones, all the olds will be lost.
+    </p>
+    <p>
+      If you want to keep the olds, press "Cancel" to abort.
+    </p>
+    <div slot="content__bottom">
+      <div class="flex-buttons">
+        <ActionButton
+        title="Import"
+        backgroundColor="var(--back-color)"
+        scale="0.8"
+        on:click={() => {
+          displayImportWarning = false;
+          importFavorites(true);
+        }}
+      />
+      <ActionButton
+        title="Cancel"
+        backgroundColor="var(--back-color)"
+        scale="0.8"
+        on:click={() => {
+          displayImportWarning = false;
+        }}
+      />
+      </div>
+    </div>
+  </Modal>
   <div class="settings">
     <div class="settings__title">Settings</div>
     <div class="settings__content">
@@ -69,10 +112,12 @@
       <div class="content__buttons">
         <ActionButton
           title="Export Favorites"
-          on:click={exportFavorites}
+          on:click={() => noFavorites ? null : exportFavorites()}
           color="#fff"
           fitContent={false}
           scale="0.9"
+          disabled={noFavorites}
+          hoverTitle={noFavorites ? 'No favorites to export' : null}
         />
         <ActionButton
           title="Import Favorites"
@@ -124,5 +169,10 @@
   }
   * + * {
     margin-top: 0.7em;
+  }
+  .flex-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
   }
 </style>
