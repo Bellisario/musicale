@@ -1,19 +1,9 @@
 <script lang="ts" context="module">
-  // cspell:word crossorigin
-
-  import {
-    currentTime,
-    duration,
-    paused,
-    volume,
-    source,
-    ended,
-  } from './player';
-
+  import { currentTime, duration, paused, volume, source, ended } from './player';
   let el: HTMLAudioElement;
+  let looping = false;
 
   export function play() {
-    // prevent play if there is no source set
     if (el.src === '') return;
     el.play();
   }
@@ -28,7 +18,19 @@
     el.src = src;
     source.set(src);
   }
+
+  el.addEventListener('ended', () => {
+    if (looping) {
+      play();
+    }
+  });
 </script>
+
+<div class="player__loop" on:click={() => (looping = !looping)}>
+  <svg class="loop-icon" class:active={looping}>
+    <use xlink:href="#loop" />
+  </svg>
+</div>
 
 <audio
   id="audio-player"
@@ -44,5 +46,16 @@
 <style>
   #audio-player {
     display: none;
+  }
+  .player__loop {
+    display: inline-block;
+    cursor: pointer;
+  }
+  .loop-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .loop-icon.active {
+    fill: green;
   }
 </style>
