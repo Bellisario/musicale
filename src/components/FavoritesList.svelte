@@ -1,8 +1,6 @@
 <script lang="ts">
-  // cspell:word autoplay
   import audioStreamGetter from '../lib/audioStreamGetter';
   import { play, useSource, reset, pause } from '../lib/AudioPlayer.svelte';
-  import IntersectionObserver from '../lib/IntersectionObserver.svelte';
   import ActionButton from '../lib/ActionButton.svelte';
 
   import {
@@ -19,9 +17,8 @@
 
   import type { FavoriteStore } from '../types/FavoritesStore';
 
-  import truncate from 'just-truncate';
-
   import Footer from './Footer.svelte';
+  import FavoritesItem from './FavoritesItem.svelte';
 
   let resultIndex = -1;
 
@@ -153,12 +150,6 @@
     play();
     canReplaySong = true;
   }
-
-  const lazyLoad = (el: HTMLDivElement) => {
-    el.onload = () => {
-      el.style.opacity = '1';
-    };
-  };
 </script>
 
 <div class="container">
@@ -188,33 +179,14 @@
       {#each $favorites as favorite, id (favorite.id)}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div
-          animate:flip={{ duration: 250 }}
-          transition:fade|local={{ duration: 150 }}
+          animate:flip={{ duration: 300 }}
+          transition:fade|local={{ duration: 180 }}
           class="result"
           class:selected={$currentID === favorite.id}
           data-id={id}
           on:click={() => wantPlay(favorite, id)}
         >
-          <div class="result__grid1" style="--img: url('{favorite.poster}')">
-            <IntersectionObserver let:intersecting top={150} once={true}>
-              <img
-                src={intersecting ? favorite.poster : ''}
-                alt={favorite.title}
-                class="result__img"
-                use:lazyLoad
-              />
-            </IntersectionObserver>
-          </div>
-          <div class="result__grid2">
-            <h2
-              title={favorite.title !== truncate(favorite.title, 40)
-                ? favorite.title
-                : null}
-            >
-              {truncate(favorite.title, 40)}
-            </h2>
-            <p>{favorite.artist}</p>
-          </div>
+          <FavoritesItem result={favorite} {id} />
         </div>
       {/each}
       <Footer size="small" />
@@ -226,10 +198,6 @@
   .title {
     font-size: var(--fs-biggest);
     font-weight: 700;
-  }
-  img {
-    user-select: none;
-    pointer-events: none;
   }
   .container {
     scroll-margin-top: calc(var(--bars-height) + 2rem);
@@ -247,61 +215,8 @@
     display: grid;
     grid-template-rows: 1fr min-content;
   }
-  .result {
-    display: grid;
-    gap: 0.5em;
-    grid-template-columns: max-content;
-    width: max-content;
-  }
-  .result > * {
-    cursor: pointer;
-  }
   .buttons {
     display: flex;
     gap: 0.5em;
-  }
-  .result__grid2 > h2 {
-    overflow: hidden;
-    position: relative;
-    /* prevent text overflow by allowing a little more space */
-    width: calc(100% + 0.1em);
-  }
-  .result__grid2 > h2::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 0.1rem;
-    background-color: var(--theme-color);
-    opacity: 0;
-    transition: opacity 300ms, transform 300ms;
-  }
-  .result.selected .result__grid2 > h2::after {
-    transform: translate3d(-100%, 0, 0);
-    opacity: 1;
-  }
-
-  .result__grid1 {
-    grid-column: 1;
-    width: 6em;
-    height: 6em;
-    background-color: var(--bars-color);
-    border-radius: 10%;
-    box-shadow: var(--theme-shadow);
-
-    overflow: hidden;
-  }
-  .result__img {
-    width: 6em;
-    height: 6em;
-    transform-origin: center;
-    /* image is a little to small, scaling it */
-    transform: scale(1.085);
-    opacity: 0;
-    transition: opacity 0.5s ease-in;
-  }
-  .result__grid2 {
-    grid-column: 2;
-    margin-block: auto;
   }
 </style>
