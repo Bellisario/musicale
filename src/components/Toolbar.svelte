@@ -6,11 +6,7 @@
 
   import { receive } from '../lib/crossFade';
 
-  import {
-    favoritesActive,
-    settingsActive,
-    query,
-  } from '../lib/player';
+  import { favoritesActive, settingsActive, query } from '../lib/player';
 
   import Logo from '../assets/logo.svg?raw';
 
@@ -18,6 +14,8 @@
 
   let search: HTMLInputElement;
   let searchFocus = false;
+
+  let completionAcceptedIndex = -1;
 
   function submit() {
     blur();
@@ -54,8 +52,33 @@
     });
   }
 
+  function handleInputKeys(e: KeyboardEvent) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (completionAcceptedIndex > 4) return (completionAcceptedIndex = 0);
+
+      completionAcceptedIndex++;
+
+      return;
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+
+      if (completionAcceptedIndex < 0) return (completionAcceptedIndex = 4);
+
+      completionAcceptedIndex--;
+
+      return;
+    }
+    if (e.key.toLowerCase().match(/a-z/)) {
+      completionAcceptedIndex = -1;
+    }
+  }
+
   // focus on "/" key press and after loading
   onMount(() => {
+    searchFocus = true;
+
     search.focus();
     search.onfocus = () => {
       searchFocus = true;
@@ -122,8 +145,14 @@
         placeholder="Search"
         bind:value={$query}
         bind:this={search}
+        on:keydown={handleInputKeys}
+        on:input={() => (completionAcceptedIndex = -1)}
       />
-      <Autocomplete bind:query={$query} on:submit={submit} bind:searchFocus />
+      <Autocomplete
+        on:submit={submit}
+        bind:completionAcceptedIndex
+        bind:searchFocus
+      />
     </form>
   </div>
   <svg style="display:none;">
