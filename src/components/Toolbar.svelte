@@ -77,8 +77,6 @@
 
   // focus on "/" key press and after loading
   onMount(() => {
-    searchFocus = true;
-
     search.focus();
     search.onfocus = () => {
       searchFocus = true;
@@ -146,7 +144,10 @@
         bind:value={$query}
         bind:this={search}
         on:keydown={handleInputKeys}
-        on:input={() => (completionAcceptedIndex = -1)}
+        on:input={() => {
+          completionAcceptedIndex = -1
+          searchFocus = true
+        }}
       />
       <Autocomplete
         on:submit={submit}
