@@ -3,13 +3,14 @@
 
   import { createEventDispatcher, onMount } from 'svelte';
   import truncate from 'just-truncate';
-  
+  import { query } from '../lib/player';
+
   const dispatch = createEventDispatcher();
 
-  type ApiResponse = string[]
+  type ApiResponse = string[];
 
-  export let query: string;
   export let searchFocus: boolean;
+  export let completionAcceptedIndex: number;
 
   let el: HTMLUListElement;
 
@@ -17,13 +18,24 @@
 
   let controller: AbortController;
 
-  $: query, update();
+  let lastText: string;
+
+  $: $query, update();
   // $: searchFocus, updateFocus();
 
   let items: string[] = [];
   // const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
+
+  $: completionAcceptedIndex, updateQuery();
+
+  function updateQuery() {
+    lastText = $query = items[completionAcceptedIndex] || $query;
+  }
+
   async function update() {
-    if (query.trim() === '') {
+    if ($query === lastText) return
+
+    if ($query.trim() === '') {
       items = [];
       return;
     }
@@ -34,19 +46,23 @@
     controller = new AbortController();
     try {
       response = await fetch(
-      `https://pipedapi.kavin.rocks/suggestions?query=${encodeURIComponent(query.trim())}`,
-      {
-        signal: controller.signal,
-      }
-    );
+        `https://pipedapi.kavin.rocks/suggestions?query=${encodeURIComponent(
+          $query.trim()
+        )}`,
+        {
+          signal: controller.signal,
+        }
+      );
     } catch (err) {
       if (err.name === 'AbortError') {
         return;
       }
     }
-    if (response === undefined) return items = []
+    if (response === undefined) return (items = []);
     const data: ApiResponse = await response.json();
-    items = data.slice(0, 5);
+    try {
+      items = data.slice(0, 5);
+    } catch {}
   }
 
   // function updateFocus() {
@@ -58,7 +74,7 @@
   // }
 
   async function submit(item: string) {
-    query = item;
+    $query = item;
     dispatch('submit');
   }
 
@@ -79,9 +95,14 @@
   bind:this={el}
   class:visible={items.length !== 0 && (searchFocus || choosing)}
 >
-  {#each items as item}
+  {#each items as item, index}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <li on:click={() => submit(item)}>{truncate(item, 33)}</li>
+    <li
+      class:highlight={completionAcceptedIndex === index}
+      on:click={() => submit(item)}
+    >
+      {truncate(item, 30)}
+    </li>
   {/each}
 </ul>
 
@@ -117,5 +138,8 @@
     background-color: var(--text-color);
     position: absolute;
     opacity: 0.2;
+  }
+  li.highlight {
+    color: var(--theme-color);
   }
 </style>
