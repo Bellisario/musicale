@@ -178,6 +178,7 @@
     padding: 0 1.25rem;
     height: var(--bars-height);
     background-color: var(--bars-color);
+    -webkit-backdrop-filter: blur(var(--bars-back-blur));
     backdrop-filter: blur(var(--bars-back-blur));
     position: fixed;
     top: 0;

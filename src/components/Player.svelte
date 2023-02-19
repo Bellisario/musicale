@@ -185,6 +185,7 @@
     height: var(--bars-height);
     width: 100%;
     bottom: 0;
+    -webkit-backdrop-filter: blur(var(--bars-back-blur));
     backdrop-filter: blur(var(--bars-back-blur));
   }
   .player__current-time,
