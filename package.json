@@ -15,7 +15,7 @@
     "@ungap/promise-any": "^1.1.1",
     "just-truncate": "^2.2.0",
     "postcss": "^8.4.21",
-    "postcss-logical": "^6.0.1",
+    "postcss-logical": "^6.1.0",
     "svelte": "^3.55.1",
     "svelte-check": "^3.0.3",
     "svelte-preprocess": "^5.0.1",
