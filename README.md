@@ -33,6 +33,52 @@ Musicale is a free and open source alternative to those players and streams musi
 
 The interesting thing about Musicale is that there is no backend and the API it's from [Piped](https://github.com/TeamPiped/Piped) (a privacy-friendly alternative YouTube frontend), which is well documented [here](https://piped-docs.kavin.rocks/).
 
+## Development
+
+To get started, make sure to have Git and Node.js (>= 16.0.0) installed.
+
+Clone the repo and `cd` it:
+
+```bash
+git clone https://github.com/Bellisario/musicale.git && cd musicale
+```
+
+Install dependencies:
+```bash
+npm install
+```
+
+Then, you can run the following command to start the server (in DEV mode):
+
+```bash
+npm run dev
+```
+
+After done, to build the project run:
+
+```bash
+npm run build
+```
+
+> **Info:** we're using [Deno Deploy](https://deno.com/deploy) as server hosting so all the build files will go inside `dist/public` and not `dist`.\
+> (This behavior may change in the future)
+
+If you want to preview the build run:
+
+```bash
+npm run preview
+```
+
+Before opening a pull, please make sure to run `npm run check` to check for warnings, errors, etc. and format your code with VSCode (Svelte extension).
+
+## Contributing
+
+We :heart: contributions!\
+Feel free to open an [issue](https://github.com/Bellisario/musicale/issues) or a [pull request](https://github.com/Bellisario/musicale/pulls) but follow [Contributing Guidelines](https://github.com/Bellisario/musicale/blob/main/CONTRIBUTING.md).
+
+> **Tip:** if you don't know where to start, check out the [help wanted issues](https://github.com/Bellisario/musicale/labels/help%20wanted)!
+
+
 ## Legal
 
 We do NOT host or scrape any Youtube Music content, we use a PUBLIC available API to provide user a playable URL of the music through a good-looking interface, WITHOUT violating any laws.
@@ -42,13 +88,6 @@ Musicale is NOT affiliated with Piped, YouTube, YouTube Music or Google in any w
 If you suspect a violation of your rights, you should contact the respective third party providers.
 
 > **Note:** Musicale uses Piped as API but servers used may NOT be affiliated with Piped itself.
-
-## Contributing
-
-We :heart: contributions!\
-Feel free to open an [issue](https://github.com/Bellisario/musicale/issues) or a [pull request](https://github.com/Bellisario/musicale/pulls) but follow [Contributing Guidelines](https://github.com/Bellisario/musicale/blob/main/CONTRIBUTING.md).
-
-> **Tip:** if you don't know where to start, check out the [help wanted issues](https://github.com/Bellisario/musicale/labels/help%20wanted)!
 
 ## License
 
