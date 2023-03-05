@@ -75,17 +75,88 @@
       el.style.opacity = '1';
     };
   };
+
+  let currentItem: HTMLDivElement;
+  let draggingThis = false;
+  let draggingOverThis = false;
+  let draggingPosition: 'before' | 'after' | null;
+
+  function resetDragging() {
+    draggingOverThis = false;
+    draggingPosition = null;
+  }
+  function onDragStart(e: DragEvent) {
+    e.dataTransfer.setData('application/musicale-favorite', result.id);
+    e.dataTransfer.effectAllowed = 'move';
+
+    draggingThis = true;
+  }
+  function onDragEnd(e: DragEvent) {
+    draggingThis = false;
+    resetDragging();
+  }
+  function onDragOver(e: DragEvent) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+
+    // calculate the y position of the mouse
+    const y = e.clientY - currentItem.getBoundingClientRect().top;
+    // check if the mouse is in the upper half or lower half of the item
+    const isAfterHalf = y > currentItem.offsetHeight / 2;
+    // set the dragging position
+    draggingPosition = isAfterHalf ? 'after' : 'before';
+  }
+  function onDrop(e: DragEvent) {
+    e.preventDefault();
+
+    const data = e.dataTransfer.getData('application/musicale-favorite');
+
+    const movingItem = $favorites.find((f) => f.id === data);
+
+    if (result.id == movingItem.id) {
+      resetDragging();
+      return;
+    }
+
+    // remove the item from the array
+    $favorites = $favorites.filter((f) => f.id !== data);
+
+    const targetItemIndex = $favorites.findIndex((f) => f.id === result.id);
+
+    // add the item to the array
+    $favorites = [
+      ...$favorites.slice(
+        0,
+        targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
+      ),
+      movingItem,
+      ...$favorites.slice(
+        targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
+      ),
+    ];
+
+    resetDragging();
+  }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   in:fade
-  class="result"
+  class="result {draggingPosition ? 'dragging-' + draggingPosition : ''}"
+  class:dragging={draggingThis}
   class:selected={$currentID === result.id}
   data-id={id}
   on:click={() => wantPlay(result, id)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
+  draggable="true"
+  on:dragstart={onDragStart}
+  on:dragend={onDragEnd}
+  on:dragover={onDragOver}
+  on:dragenter={onDragOver}
+  on:dragleave={resetDragging}
+  on:drop={onDrop}
+  bind:this={currentItem}
 >
   <div class="result__grid1" style="--img: url('{result.poster}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
@@ -145,6 +216,8 @@
     gap: 0.5em;
     grid-template-columns: max-content;
     width: max-content;
+
+    position: relative;
   }
   .result > * {
     cursor: pointer;
@@ -227,5 +300,30 @@
 
     /* debug color */
     /* background-color: rgba(255, 0, 0, 0.3); */
+  }
+
+  .result.dragging {
+    opacity: 0.5;
+  }
+
+  .result::before,
+  .result::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 20em;
+    height: 0.1em;
+    background-color: var(--theme-color);
+    opacity: 0;
+
+    --el-padding: 0.5em;
+  }
+  .result.dragging-before::before {
+    top: calc(-0.1em - var(--el-padding));
+    opacity: 1;
+  }
+  .result.dragging-after::after {
+    bottom: calc(-0.1em - var(--el-padding));
+    opacity: 1;
   }
 </style>
