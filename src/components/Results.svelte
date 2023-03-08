@@ -1,18 +1,24 @@
 <script lang="ts">
   import type ResultsStatus from 'src/types/ResultsStatus';
   import type { Result } from 'src/types/Results';
-  import resultsGetter from '../lib/resultsGetter';
+  import { resultsGetter, loadMoreResults } from '../lib/resultsGetter';
   import { toSearch } from '../lib/player';
   import { fade } from 'svelte/transition';
 
   import Footer from './Footer.svelte';
   import ResultsItem from './ResultsItem.svelte';
+  import ActionButton from '../lib/ActionButton.svelte';
+  import { tick } from 'svelte';
 
   export let type: ResultsStatus = 'ready';
 
   $: findResults($toSearch);
 
   let results: Result[];
+
+  let loadingMore = false;
+  let loadingMoreError = false;
+  let nextPageToken: string;
 
   async function findResults(query: string) {
     if (query.trim() === '') {
@@ -27,11 +33,42 @@
       return;
     }
     results = apiRes.items;
+    nextPageToken = apiRes.nextpage;
     if (results.length > 0) {
       type = 'success';
       return;
     }
     type = 'empty';
+  }
+  async function loadMore(query: string) {
+    const [apiRes, err] = await loadMoreResults(query, nextPageToken);
+    if (err) {
+      console.error(err);
+
+      return;
+    }
+
+    let oldResultsLength = results.length;
+
+    results = [...results, ...apiRes.items];
+    nextPageToken = apiRes.nextpage;
+    loadingMore = false;
+
+    await tick();
+
+    scrollBehavior(oldResultsLength);
+  }
+  function scrollBehavior(resultIndex: number) {
+    const el = document.querySelector(`.result[data-id="${resultIndex}"]`);
+    const toolbar = document.querySelector('.toolbar');
+
+    if (!(el || toolbar)) return;
+
+    scrollTo({
+      // allow to see the (old) last result and a part of the previous
+      top: el.getBoundingClientRect().top + window.scrollY - toolbar.clientHeight - el.clientHeight * 2,
+      behavior: 'smooth',
+    });
   }
 </script>
 
@@ -57,6 +94,23 @@
     {#each results as result, id}
       <ResultsItem {result} {id} />
     {/each}
+    <div class="center">
+      <ActionButton
+        on:click={() => {
+          if (loadingMore) return;
+
+          loadingMore = true;
+          loadMore($toSearch);
+        }}
+        title={loadingMoreError
+          ? 'Error'
+          : loadingMore
+          ? 'Loading...'
+          : 'Load more'}
+        backgroundColor="rgba(0, 0, 0, 0.2)"
+        disabled={loadingMore}
+      />
+    </div>
     <Footer />
   {:else if type === 'empty'}
     <div class="empty grid-content" in:fade>
@@ -90,5 +144,10 @@
   .results-grid .grid-content {
     display: grid;
     grid-template-rows: 1fr min-content;
+  }
+
+  .center {
+    display: flex;
+    justify-content: center;
   }
 </style>
