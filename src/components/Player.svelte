@@ -169,7 +169,7 @@
 
 <svelte:body on:keydown={handleResetBegin} on:keyup={handleResetEnd} />
 
-<div class="player">
+<div class="player translucent">
   {#if resetStatus !== 'none'}
     <div class="reset-message" transition:fade>
       {resetStatus === 'done'
@@ -193,7 +193,7 @@
       <use xlink:href="#volume" />
     </svg>
     {#if volumeRangeShowing}
-      <div class="volume__container" transition:fade>
+      <div class="volume__container translucent" transition:fade>
         <VolumeRange on:autoClose={() => (volumeRangeShowing = false)} />
       </div>
     {/if}
@@ -223,12 +223,9 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 0.5em;
-    background-color: var(--bars-color);
     height: var(--bars-height);
     width: 100%;
     bottom: 0;
-    -webkit-backdrop-filter: blur(var(--bars-back-blur));
-    backdrop-filter: blur(var(--bars-back-blur));
   }
   .player__current-time,
   .player__duration {
@@ -308,7 +305,6 @@
     position: absolute;
     right: -4em;
     top: -4em;
-    background-color: var(--bars-color);
     padding: 0.5em 0.75em;
     border-radius: 7.5px;
     box-shadow: var(--theme-shadow);

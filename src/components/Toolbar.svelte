@@ -101,7 +101,7 @@
   }
 </script>
 
-<div class="toolbar {isSmall ? 'toolbar__small' : ''}">
+<div class="toolbar translucent {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -177,9 +177,6 @@
     align-items: center;
     padding: 0 1.25rem;
     height: var(--bars-height);
-    background-color: var(--bars-color);
-    -webkit-backdrop-filter: blur(var(--bars-back-blur));
-    backdrop-filter: blur(var(--bars-back-blur));
     position: fixed;
     top: 0;
     left: 0;
