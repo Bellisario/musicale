@@ -4,6 +4,7 @@
     paused,
     favoritesActive,
     settingsActive,
+    menuEntries,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
   import PlayingPreview from './PlayingPreview.svelte';
@@ -11,10 +12,12 @@
   import Results from './Results.svelte';
   import FavoritesList from './FavoritesList.svelte';
   import Settings from './Settings.svelte';
+  import ContextMenu from './ContextMenu.svelte';
 
   let barsVisible = false;
 </script>
 
+<ContextMenu bind:entries={$menuEntries} />
 <div class="container">
   <div class="playing-grid">
     <PlayingPreview bind:barsVisible />
