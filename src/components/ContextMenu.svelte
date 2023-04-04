@@ -47,6 +47,7 @@
   }
 </script>
 
+<svelte:window on:scroll={() => closeMenu()} />
 <svelte:body on:contextmenu|preventDefault={contextMenuAction} />
 
 {#if showMenu}
@@ -86,7 +87,7 @@
   }
 
   .menu {
-    position: absolute;
+    position: fixed;
     top: calc(var(--y) * 1px);
     left: calc(var(--x) * 1px);
 
