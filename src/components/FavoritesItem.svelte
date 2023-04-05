@@ -10,6 +10,7 @@
     currentID,
     smallPoster,
     favorites,
+    menuEntries,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
 
@@ -157,6 +158,19 @@
   on:dragleave={resetDragging}
   on:drop={onDrop}
   bind:this={currentItem}
+
+  on:contextmenu={() =>
+    ($menuEntries = [
+      {
+        title: 'Play',
+        disabled: $currentID === result.id,
+        action: () => wantPlay(result, id),
+      },
+      {
+        title: 'Remove from favorites',
+        action: () => $favorites = $favorites.filter((a) => a.id !== resultID),
+      },
+    ])}
 >
   <div class="result__grid1" style="--img: url('{result.poster}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
