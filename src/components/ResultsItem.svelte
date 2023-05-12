@@ -12,6 +12,7 @@
     smallPoster,
     favorites,
     menuEntries,
+    playNextList,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
 
@@ -111,6 +112,15 @@
         title: 'Play',
         disabled: $currentID === urlToId(result.url),
         action: () => wantPlay(result, id),
+      },
+      {
+        title: 'Play Next',
+        disabled:
+          $currentID === urlToId(result.url) ||
+          $playNextList.map((a) => urlToId(a.url)).includes(resultID) ||
+          $currentID === '',
+        action: () => ($playNextList = [...$playNextList, result]),
+        breakAfter: true,
       },
       {
         title: `${loved ? 'Remove from' : 'Add to'} favorites`,

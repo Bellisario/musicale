@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import type { FavoriteStore } from '../types/FavoritesStore';
 import type MenuEntry from 'src/types/MenuEntry';
+import type { Result } from 'src/types/Results';
 
 export const duration = writable(0);
 export const currentTime = writable(0);
@@ -23,6 +24,8 @@ export const favoritesActive = writable(localStorage.getItem('favoritesActive') 
 export const settingsActive = writable(false);
 
 export const menuEntries = writable<MenuEntry[]>([])
+
+export const playNextList = writable<Result[]>([]);
 
 // if settings active, reset favorites active to false
 settingsActive.subscribe((value) => value === true ? favoritesActive.set(false) : null);

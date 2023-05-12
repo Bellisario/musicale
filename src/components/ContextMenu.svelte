@@ -83,7 +83,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 99;
+    z-index: 1999;
   }
 
   .menu {
@@ -98,7 +98,7 @@
 
     min-width: 200px;
 
-    z-index: 100;
+    z-index: 2000;
 
     user-select: none;
 
