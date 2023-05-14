@@ -8,6 +8,7 @@
     poster,
     artist,
     favorites,
+    playNextList,
     currentID,
     ended,
     smallPoster,
@@ -19,11 +20,15 @@
 
   import Footer from './Footer.svelte';
   import FavoritesItem from './FavoritesItem.svelte';
+  import Modal from './Modal.svelte';
 
   let resultIndex = -1;
 
   let autoplay = false;
   let shuffle = false;
+
+  let playWarning = false;
+  let afterWarningAction = () => {};
 
   ended.subscribe((value) => {
     if (!value || resultIndex === -1 || $favorites.length === 0) return;
@@ -41,6 +46,9 @@
   });
 
   function toggleAutoplay() {
+    // check if PlayNextList is empty to prevent unexpected behavior
+    if ($playNextList.length !== 0) return alertPlayNext(toggleAutoplay);
+
     autoplay = !autoplay;
     if (autoplay) {
       // reset shuffle
@@ -57,6 +65,9 @@
   let lastShuffleIndex = -1;
 
   function toggleShuffle() {
+    // check if PlayNextList is empty to prevent unexpected behavior
+    if ($playNextList.length !== 0) return alertPlayNext(toggleShuffle);
+
     shuffle = !shuffle;
     if (shuffle) {
       shuffleFavorites = getShuffle();
@@ -67,6 +78,11 @@
     }
     // pause if play button is pressed
     pause();
+  }
+
+  function alertPlayNext(fn: () => void) {
+    playWarning = true;
+    afterWarningAction = fn;
   }
 
   function getShuffle(): number[] {
@@ -152,6 +168,40 @@
   }
 </script>
 
+<Modal closed={!playWarning} closable={false}>
+  <div slot="title">Play Next is in conflict with your action</div>
+  <p>
+    You're trying to play your favorites list, but Play Next is trying to play
+    its own list.
+    <br>
+    To continue you can either clear the Play Next list or play a single song
+    from your favorites list.
+  </p>
+  <div slot="content__bottom">
+    <div class="flex-buttons">
+      <ActionButton
+        title="Clear Play Next"
+        backgroundColor="var(--back-color)"
+        scale="0.8"
+        on:click={() => {
+          $playNextList = [];
+          playWarning = false;
+
+          afterWarningAction();
+        }}
+      />
+      <ActionButton
+        title="Cancel"
+        backgroundColor="var(--back-color)"
+        scale="0.8"
+        on:click={() => {
+          playWarning = false;
+        }}
+      />
+    </div>
+  </div>
+</Modal>
+
 <div class="container">
   <div class="results-grid" class:align-center={$favorites.length !== 0}>
     {#if $favorites.length === 0}
@@ -218,5 +268,12 @@
   .buttons {
     display: flex;
     gap: 0.5em;
+  }
+
+  /* warning modal styles */
+  .flex-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
   }
 </style>

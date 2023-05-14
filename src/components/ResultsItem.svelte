@@ -11,6 +11,8 @@
     currentID,
     smallPoster,
     favorites,
+    menuEntries,
+    playNextList,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
 
@@ -32,7 +34,7 @@
   //! NOT WORKING
   let hovering = false;
 
-  let loved: Boolean;
+  let loved: boolean;
 
   $: loved = $favorites.map((a) => a.id).includes(resultID);
 
@@ -74,6 +76,20 @@
     $currentID = id;
   }
 
+  function toggleFavorite() {
+    if (loved) $favorites = $favorites.filter((a) => a.id !== resultID);
+    else
+      $favorites = [
+        {
+          id: resultID,
+          title: result.title,
+          artist: result.uploaderName,
+          poster: result.thumbnail,
+        },
+        ...$favorites,
+      ];
+  }
+
   const lazyLoad = (el: HTMLDivElement) => {
     el.onload = () => {
       el.style.opacity = '1';
@@ -90,6 +106,27 @@
   on:click={() => wantPlay(result, id)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
+  on:contextmenu={() =>
+    ($menuEntries = [
+      {
+        title: 'Play',
+        disabled: $currentID === urlToId(result.url),
+        action: () => wantPlay(result, id),
+      },
+      {
+        title: 'Play Next',
+        disabled:
+          $currentID === urlToId(result.url) ||
+          $playNextList.map((a) => urlToId(a.url)).includes(resultID) ||
+          $currentID === '',
+        action: () => ($playNextList = [...$playNextList, result]),
+        breakAfter: true,
+      },
+      {
+        title: `${loved ? 'Remove from' : 'Add to'} favorites`,
+        action: toggleFavorite,
+      },
+    ])}
 >
   <div class="result__grid1" style="--img: url('{result.thumbnail}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
@@ -115,19 +152,7 @@
           class="result__loved"
           class:loved
           transition:fade|local
-          on:click|stopPropagation={() => {
-            if (loved) $favorites = $favorites.filter((a) => a.id !== resultID);
-            else
-              $favorites = [
-                {
-                  id: resultID,
-                  title: result.title,
-                  artist: result.uploaderName,
-                  poster: result.thumbnail,
-                },
-                ...$favorites,
-              ];
-          }}
+          on:click|stopPropagation={toggleFavorite}
         >
           {@html loveIcon}
         </div>

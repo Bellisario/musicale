@@ -1,26 +1,27 @@
 <script lang="ts">
-  import type { FavoriteStore } from 'src/types/FavoritesStore';
-  import audioStreamGetter from '../lib/audioStreamGetter';
-  import { play, useSource, reset } from '../lib/AudioPlayer.svelte';
-  import IntersectionObserver from '../lib/IntersectionObserver.svelte';
+  import type { Result } from 'src/types/Results';
+  import audioStreamGetter from '../../lib/audioStreamGetter';
+  import { play, useSource, reset } from '../../lib/AudioPlayer.svelte';
+  import IntersectionObserver from '../../lib/IntersectionObserver.svelte';
   import {
     musicTitle,
     poster,
     artist,
     currentID,
     smallPoster,
-    favorites,
     menuEntries,
-  } from '../lib/player';
+    playNextList,
+  } from '../../lib/player';
   import { fade } from 'svelte/transition';
-
+  
   import truncate from 'just-truncate';
-  import binIcon from '../assets/bin.svg?raw';
+  import binIcon from '../../assets/bin.svg?raw';
+  import urlToId from '../../lib/urlToId';
 
-  export let result: FavoriteStore;
+  export let result: Result;
   export let id: number;
 
-  let resultID = result.id;
+  let resultID = urlToId(result.url);
 
   let selectedResult = {
     id: -1,
@@ -33,11 +34,11 @@
   let removing = false;
   let removingCancelTimeout: NodeJS.Timeout;
 
-  async function wantPlay(result: FavoriteStore, selectedId: number) {
+  async function wantPlay(result: Result, selectedId: number) {
     // reset currentID while fetching
     $currentID = '';
 
-    const id = result.id;
+    const id = urlToId(result.url);
 
     $musicTitle = result.title;
 
@@ -58,16 +59,16 @@
     const apiRes = await audioStreamGetter(id);
 
     $poster = apiRes.thumbnailUrl;
-    $smallPoster = result.poster;
-    $artist = result.artist;
+    $smallPoster = result.thumbnail;
+    $artist = result.uploaderName;
 
     const streamUrl = apiRes.audioStreams.filter(
       (stream) => stream.mimeType === 'audio/mp4'
     )[0].url;
-    console.log(streamUrl);
+    
     useSource(streamUrl);
     play();
-    canReplaySong = true;
+    
     $currentID = id;
   }
 
@@ -87,7 +88,7 @@
     draggingPosition = null;
   }
   function onDragStart(e: DragEvent) {
-    e.dataTransfer.setData('application/musicale-favorite', result.id);
+    e.dataTransfer.setData('application/musicale-play-next', resultID);
     e.dataTransfer.effectAllowed = 'move';
 
     draggingThis = true;
@@ -110,28 +111,28 @@
   function onDrop(e: DragEvent) {
     e.preventDefault();
 
-    const data = e.dataTransfer.getData('application/musicale-favorite');
+    const data = e.dataTransfer.getData('application/musicale-play-next');
 
-    const movingItem = $favorites.find((f) => f.id === data);
+    const movingItem = $playNextList.find((f) => urlToId(f.url) === data);
 
-    if (result.id == movingItem.id) {
+    if (resultID == urlToId(movingItem.url)) {
       resetDragging();
       return;
     }
 
     // remove the item from the array
-    $favorites = $favorites.filter((f) => f.id !== data);
+    $playNextList = $playNextList.filter((f) => urlToId(f.url) !== data);
 
-    const targetItemIndex = $favorites.findIndex((f) => f.id === result.id);
+    const targetItemIndex = $playNextList.findIndex((f) => urlToId(f.url) === resultID);
 
     // add the item to the array
-    $favorites = [
-      ...$favorites.slice(
+    $playNextList = [
+      ...$playNextList.slice(
         0,
         targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
       ),
       movingItem,
-      ...$favorites.slice(
+      ...$playNextList.slice(
         targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
       ),
     ];
@@ -145,7 +146,7 @@
   in:fade
   class="result {draggingPosition ? 'dragging-' + draggingPosition : ''}"
   class:dragging={draggingThis}
-  class:selected={$currentID === result.id}
+  class:selected={$currentID === resultID}
   data-id={id}
   on:click={() => wantPlay(result, id)}
   on:pointerover={() => (hovering = true)}
@@ -162,26 +163,20 @@
   on:contextmenu={() =>
     ($menuEntries = [
       {
-        title: 'Play',
-        disabled: $currentID === result.id,
+        title: 'Play Now',
+        disabled: $currentID === resultID,
         action: () => wantPlay(result, id),
       },
       {
-        title: 'Play Next (currently not available)',
-        disabled: true,
-        action: () => {},
-        breakAfter: true,
-      },
-      {
-        title: 'Remove from favorites',
-        action: () => $favorites = $favorites.filter((a) => a.id !== resultID),
+        title: 'Remove from Play Next',
+        action: () => $playNextList = $playNextList.filter((a) => urlToId(a.url) !== resultID),
       },
     ])}
 >
-  <div class="result__grid1" style="--img: url('{result.poster}')">
+  <div class="result__grid1" style="--img: url('{result.thumbnail}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
       <img
-        src={intersecting ? result.poster : ''}
+        src={intersecting ? result.thumbnail : ''}
         alt={result.title}
         class="result__img"
         use:lazyLoad
@@ -204,7 +199,7 @@
           on:click|stopPropagation={() => {
             clearTimeout(removingCancelTimeout);
             if (removing)
-              $favorites = $favorites.filter((a) => a.id !== resultID);
+              $playNextList = $playNextList.filter((a) => urlToId(a.url) !== resultID);
             else {
               removing = true;
               removingCancelTimeout = setTimeout(() => {
@@ -222,7 +217,7 @@
         </div>
       {/if}
     </div>
-    <p>{result.artist}</p>
+    <p>{result.uploaderName}</p>
   </div>
 </div>
 
