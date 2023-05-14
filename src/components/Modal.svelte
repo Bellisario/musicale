@@ -5,6 +5,8 @@
 
   export let closed = false;
   export let closable = true;
+
+  export let maxWidth = '500px';
 </script>
 
 {#if !closed}
@@ -14,7 +16,7 @@
     transition:fade={{ duration: 150 }}
     on:click|self={() => (closable ? (closed = true) : null)}
   >
-    <div class="modal__content" class:closable>
+    <div class="modal__content" class:closable style:max-width={maxWidth}>
       {#if closable}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="modal__close" on:click={() => (closed = true)}>
@@ -31,22 +33,26 @@
           >
         </div>
       {/if}
-      <div class="content__title">
-        <slot name="title" />
-      </div>
-      <slot />
-      {#if $$slots.content__bottom}
-        <div class="content__bottom">
-          <slot name="content__bottom" />
+      {#if $$slots.custom__content}
+        <slot name="custom__content" />
+      {:else}
+        <div class="content__title">
+          <slot name="title" />
         </div>
-      {:else if $$slots.content__bottom_center}
-        <div class="content__bottom-center">
-          <slot name="content__bottom_center" />
-        </div>
-      {:else if $$slots.content__bottom_small}
-        <div class="content__bottom-small">
-          <slot name="content__bottom_small" />
-        </div>
+        <slot />
+        {#if $$slots.content__bottom}
+          <div class="content__bottom">
+            <slot name="content__bottom" />
+          </div>
+        {:else if $$slots.content__bottom_center}
+          <div class="content__bottom-center">
+            <slot name="content__bottom_center" />
+          </div>
+        {:else if $$slots.content__bottom_small}
+          <div class="content__bottom-small">
+            <slot name="content__bottom_small" />
+          </div>
+        {/if}
       {/if}
     </div>
   </div>

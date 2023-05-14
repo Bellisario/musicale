@@ -29,6 +29,9 @@
 
   let volumeRangeShowing = false;
 
+  let resetStatus: 'none' | 'working' | 'done' = 'none';
+  let resetTimeout: NodeJS.Timeout;
+
   paused.subscribe(() => {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -130,14 +133,53 @@
       return;
     }
   });
+
+  function handleResetBegin(e: KeyboardEvent) {
+    // if focusing elements (ex. input) don't do anything
+    if (document.activeElement !== document.body) return;
+
+    if (e.code === 'Numpad0' && resetStatus === 'none' && $currentTime !== 0) {
+      e.preventDefault();
+      resetStatus = 'working';
+      resetTimeout = setTimeout(() => {
+        resetStatus = 'done';
+        $currentTime = 0;
+        pause();
+        setTimeout(() => {
+          resetStatus = 'none';
+        }, 2000);
+      }, 1500);
+      return;
+    }
+  }
+  function handleResetEnd(e: KeyboardEvent) {
+    // if focusing elements (ex. input) don't do anything
+    if (document.activeElement !== document.body) return;
+
+    if (e.code === 'Numpad0') {
+      e.preventDefault();
+      if (resetStatus === 'working') {
+        clearTimeout(resetTimeout);
+        resetStatus = 'none';
+      }
+      return;
+    }
+  }
 </script>
 
-<div class="player">
+<svelte:body on:keydown={handleResetBegin} on:keyup={handleResetEnd} />
+
+<div class="player translucent">
+  {#if resetStatus !== 'none'}
+    <div class="reset-message" transition:fade>
+      {resetStatus === 'done'
+        ? 'Done!'
+        : 'Keep pressing to reset playing time...'}
+    </div>
+  {/if}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="player__play-pause" on:click={toggle}>
-    <div
-      class="play-pause__icon" class:pause={!$paused}
-    />
+    <div class="play-pause__icon" class:pause={!$paused} />
   </div>
   <Range />
   <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -151,7 +193,7 @@
       <use xlink:href="#volume" />
     </svg>
     {#if volumeRangeShowing}
-      <div class="volume__container" transition:fade>
+      <div class="volume__container translucent" transition:fade>
         <VolumeRange on:autoClose={() => (volumeRangeShowing = false)} />
       </div>
     {/if}
@@ -181,12 +223,9 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 0.5em;
-    background-color: var(--bars-color);
     height: var(--bars-height);
     width: 100%;
     bottom: 0;
-    -webkit-backdrop-filter: blur(var(--bars-back-blur));
-    backdrop-filter: blur(var(--bars-back-blur));
   }
   .player__current-time,
   .player__duration {
@@ -214,12 +253,32 @@
     background-color: var(--theme-color);
     width: 1.75em;
     height: 1.75em;
-    clip-path: polygon(5% 0%,100% 50%,100% 50%,5% 100%,5% 0%,5% 0%,5% 100%,5% 100%,5% 0%);
+    clip-path: polygon(
+      5% 0%,
+      100% 50%,
+      100% 50%,
+      5% 100%,
+      5% 0%,
+      5% 0%,
+      5% 100%,
+      5% 100%,
+      5% 0%
+    );
 
     transition: 250ms ease;
   }
   .play-pause__icon.pause {
-    clip-path: polygon(70% 0%,95% 0%,95% 100%,70% 100%,70% 0%,30% 0%,30% 100%,5% 100%,5% 0%);
+    clip-path: polygon(
+      70% 0%,
+      95% 0%,
+      95% 100%,
+      70% 100%,
+      70% 0%,
+      30% 0%,
+      30% 100%,
+      5% 100%,
+      5% 0%
+    );
   }
   .volume-icon {
     display: inline-block;
@@ -246,9 +305,16 @@
     position: absolute;
     right: -4em;
     top: -4em;
-    background-color: var(--bars-color);
     padding: 0.5em 0.75em;
     border-radius: 7.5px;
     box-shadow: var(--theme-shadow);
+  }
+
+  .reset-message {
+    position: absolute;
+    top: -2em;
+    left: 1em;
+    font-size: 0.9em;
+    pointer-events: none;
   }
 </style>

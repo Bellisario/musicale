@@ -26,7 +26,7 @@
 </script>
 
 {#if toast}
-  <div class="pwa-toast" transition:fade>
+  <div class="pwa-toast translucent" transition:fade>
     <div class="message">
       {#if $offlineReady}
         <span>Ready to work offline!</span>
@@ -57,7 +57,6 @@
     z-index: 1;
     text-align: left;
     box-shadow: var(--theme-shadow);
-    background-color: var(--bars-color);
   }
   .pwa-toast .message {
     color: var(--text-color);

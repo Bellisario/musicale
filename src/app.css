@@ -50,6 +50,12 @@ p {
   margin: 0;
 }
 
+.translucent {
+  background-color: var(--bars-color);
+  -webkit-backdrop-filter: blur(var(--bars-back-blur));
+  backdrop-filter: blur(var(--bars-back-blur));
+}
+
 .loading-screen {
   display: flex;
   flex-direction: column;
