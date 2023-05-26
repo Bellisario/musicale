@@ -80,6 +80,9 @@
     max-width: 500px;
     box-shadow: var(--theme-shadow);
     position: relative;
+
+    max-height: 80vh;
+    overflow-y: auto;
   }
   .modal__close {
     position: absolute;
