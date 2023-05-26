@@ -9,8 +9,8 @@
     source,
     currentID,
     favorites,
-  } from '../lib/player';
-  import type { FavoriteStore } from '../types/FavoritesStore';
+  } from '../../lib/player';
+  import type { FavoriteStore } from '../../types/FavoritesStore';
   import { fade } from 'svelte/transition';
   import truncate from 'just-truncate';
 

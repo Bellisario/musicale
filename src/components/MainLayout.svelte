@@ -7,13 +7,13 @@
     menuEntries,
   } from '../lib/player';
   import { fade } from 'svelte/transition';
-  import PlayingPreview from './PlayingPreview.svelte';
-  import FrequencyBars from './FrequencyBars.svelte';
-  import Results from './Results.svelte';
-  import FavoritesList from './FavoritesList.svelte';
-  import Settings from './Settings.svelte';
+  import PlayingPreview from './PlayingView/PlayingPoster.svelte';
+  import FrequencyBars from './PlayingView/FrequencyBars.svelte';
+  import Results from './ResultsView/Results.svelte';
+  import FavoritesList from './FavoritesView/FavoritesList.svelte';
+  import Settings from './SettingsView/Settings.svelte';
   import ContextMenu from './ContextMenu.svelte';
-  import PlayNextView from './PlayNext/PlayNextView.svelte';
+  import PlayNextView from './PlayNextView/PlayNextView.svelte';
 
   let barsVisible = false;
 </script>

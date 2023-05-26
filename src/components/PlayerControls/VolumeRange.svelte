@@ -1,14 +1,36 @@
 <script lang="ts">
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
-  import { currentTime, duration } from '../lib/player';
+  import { volume } from '../../lib/player';
   import { onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
 
   let progress = 0;
   let range: HTMLDivElement;
   let progressChanging = false;
-  let changingPreview = 0;
 
-  $: progress = (progressChanging ? changingPreview : $currentTime) / $duration;
+  $: progress = $volume;
+
+  {
+    let clock: NodeJS.Timeout;
+    function dispatchAutoClose() {
+      return setTimeout(() => {
+        dispatch('autoClose');
+      }, 3000);
+    }
+    volume.subscribe(() => {
+      clearTimeout(clock);
+      clock = dispatchAutoClose();
+    });
+  }
+
+  // if volume < 0 || > 1, set to 0 or 1
+  function sanitizeVolume(volume: number) {
+    let sanitized1 = volume < 0 ? 0 : volume;
+    let sanitized2 = sanitized1 > 1 ? 1 : sanitized1;
+    return sanitized2;
+  }
 
   onMount(() => {
     // listen for click start
@@ -20,8 +42,8 @@
       let x = e.offsetX;
       let width = range.offsetWidth;
       let percent = x / width;
-      let seconds = percent * $duration;
-      changingPreview = seconds;
+
+      $volume = sanitizeVolume(percent);
     });
     // listen for mouse move
     range.addEventListener('mousemove', (e) => {
@@ -30,8 +52,8 @@
       let x = e.offsetX;
       let width = range.offsetWidth;
       let percent = x / width;
-      let seconds = percent * $duration;
-      changingPreview = seconds;
+
+      $volume = sanitizeVolume(percent);
     });
     // listen for click end
     range.addEventListener('mouseup', (e) => {
@@ -39,18 +61,11 @@
         return;
       }
       progressChanging = false;
-      $currentTime = changingPreview;
     });
 
     range.addEventListener('mouseleave', (_) => {
-      if (!progressChanging) return;
-
-      if (progress <= 0.05 || progress >= 0.95) {
-        if (progress <= 0.1) {
-          $currentTime = 0;
-        } else if (progress >= 0.9) {
-          $currentTime = $duration;
-        }
+      if ($volume <= 0.05 || $volume >= 0.95) {
+        $volume = $volume <= 0.05 ? 0 : 1;
         progressChanging = false;
       }
     });
@@ -72,12 +87,15 @@
   .player__range {
     --b-radius: 1em;
     display: inline-block;
-    width: 75vw;
+    width: 10vw;
     height: 0.4em;
 
     position: relative;
 
     transition: transform 0.3s ease-in-out;
+
+    /* fix for vertical center */
+    top: -0.1em;
   }
   .volume-range__selector {
     position: absolute;
@@ -105,7 +123,7 @@
     overflow: hidden;
   }
   .volume-range__main:hover {
-    transform: scale(1, 1.5);
+    transform: scaleY(1.5);
   }
   /* progress bar */
   .volume-range__main::after {
