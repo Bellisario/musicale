@@ -145,8 +145,8 @@
         bind:this={search}
         on:keydown={handleInputKeys}
         on:input={() => {
-          completionAcceptedIndex = -1
-          searchFocus = true
+          completionAcceptedIndex = -1;
+          searchFocus = true;
         }}
       />
       <Autocomplete

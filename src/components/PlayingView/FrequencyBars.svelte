@@ -19,8 +19,12 @@
   let currentTimeUnsubscribe: Unsubscriber;
 
   onMount(() => {
-    backColor = getComputedStyle(document.body).getPropertyValue('--back-color');
-    themeColor = getComputedStyle(document.body).getPropertyValue('--theme-color');
+    backColor = getComputedStyle(document.body).getPropertyValue(
+      '--back-color'
+    );
+    themeColor = getComputedStyle(document.body).getPropertyValue(
+      '--theme-color'
+    );
 
     audio = document.querySelector('#audio-player') as HTMLAudioElement;
 

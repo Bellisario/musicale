@@ -66,7 +66,11 @@
 
     scrollTo({
       // allow to see the (old) last result and a part of the previous
-      top: el.getBoundingClientRect().top + window.scrollY - toolbar.clientHeight - el.clientHeight * 2,
+      top:
+        el.getBoundingClientRect().top +
+        window.scrollY -
+        toolbar.clientHeight -
+        el.clientHeight * 2,
       behavior: 'smooth',
     });
   }

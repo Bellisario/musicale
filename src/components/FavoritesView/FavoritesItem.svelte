@@ -158,7 +158,6 @@
   on:dragleave={resetDragging}
   on:drop={onDrop}
   bind:this={currentItem}
-
   on:contextmenu={() =>
     ($menuEntries = [
       {
@@ -174,7 +173,8 @@
       },
       {
         title: 'Remove from favorites',
-        action: () => $favorites = $favorites.filter((a) => a.id !== resultID),
+        action: () =>
+          ($favorites = $favorites.filter((a) => a.id !== resultID)),
       },
     ])}
 >
