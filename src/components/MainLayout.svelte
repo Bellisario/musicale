@@ -13,7 +13,7 @@
   import FavoritesList from './FavoritesView/FavoritesList.svelte';
   import Settings from './SettingsView/Settings.svelte';
   import ContextMenu from './ContextMenu.svelte';
-  import PlayNextView from './PlayNext/PlayNextView.svelte';
+  import PlayNextView from './PlayNextView/PlayNextView.svelte';
 
   let barsVisible = false;
 </script>
