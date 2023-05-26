@@ -28,7 +28,6 @@
     } catch {
       onMount(() => search.blur());
     }
-    search.blur();
   }
 
   export let inputFocus: boolean;
@@ -75,7 +74,19 @@
     }
   }
 
-  // focus on "/" key press and after loading
+  // focus on "/" key press
+  function handleInput(e: KeyboardEvent) {
+    // if focusing elements (ex. input) don't do anything
+    if (document.activeElement !== document.body) return;
+
+    if (e.key === '/') {
+      e.preventDefault();
+      search.focus();
+      search.select();
+    }
+  }
+
+  // focus after loading
   onMount(() => {
     search.focus();
     search.onfocus = () => {
@@ -84,22 +95,14 @@
     search.onblur = () => {
       searchFocus = false;
     };
-    window.addEventListener('keydown', (e) => {
-      // if focusing elements (ex. input) don't do anything
-      if (document.activeElement !== document.body) return;
-
-      if (e.key === '/') {
-        e.preventDefault();
-        search.focus();
-        search.select();
-      }
-    });
   });
 
   function heroClick() {
     dispatch('home');
   }
 </script>
+
+<svelte:window on:keydown={handleInput} />
 
 <div class="toolbar translucent {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
