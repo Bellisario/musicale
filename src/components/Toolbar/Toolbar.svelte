@@ -4,11 +4,11 @@
   import { onMount } from 'svelte';
   import Autocomplete from './Autocomplete.svelte';
 
-  import { receive } from '../lib/crossFade';
+  import { receive } from '../../lib/crossFade';
 
-  import { favoritesActive, settingsActive, query } from '../lib/player';
+  import { favoritesActive, settingsActive, query } from '../../lib/player';
 
-  import Logo from '../assets/logo.svg?raw';
+  import Logo from '../../assets/logo.svg?raw';
 
   const dispatch = createEventDispatcher();
 

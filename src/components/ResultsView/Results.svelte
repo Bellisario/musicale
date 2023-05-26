@@ -1,13 +1,13 @@
 <script lang="ts">
   import type ResultsStatus from 'src/types/ResultsStatus';
   import type { Result } from 'src/types/Results';
-  import { resultsGetter, loadMoreResults } from '../lib/resultsGetter';
-  import { toSearch } from '../lib/player';
+  import { resultsGetter, loadMoreResults } from '../../lib/resultsGetter';
+  import { toSearch } from '../../lib/player';
   import { fade } from 'svelte/transition';
 
-  import Footer from './Footer.svelte';
+  import Footer from '../Footer.svelte';
   import ResultsItem from './ResultsItem.svelte';
-  import ActionButton from '../lib/ActionButton.svelte';
+  import ActionButton from '../../lib/ActionButton.svelte';
   import { tick } from 'svelte';
 
   export let type: ResultsStatus = 'ready';

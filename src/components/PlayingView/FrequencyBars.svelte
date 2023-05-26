@@ -3,7 +3,7 @@
 
   import { onMount, onDestroy } from 'svelte';
   import type { Unsubscriber } from 'svelte/store';
-  import { currentTime, paused } from '../lib/player';
+  import { currentTime, paused } from '../../lib/player';
 
   let el: HTMLCanvasElement;
   let audio: HTMLAudioElement;
