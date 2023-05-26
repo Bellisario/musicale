@@ -12,11 +12,11 @@
     artist,
     poster,
     volume,
-  } from '../lib/player';
-  import { play, pause } from '../lib/AudioPlayer.svelte';
+  } from '../../lib/player';
+  import { play, pause } from '../../lib/AudioPlayer.svelte';
 
   import { fade } from 'svelte/transition';
-  import clickOutside from '../lib/clickOutside';
+  import clickOutside from '../../lib/clickOutside';
 
   let smallScreen = false;
 

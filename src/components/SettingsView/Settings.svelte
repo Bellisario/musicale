@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Footer from './Footer.svelte';
-  import { favorites } from '../lib/player';
+  import Footer from '../Footer.svelte';
+  import { favorites } from '../../lib/player';
   import type { FavoriteStore } from 'src/types/FavoritesStore';
-  import ActionButton from '../lib/ActionButton.svelte';
+  import ActionButton from '../../lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
 
-  import Modal from './Modal.svelte';
+  import Modal from '../../lib/Modal.svelte';
 
   const favoritesVersion = '1.0.0';
   interface FavoritesExport {
@@ -18,7 +18,7 @@
 
   let noFavorites = true;
 
-  $: noFavorites = $favorites.length === 0 ? true : false
+  $: noFavorites = $favorites.length === 0 ? true : false;
 
   function exportFavorites() {
     const data = JSON.stringify({
@@ -73,31 +73,29 @@
   <Modal closed={!displayImportWarning} closable={false}>
     <div slot="title">Favorites already present</div>
     <p>
-      Seems there are some favorites already saved on Musicale.<br />By importing
-      new ones, all the olds will be lost.
+      Seems there are some favorites already saved on Musicale.<br />By
+      importing new ones, all the olds will be lost.
     </p>
-    <p>
-      If you want to keep the olds, press "Cancel" to abort.
-    </p>
+    <p>If you want to keep the olds, press "Cancel" to abort.</p>
     <div slot="content__bottom">
       <div class="flex-buttons">
         <ActionButton
-        title="Import"
-        backgroundColor="var(--back-color)"
-        scale="0.8"
-        on:click={() => {
-          displayImportWarning = false;
-          importFavorites(true);
-        }}
-      />
-      <ActionButton
-        title="Cancel"
-        backgroundColor="var(--back-color)"
-        scale="0.8"
-        on:click={() => {
-          displayImportWarning = false;
-        }}
-      />
+          title="Import"
+          backgroundColor="var(--back-color)"
+          scale="0.8"
+          on:click={() => {
+            displayImportWarning = false;
+            importFavorites(true);
+          }}
+        />
+        <ActionButton
+          title="Cancel"
+          backgroundColor="var(--back-color)"
+          scale="0.8"
+          on:click={() => {
+            displayImportWarning = false;
+          }}
+        />
       </div>
     </div>
   </Modal>
@@ -112,7 +110,7 @@
       <div class="content__buttons">
         <ActionButton
           title="Export Favorites"
-          on:click={() => noFavorites ? null : exportFavorites()}
+          on:click={() => (noFavorites ? null : exportFavorites())}
           color="#fff"
           fitContent={false}
           scale="0.9"

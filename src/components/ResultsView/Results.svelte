@@ -1,13 +1,13 @@
 <script lang="ts">
   import type ResultsStatus from 'src/types/ResultsStatus';
   import type { Result } from 'src/types/Results';
-  import { resultsGetter, loadMoreResults } from '../lib/resultsGetter';
-  import { toSearch } from '../lib/player';
+  import { resultsGetter, loadMoreResults } from '../../lib/resultsGetter';
+  import { toSearch } from '../../lib/player';
   import { fade } from 'svelte/transition';
 
-  import Footer from './Footer.svelte';
+  import Footer from '../Footer.svelte';
   import ResultsItem from './ResultsItem.svelte';
-  import ActionButton from '../lib/ActionButton.svelte';
+  import ActionButton from '../../lib/ActionButton.svelte';
   import { tick } from 'svelte';
 
   export let type: ResultsStatus = 'ready';
@@ -66,7 +66,11 @@
 
     scrollTo({
       // allow to see the (old) last result and a part of the previous
-      top: el.getBoundingClientRect().top + window.scrollY - toolbar.clientHeight - el.clientHeight * 2,
+      top:
+        el.getBoundingClientRect().top +
+        window.scrollY -
+        toolbar.clientHeight -
+        el.clientHeight * 2,
       behavior: 'smooth',
     });
   }

@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { FavoriteStore } from 'src/types/FavoritesStore';
-  import audioStreamGetter from '../lib/audioStreamGetter';
-  import { play, useSource, reset } from '../lib/AudioPlayer.svelte';
-  import IntersectionObserver from '../lib/IntersectionObserver.svelte';
+  import audioStreamGetter from '../../lib/audioStreamGetter';
+  import { play, useSource, reset } from '../../lib/AudioPlayer.svelte';
+  import IntersectionObserver from '../../lib/IntersectionObserver.svelte';
   import {
     musicTitle,
     poster,
@@ -11,11 +11,11 @@
     smallPoster,
     favorites,
     menuEntries,
-  } from '../lib/player';
+  } from '../../lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
-  import binIcon from '../assets/bin.svg?raw';
+  import binIcon from '../../assets/bin.svg?raw';
 
   export let result: FavoriteStore;
   export let id: number;
@@ -158,7 +158,6 @@
   on:dragleave={resetDragging}
   on:drop={onDrop}
   bind:this={currentItem}
-
   on:contextmenu={() =>
     ($menuEntries = [
       {
@@ -174,7 +173,8 @@
       },
       {
         title: 'Remove from favorites',
-        action: () => $favorites = $favorites.filter((a) => a.id !== resultID),
+        action: () =>
+          ($favorites = $favorites.filter((a) => a.id !== resultID)),
       },
     ])}
 >

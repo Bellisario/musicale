@@ -3,7 +3,7 @@
 
   import { onMount, onDestroy } from 'svelte';
   import type { Unsubscriber } from 'svelte/store';
-  import { currentTime, paused } from '../lib/player';
+  import { currentTime, paused } from '../../lib/player';
 
   let el: HTMLCanvasElement;
   let audio: HTMLAudioElement;
@@ -19,8 +19,12 @@
   let currentTimeUnsubscribe: Unsubscriber;
 
   onMount(() => {
-    backColor = getComputedStyle(document.body).getPropertyValue('--back-color');
-    themeColor = getComputedStyle(document.body).getPropertyValue('--theme-color');
+    backColor = getComputedStyle(document.body).getPropertyValue(
+      '--back-color'
+    );
+    themeColor = getComputedStyle(document.body).getPropertyValue(
+      '--theme-color'
+    );
 
     audio = document.querySelector('#audio-player') as HTMLAudioElement;
 

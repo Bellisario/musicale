@@ -3,7 +3,7 @@
 
   import { createEventDispatcher, onMount } from 'svelte';
   import truncate from 'just-truncate';
-  import { query } from '../lib/player';
+  import { query } from '../../lib/player';
 
   const dispatch = createEventDispatcher();
 
@@ -33,7 +33,7 @@
   }
 
   async function update() {
-    if ($query === lastText) return
+    if ($query === lastText) return;
 
     if ($query.trim() === '') {
       items = [];

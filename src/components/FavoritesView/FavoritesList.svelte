@@ -1,7 +1,7 @@
 <script lang="ts">
-  import audioStreamGetter from '../lib/audioStreamGetter';
-  import { play, useSource, reset, pause } from '../lib/AudioPlayer.svelte';
-  import ActionButton from '../lib/ActionButton.svelte';
+  import audioStreamGetter from '../../lib/audioStreamGetter';
+  import { play, useSource, reset, pause } from '../../lib/AudioPlayer.svelte';
+  import ActionButton from '../../lib/ActionButton.svelte';
 
   import {
     musicTitle,
@@ -12,15 +12,15 @@
     currentID,
     ended,
     smallPoster,
-  } from '../lib/player';
+  } from '../../lib/player';
   import { fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  import type { FavoriteStore } from '../types/FavoritesStore';
+  import type { FavoriteStore } from '../../types/FavoritesStore';
 
-  import Footer from './Footer.svelte';
+  import Footer from '../Footer.svelte';
   import FavoritesItem from './FavoritesItem.svelte';
-  import Modal from './Modal.svelte';
+  import Modal from '../../lib/Modal.svelte';
 
   let resultIndex = -1;
 
@@ -173,9 +173,9 @@
   <p>
     You're trying to play your favorites list, but Play Next is trying to play
     its own list.
-    <br>
-    To continue you can either clear the Play Next list or play a single song
-    from your favorites list.
+    <br />
+    To continue you can either clear the Play Next list or play a single song from
+    your favorites list.
   </p>
   <div slot="content__bottom">
     <div class="flex-buttons">

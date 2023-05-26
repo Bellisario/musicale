@@ -1,11 +1,11 @@
 <script lang="ts">
   // cspell:word onpopstate onhashchange
 
-  import Toolbar from './components/Toolbar.svelte';
-  import Player from './components/Player.svelte';
+  import Toolbar from './components/Toolbar/Toolbar.svelte';
+  import Player from './components/PlayerControls/PlayerControls.svelte';
   import SwManager from './components/SWManager.svelte';
   import AudioPlayer from './lib/AudioPlayer.svelte';
-  import Modal from './components/Modal.svelte';
+  import Modal from './lib/Modal.svelte';
   import ActionButton from './lib/ActionButton.svelte';
 
   import { onMount } from 'svelte';
