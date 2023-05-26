@@ -33,7 +33,7 @@
   }
 
   async function update() {
-    if ($query === lastText) return
+    if ($query === lastText) return;
 
     if ($query.trim() === '') {
       items = [];

@@ -22,7 +22,6 @@
   }, 4000);
 
   $: toast = $offlineReady || $needRefresh;
-
 </script>
 
 {#if toast}

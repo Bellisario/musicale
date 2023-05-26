@@ -13,7 +13,7 @@
     playNextList,
   } from '../../lib/player';
   import { fade } from 'svelte/transition';
-  
+
   import truncate from 'just-truncate';
   import binIcon from '../../assets/bin.svg?raw';
   import urlToId from '../../lib/urlToId';
@@ -65,10 +65,10 @@
     const streamUrl = apiRes.audioStreams.filter(
       (stream) => stream.mimeType === 'audio/mp4'
     )[0].url;
-    
+
     useSource(streamUrl);
     play();
-    
+
     $currentID = id;
   }
 
@@ -123,7 +123,9 @@
     // remove the item from the array
     $playNextList = $playNextList.filter((f) => urlToId(f.url) !== data);
 
-    const targetItemIndex = $playNextList.findIndex((f) => urlToId(f.url) === resultID);
+    const targetItemIndex = $playNextList.findIndex(
+      (f) => urlToId(f.url) === resultID
+    );
 
     // add the item to the array
     $playNextList = [
@@ -159,7 +161,6 @@
   on:dragleave={resetDragging}
   on:drop={onDrop}
   bind:this={currentItem}
-
   on:contextmenu={() =>
     ($menuEntries = [
       {
@@ -169,7 +170,10 @@
       },
       {
         title: 'Remove from Play Next',
-        action: () => $playNextList = $playNextList.filter((a) => urlToId(a.url) !== resultID),
+        action: () =>
+          ($playNextList = $playNextList.filter(
+            (a) => urlToId(a.url) !== resultID
+          )),
       },
     ])}
 >
@@ -199,7 +203,9 @@
           on:click|stopPropagation={() => {
             clearTimeout(removingCancelTimeout);
             if (removing)
-              $playNextList = $playNextList.filter((a) => urlToId(a.url) !== resultID);
+              $playNextList = $playNextList.filter(
+                (a) => urlToId(a.url) !== resultID
+              );
             else {
               removing = true;
               removingCancelTimeout = setTimeout(() => {

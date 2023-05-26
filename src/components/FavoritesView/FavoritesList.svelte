@@ -173,9 +173,9 @@
   <p>
     You're trying to play your favorites list, but Play Next is trying to play
     its own list.
-    <br>
-    To continue you can either clear the Play Next list or play a single song
-    from your favorites list.
+    <br />
+    To continue you can either clear the Play Next list or play a single song from
+    your favorites list.
   </p>
   <div slot="content__bottom">
     <div class="flex-buttons">
