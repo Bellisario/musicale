@@ -22,7 +22,11 @@ export default defineConfig({
   build: {
     outDir: './dist/public',
   },
-  plugins: [svelte(), VitePWA({
+  plugins: [svelte({
+    compilerOptions: {
+      cssHash: ({ hash, css }) => `s-${hash(css)}`,
+    },
+  }), VitePWA({
     manifest: {
       name: 'Musicale',
       short_name: 'Musicale',
@@ -69,5 +73,5 @@ export default defineConfig({
   })],
   css: {
     postcss,
-  }
+  },
 })
