@@ -1,12 +1,12 @@
 <script lang="ts">
   // cspell:word onpopstate onhashchange
 
-  import Toolbar from './components/Toolbar/Toolbar.svelte';
-  import Player from './components/PlayerControls/PlayerControls.svelte';
-  import SwManager from './components/SWManager.svelte';
-  import AudioPlayer from './lib/AudioPlayer.svelte';
-  import Modal from './lib/Modal.svelte';
-  import ActionButton from './lib/ActionButton.svelte';
+  import Toolbar from '$components/Toolbar/Toolbar.svelte';
+  import Player from '$components/PlayerControls/PlayerControls.svelte';
+  import SwManager from '$components/SWManager.svelte';
+  import AudioPlayer from '$lib/AudioPlayer.svelte';
+  import Modal from '$lib/Modal.svelte';
+  import ActionButton from '$lib/ActionButton.svelte';
 
   import { onMount } from 'svelte';
   import {
@@ -16,9 +16,9 @@
     toSearch,
     favoritesActive,
     settingsActive,
-  } from './lib/player';
+  } from '$lib/player';
 
-  import MainLayout from './components/MainLayout.svelte';
+  import MainLayout from '$components/MainLayout.svelte';
 
   const DOCUMENT_ORIGINAL_TITLE = document.title;
 

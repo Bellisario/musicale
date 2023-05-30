@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import type { FavoriteStore } from '../types/FavoritesStore';
-import type MenuEntry from 'src/types/MenuEntry';
-import type { Result } from 'src/types/Results';
+import type { FavoriteStore } from '$types/FavoritesStore';
+import type MenuEntry from '$types/MenuEntry';
+import type { Result } from '$types/Results';
 
 export const duration = writable(0);
 export const currentTime = writable(0);

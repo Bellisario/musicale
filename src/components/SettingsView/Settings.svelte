@@ -1,11 +1,11 @@
 <script lang="ts">
   import Footer from '../Footer.svelte';
-  import { favorites } from '../../lib/player';
-  import type { FavoriteStore } from 'src/types/FavoritesStore';
-  import ActionButton from '../../lib/ActionButton.svelte';
+  import { favorites } from '$lib/player';
+  import type { FavoriteStore } from '$types/FavoritesStore';
+  import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
 
-  import Modal from '../../lib/Modal.svelte';
+  import Modal from '$lib/Modal.svelte';
 
   const favoritesVersion = '1.0.0';
   interface FavoritesExport {

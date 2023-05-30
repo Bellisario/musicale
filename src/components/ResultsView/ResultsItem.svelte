@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Result } from 'src/types/Results';
-  import urlToId from '../../lib/urlToId';
-  import audioStreamGetter from '../../lib/audioStreamGetter';
-  import { play, useSource, reset } from '../../lib/AudioPlayer.svelte';
-  import IntersectionObserver from '../../lib/IntersectionObserver.svelte';
+  import type { Result } from '$types/Results';
+  import urlToId from '$lib/urlToId';
+  import audioStreamGetter from '$lib/audioStreamGetter';
+  import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
+  import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import {
     musicTitle,
     poster,
@@ -13,11 +13,11 @@
     favorites,
     menuEntries,
     playNextList,
-  } from '../../lib/player';
+  } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
-  import loveIcon from '../../assets/love.svg?raw';
+  import loveIcon from '$assets/love.svg?raw';
 
   export let result: Result;
   export let id: number;

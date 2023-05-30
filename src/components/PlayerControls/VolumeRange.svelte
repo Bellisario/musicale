@@ -1,8 +1,7 @@
 <script lang="ts">
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
-  import { volume } from '../../lib/player';
-  import { onMount } from 'svelte';
-  import { createEventDispatcher } from 'svelte';
+  import { volume } from '$lib/player';
+  import { onMount, createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
 

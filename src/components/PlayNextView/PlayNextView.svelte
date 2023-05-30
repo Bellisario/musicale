@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { playNextList } from '../../lib/player';
-  import Modal from '../../lib/Modal.svelte';
+    import { playNextList } from '$lib/player';
+  import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';
 

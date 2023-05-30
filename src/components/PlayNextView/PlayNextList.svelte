@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { playNextList, currentID } from '../../lib/player';
+  import { playNextList, currentID } from '$lib/player';
   import { fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
   import PlayNextItem from './PlayNextItem.svelte';
-  import urlToId from '../../lib/urlToId';
+  import urlToId from '$lib/urlToId';
 </script>
 
 <div class="container">
