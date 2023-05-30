@@ -1,4 +1,4 @@
-import type { Results } from '../types/Results';
+import type { Results } from '$types/Results';
 
 export async function resultsGetter(query: string): Promise<[Results, Error]> {
     // fetch https://pipedapi.kavin.rocks/streams/:id

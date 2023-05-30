@@ -2,7 +2,7 @@
 
 import any from '@ungap/promise-any';
 
-import type AudioStreamResponse from 'src/types/AudioStreamResponse';
+import type AudioStreamResponse from '$types/AudioStreamResponse';
 
 
 function APIFetch(url: string, id: string) {

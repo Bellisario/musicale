@@ -1,6 +1,6 @@
 <script lang="ts">
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
-  import { currentTime, duration } from '../../lib/player';
+  import { currentTime, duration } from '$lib/player';
   import { onMount } from 'svelte';
 
   let progress = 0;

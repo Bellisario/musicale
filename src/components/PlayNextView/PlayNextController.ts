@@ -6,15 +6,15 @@ import {
     poster,
     smallPoster,
     artist
-} from '../../lib/player';
-import urlToId from '../../lib/urlToId';
+} from '$lib/player';
+import urlToId from '$lib/urlToId';
 
-import { reset, useSource, play } from '../../lib/AudioPlayer.svelte';
-import audioStreamGetter from '../../lib/audioStreamGetter';
+import { reset, useSource, play } from '$lib/AudioPlayer.svelte';
+import audioStreamGetter from '$lib/audioStreamGetter';
 
 import { get } from 'svelte/store';
 
-import type { Result } from '../../types/Results';
+import type { Result } from '$types/Results';
 
 
 ended.subscribe((isEnded) => {

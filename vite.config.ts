@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 import postcss from './postcss.config.js'
 
+import { resolve } from 'path'
+
 const banner = `/**
 Copyright (c) ${new Date().getFullYear()} Giorgio Bellisario, all rights reserved.
 Code released under the MIT license.
@@ -73,5 +75,13 @@ export default defineConfig({
   })],
   css: {
     postcss,
+  },
+  resolve: {
+    alias: {
+      $assets: resolve(__dirname, "./src/assets"),
+      $lib: resolve(__dirname, "./src/lib"),
+      $components: resolve(__dirname, "./src/components"),
+      $types: resolve(__dirname, "./src/types"),
+    },
   },
 })

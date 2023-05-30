@@ -5,7 +5,6 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "resolveJsonModule": true,
-    "baseUrl": ".",
     /**
      * Type-check JS in `.svelte` and `.js` files by default.
      * Disable checkJs if you'd like to use dynamic types in JS.
@@ -14,7 +13,15 @@
      */
     "allowJs": true,
     "checkJs": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    // Paths
+    "baseUrl": ".",
+    "paths": {
+      "$assets/*": ["src/assets/*"],
+      "$lib/*": ["src/lib/*"],
+      "$components/*": ["src/components/*"],
+      "$types/*": ["src/types/*"],
+    }
   },
   "include": [
     "src/**/*.d.ts",

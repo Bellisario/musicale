@@ -5,7 +5,7 @@
     favoritesActive,
     settingsActive,
     menuEntries,
-  } from '../lib/player';
+  } from '$lib/player';
   import { fade } from 'svelte/transition';
   import PlayingPreview from './PlayingView/PlayingPoster.svelte';
   import FrequencyBars from './PlayingView/FrequencyBars.svelte';
