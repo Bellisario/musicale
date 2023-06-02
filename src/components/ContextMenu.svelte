@@ -1,9 +1,9 @@
 <script lang="ts">
-  import clickOutside from '../lib/clickOutside';
+  import clickOutside from '$lib/clickOutside';
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
 
-  import type MenuEntry from 'src/types/MenuEntry';
+  import type MenuEntry from '$types/MenuEntry';
 
   export let entries: MenuEntry[];
 

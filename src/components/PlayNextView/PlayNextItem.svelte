@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Result } from 'src/types/Results';
-  import audioStreamGetter from '../../lib/audioStreamGetter';
-  import { play, useSource, reset } from '../../lib/AudioPlayer.svelte';
-  import IntersectionObserver from '../../lib/IntersectionObserver.svelte';
+  import type { Result } from '$types/Results';
+  import audioStreamGetter from '$lib/audioStreamGetter';
+  import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
+  import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import {
     musicTitle,
     poster,
@@ -11,12 +11,12 @@
     smallPoster,
     menuEntries,
     playNextList,
-  } from '../../lib/player';
+  } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
-  import binIcon from '../../assets/bin.svg?raw';
-  import urlToId from '../../lib/urlToId';
+  import binIcon from '$assets/bin.svg?raw';
+  import urlToId from '$lib/urlToId';
 
   export let result: Result;
   export let id: number;
