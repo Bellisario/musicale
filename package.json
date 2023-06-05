@@ -20,7 +20,7 @@
     "svelte-check": "^3.4.3",
     "svelte-preprocess": "^5.0.4",
     "svelte-sortable-list": "^1.1.0",
-    "tslib": "^2.5.2",
+    "tslib": "^2.5.3",
     "typescript": "^5.0.4",
     "vite": "^3.2.5",
     "vite-plugin-pwa": "^0.15.1"
