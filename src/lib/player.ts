@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import type { FavoriteStore } from '$types/FavoritesStore';
 import type MenuEntry from '$types/MenuEntry';
 import type { Result } from '$types/Results';
@@ -18,7 +18,6 @@ export const source = writable('');
 export const currentID = writable('');
 
 export const query = writable('');
-export const toSearch = writable('');
 
 export const favoritesActive = writable(localStorage.getItem('favoritesActive') === 'true');
 export const settingsActive = writable(false);
@@ -26,6 +25,10 @@ export const settingsActive = writable(false);
 export const menuEntries = writable<MenuEntry[]>([])
 
 export const playNextList = writable<Result[]>([]);
+
+export const currentSearchType = writable<number>(0);
+
+export const albumsAddedToPlayNext = writable<Record<string, number>[]>([]);
 
 // if settings active, reset favorites active to false
 settingsActive.subscribe((value) => value === true ? favoritesActive.set(false) : null);
@@ -50,3 +53,60 @@ export function secondsToTime(seconds: number) {
         return m + ':' + s;
     return h + ':' + m + ':' + s;
 };
+
+
+// ------------------------------------------------------------
+// HASH Management
+// ------------------------------------------------------------
+
+interface Hash {
+    search?: string;
+    album?: string;
+    [key: string]: string;
+}
+
+export const hash = writable<Hash>(loadHash());
+
+function updateHash() {
+
+    const hashValues = get(hash);
+    const urlHash = new URLSearchParams(window.location.hash.slice(1));
+
+    // get keys
+    Object.keys(hashValues).forEach((key) => {
+        // get value
+        const value = hashValues[key];
+
+        // if value is empty, return
+        if (value === '') return urlHash.delete(key);
+
+        // set value
+        urlHash.set(key, value);
+    });
+
+    if (window.location.hash.slice(1) === urlHash.toString()) return;
+
+    // set hash
+    window.history.pushState(null, '', `#${urlHash.toString()}`);
+}
+
+function loadHash() {
+    const urlHash = new URLSearchParams(window.location.hash.slice(1));
+
+    const hashValues: Hash = {};
+
+    // get keys
+    urlHash.forEach((value, key) => {
+        // set value
+        hashValues[key] = value;
+    });
+
+    return hashValues;
+}
+
+hash.subscribe(updateHash);
+
+// listen for history changes
+window.addEventListener('popstate', () => {
+    hash.set(loadHash());
+});

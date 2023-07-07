@@ -5,6 +5,7 @@
     favoritesActive,
     settingsActive,
     menuEntries,
+    hash,
   } from '$lib/player';
   import { fade } from 'svelte/transition';
   import PlayingPreview from './PlayingView/PlayingPoster.svelte';
@@ -14,6 +15,7 @@
   import Settings from './SettingsView/Settings.svelte';
   import ContextMenu from './ContextMenu.svelte';
   import PlayNextView from './PlayNextView/PlayNextView.svelte';
+  import AlbumView from './AlbumView.svelte';
 
   let barsVisible = false;
 </script>
@@ -34,7 +36,9 @@
   </div>
   <!-- here goes results/favorites/settings -->
   <div transition:fade>
-    {#if !$favoritesActive && !$settingsActive}
+    {#if !$favoritesActive && !$settingsActive && $hash.album}
+      <AlbumView id={$hash.album} />
+    {:else if !$favoritesActive && !$settingsActive}
       <Results />
     {:else if $favoritesActive}
       <FavoritesList />
