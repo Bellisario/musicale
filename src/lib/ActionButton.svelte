@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
+
   export let title = '<empty>';
   export let active = false;
   export let color: string = null;
@@ -24,6 +28,13 @@
       .map(([key, value]) => `--${key}: ${value};`)
       .join(' ');
   }
+
+  function click() {
+    dispatch('click');
+
+    // focus on body to prevent the button from staying focused
+    (document.activeElement as HTMLButtonElement).blur();
+  }
 </script>
 
 <button
@@ -31,7 +42,7 @@
   class="btn"
   class:btn--active={active}
   class:btn--disabled={disabled}
-  on:click
+  on:click={click}
   style={getStyle(styles)}
   class:fitContent
 >

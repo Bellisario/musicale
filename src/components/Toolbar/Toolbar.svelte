@@ -6,7 +6,7 @@
 
   import { receive } from '$lib/crossFade';
 
-  import { favoritesActive, settingsActive, query } from '$lib/player';
+  import { favoritesActive, settingsActive, query, hash } from '$lib/player';
 
   import Logo from '$assets/logo.svg?raw';
 
@@ -19,7 +19,9 @@
 
   function submit() {
     blur();
-    dispatch('submit');
+
+    $hash.search = $query;
+    $hash.album = '';
   }
 
   function blur() {
@@ -29,10 +31,6 @@
       onMount(() => search.blur());
     }
   }
-
-  export let inputFocus: boolean;
-
-  $: inputFocus === false && blur();
 
   let isSmall = false;
 
@@ -88,7 +86,8 @@
 
   // focus after loading
   onMount(() => {
-    search.focus();
+    if (!$hash.search) search.focus();
+
     search.onfocus = () => {
       searchFocus = true;
     };

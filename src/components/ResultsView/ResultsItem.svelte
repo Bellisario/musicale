@@ -166,6 +166,8 @@
   img {
     user-select: none;
     pointer-events: none;
+
+    object-fit: cover;
   }
   .result {
     display: grid;
@@ -214,9 +216,10 @@
   .result__img {
     width: 6em;
     height: 6em;
-    transform-origin: center;
-    /* image is a little to small, scaling it */
-    transform: scale(1.085);
+ 
+    object-fit: cover;
+    object-position: center;
+
     opacity: 0;
     transition: opacity 0.5s ease-in;
   }

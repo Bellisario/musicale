@@ -13,24 +13,14 @@
     musicTitle,
     paused,
     query,
-    toSearch,
     favoritesActive,
     settingsActive,
+    hash,
   } from '$lib/player';
 
   import MainLayout from '$components/MainLayout.svelte';
 
   const DOCUMENT_ORIGINAL_TITLE = document.title;
-
-  paused.subscribe(() => {
-    if ($paused) {
-      document.title = DOCUMENT_ORIGINAL_TITLE;
-      return;
-    }
-    document.title = `${$musicTitle} | Musicale`;
-  });
-
-  let inputFocus = true;
 
   let loading = true;
   let loadingHiding = false;
@@ -39,56 +29,25 @@
   let isOnline = navigator.onLine;
   $: isOnline = navigator.onLine;
 
-  function submit(firstLoad = false) {
-    if ($query.trim() !== '') {
-      location.hash = '#search=' + $query;
-      if ($paused) {
-        document.title = `"${$query}" on Musicale`;
-      }
-      $toSearch = $query;
-      if (!firstLoad) {
-        $favoritesActive = false;
-        $settingsActive = false;
-      }
-    } else {
-      location.hash = '';
-      if ($paused) {
-        document.title = DOCUMENT_ORIGINAL_TITLE;
-      }
+  $: $hash.search, setTitle();
+  $: $musicTitle, setTitle();
+  $: $paused, setTitle();
+  $: $query = $hash.search;
+
+  function setTitle() {
+    if ($musicTitle && !$paused) {
+      document.title = `${$musicTitle} | Musicale`;
+      return;
+    }
+    if (!$hash.search) {
+      document.title = DOCUMENT_ORIGINAL_TITLE;
+      return;
+    }
+    if ($paused) {
+      document.title = `"${$hash.search}" on Musicale`;
+      return;
     }
   }
-
-  function getParameters() {
-    const hash = location.hash;
-    try {
-      const params = new URLSearchParams(hash.slice(1));
-      const search = params.get('search');
-      return { search };
-    } catch {
-      return { search: '' };
-    }
-  }
-
-  function lookupHash(firstLoad = false) {
-    const { search } = getParameters();
-    if (search !== null) {
-      $query = decodeURIComponent(search);
-      inputFocus = false;
-    } else {
-      $query = '';
-    }
-    submit(firstLoad);
-  }
-
-  onMount(() => {
-    lookupHash(true);
-  });
-  window.onpopstate = () => {
-    lookupHash();
-  };
-  window.onhashchange = () => {
-    lookupHash();
-  };
 
   onMount(() => {
     (
@@ -148,14 +107,11 @@
   <SwManager />
   <AudioPlayer />
   <Toolbar
-    bind:inputFocus
-    on:submit={() => submit()}
+    on:submit
     on:home={() => {
-      $query = '';
-      $toSearch = '';
+      $hash.search = '';
       $favoritesActive = false;
       $settingsActive = false;
-      submit();
     }}
   />
   <MainLayout />
