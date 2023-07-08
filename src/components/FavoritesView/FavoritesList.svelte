@@ -205,7 +205,7 @@
 <div class="container">
   <div class="results-grid" class:align-center={$favorites.length !== 0}>
     {#if $favorites.length === 0}
-      <div class="default grid-content" in:fade>
+      <div class="default grid-content" in:fade|global>
         <div class="texts">
           <h1>No favorite music</h1>
           <p>Mark a music as favorite to have it here.</p>
@@ -228,9 +228,10 @@
       </div>
       {#each $favorites as favorite, id (favorite.id)}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
           animate:flip={{ duration: 300 }}
-          transition:fade|local={{ duration: 180 }}
+          transition:fade={{ duration: 180 }}
           class="result"
           class:selected={$currentID === favorite.id}
           data-id={id}

@@ -28,14 +28,14 @@
     <!-- poster changes every music, so it's the same as using the music UUID -->
     {#key $poster}
       {#if barsVisible && !$paused}
-        <div class="frequency-bars" transition:fade>
+        <div class="frequency-bars" transition:fade|global>
           <FrequencyBars />
         </div>
       {/if}
     {/key}
   </div>
   <!-- here goes results/favorites/settings -->
-  <div transition:fade>
+  <div transition:fade|global>
     {#if !$favoritesActive && !$settingsActive && $hash.album}
       <AlbumView id={$hash.album} />
     {:else if !$favoritesActive && !$settingsActive}

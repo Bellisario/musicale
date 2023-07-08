@@ -11,9 +11,10 @@
 
 {#if !closed}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="modal"
-    transition:fade={{ duration: 150 }}
+    transition:fade|global={{ duration: 150 }}
     on:click|self={() => (closable ? (closed = true) : null)}
   >
     <div class="modal__content" class:closable style:max-width={maxWidth}>

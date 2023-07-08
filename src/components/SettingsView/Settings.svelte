@@ -126,7 +126,7 @@
         />
       </div>
       {#if importMessage}
-        <div class="import-message" in:fade>{importMessage}</div>
+        <div class="import-message" in:fade|global>{importMessage}</div>
       {/if}
     </div>
   </div>

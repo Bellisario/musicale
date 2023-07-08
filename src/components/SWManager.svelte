@@ -25,7 +25,7 @@
 </script>
 
 {#if toast}
-  <div class="pwa-toast translucent" transition:fade>
+  <div class="pwa-toast translucent" transition:fade|global>
     <div class="message">
       {#if $offlineReady}
         <span>Ready to work offline!</span>

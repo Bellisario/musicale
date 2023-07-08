@@ -11,9 +11,10 @@
   <div class="results-grid">
     {#each $playNextList as item, id (item.url)}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         animate:flip={{ duration: 300 }}
-        transition:fade|local={{ duration: 180 }}
+        transition:fade={{ duration: 180 }}
         class="result"
         class:selected={$currentID === urlToId(item.url)}
         data-id={id}

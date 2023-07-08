@@ -5,4 +5,4 @@ interface MenuEntry {
     action: () => void;
 }
 
-export default MenuEntry;
+export { type MenuEntry };
