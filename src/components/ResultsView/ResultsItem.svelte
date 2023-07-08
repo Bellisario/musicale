@@ -98,8 +98,9 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
-  in:fade
+  in:fade|global
   class="result"
   class:selected={$currentID === urlToId(result.url)}
   data-id={id}
@@ -151,7 +152,7 @@
         <div
           class="result__loved"
           class:loved
-          transition:fade|local
+          transition:fade
           on:click|stopPropagation={toggleFavorite}
         >
           {@html loveIcon}

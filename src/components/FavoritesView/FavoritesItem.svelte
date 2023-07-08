@@ -141,8 +141,9 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
-  in:fade
+  in:fade|global
   class="result {draggingPosition ? 'dragging-' + draggingPosition : ''}"
   class:dragging={draggingThis}
   class:selected={$currentID === result.id}
@@ -200,7 +201,7 @@
       {#if hovering || removing}
         <div
           class="result__remove"
-          transition:fade|local
+          transition:fade
           on:click|stopPropagation={() => {
             clearTimeout(removingCancelTimeout);
             if (removing)
@@ -217,7 +218,7 @@
             {@html binIcon}
           </div>
           {#if removing}
-            <span class="remove__warning" transition:fade|local>Sure?</span>
+            <span class="remove__warning" transition:fade>Sure?</span>
           {/if}
         </div>
       {/if}

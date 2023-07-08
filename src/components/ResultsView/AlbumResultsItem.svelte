@@ -22,9 +22,10 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="album"
-  in:fade
+  in:fade|global
   on:click={() => ($hash.album = getPlaylistId(album.url))}
 >
   <div class="img-container">

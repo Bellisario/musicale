@@ -106,10 +106,11 @@
 <div class="toolbar translucent {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="toolbar__hero"
       on:click={heroClick}
-      transition:receive={{ key: 'loading-screen', duration: 1000 }}
+      transition:receive|global={{ key: 'loading-screen', duration: 1000 }}
     >
       <div class="hero__img">
         {@html Logo}
@@ -118,6 +119,7 @@
   </div>
   <div class="toolbar__right">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="toolbar__settings"
       on:click={() => ($settingsActive = !$settingsActive)}
@@ -129,6 +131,7 @@
       </svg>
     </div>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="toolbar__favorites"
       on:click={() => ($favoritesActive = !$favoritesActive)}

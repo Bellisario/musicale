@@ -79,7 +79,7 @@
   <div class="preview-poster" id="preview-poster">
     {#if !posterHidden}
       <div
-        transition:fade
+        transition:fade|global
         class="poster-image"
         style="background-image: url({localPoster});"
       />
@@ -93,8 +93,9 @@
     Play a song to see info here
   </div>
   {#if $musicTitle !== '' && $artist !== ''}
-    <div class="preview-info" transition:fade>
+    <div class="preview-info" transition:fade|global>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="bars-button"
         class:enabled={barsVisible}
@@ -106,6 +107,7 @@
         </svg>
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="download-button"
         on:click={() => downloadSource()}
@@ -116,6 +118,7 @@
         </svg>
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="love-button"
         class:loving

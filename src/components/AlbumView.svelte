@@ -66,17 +66,18 @@
 <div class="container">
   <div class="content">
     {#await fetchPlaylist(id)}
-      <div in:fade={{ delay: 1000 }} class="loading">
-        Loading... <span in:fade={{ delay: 4000 }}
+      <div in:fade|global={{ delay: 1000 }} class="loading">
+        Loading... <span in:fade|global={{ delay: 4000 }}
           >this seems to take some more time...</span
-        ><br /><span in:fade={{ delay: 7000 }}
+        ><br /><span in:fade|global={{ delay: 7000 }}
           >Maybe there is a problem with API? Anyway no error for now. Working
           on...</span
         >
       </div>
     {:then album}
-      <div class="album" in:fade>
+      <div class="album" in:fade|global>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div class="back-button" on:click={() => window.history.back()}>
           <svg class="back__icon">
             <use xlink:href="#back" />
@@ -129,7 +130,7 @@
         {/each}
       </div>
     {:catch error}
-      <div class="message" in:fade>
+      <div class="message" in:fade|global>
         <div class="texts">
           <h1>Something went wrong</h1>
           <p>{error.message}</p>

@@ -97,6 +97,7 @@
 >
   {#each items as item, index}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <li
       class:highlight={completionAcceptedIndex === index}
       on:click={() => submit(item)}

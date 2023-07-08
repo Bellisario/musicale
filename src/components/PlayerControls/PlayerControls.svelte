@@ -171,18 +171,20 @@
 
 <div class="player translucent">
   {#if resetStatus !== 'none'}
-    <div class="reset-message" transition:fade>
+    <div class="reset-message" transition:fade|global>
       {resetStatus === 'done'
         ? 'Done!'
         : 'Keep pressing to reset playing time...'}
     </div>
   {/if}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div class="player__play-pause" on:click={toggle}>
     <div class="play-pause__icon" class:pause={!$paused} />
   </div>
   <Range />
   <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="player__volume"
     class:hiding={smallScreen}
@@ -193,7 +195,7 @@
       <use xlink:href="#volume" />
     </svg>
     {#if volumeRangeShowing}
-      <div class="volume__container translucent" transition:fade>
+      <div class="volume__container translucent" transition:fade|global>
         <VolumeRange on:autoClose={() => (volumeRangeShowing = false)} />
       </div>
     {/if}

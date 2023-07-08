@@ -3,7 +3,7 @@
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
 
-  import type MenuEntry from '$types/MenuEntry';
+  import { type MenuEntry } from '$types/MenuEntry';
 
   export let entries: MenuEntry[];
 
@@ -51,13 +51,15 @@
 <svelte:body on:contextmenu|preventDefault={contextMenuAction} />
 
 {#if showMenu}
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div class="transparent-back" on:contextmenu|stopPropagation={() => {}} />
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="menu translucent"
     bind:this={menuEl}
     use:clickOutside={closeMenu}
     on:contextmenu|stopPropagation={() => {}}
-    out:fade={{ duration: 250 }}
+    out:fade|global={{ duration: 250 }}
     style="--x: {position.x}; --y: {position.y}"
   >
     {#each entries as entry}
