@@ -7,14 +7,13 @@ import {
     smallPoster,
     artist
 } from '$lib/player';
-import urlToId from '$lib/urlToId';
 
 import { reset, useSource, play } from '$lib/AudioPlayer.svelte';
 import audioStreamGetter from '$lib/audioStreamGetter';
 
 import { get } from 'svelte/store';
 
-import type { Result } from '$types/Results';
+import type { FavoriteStore } from '$types/FavoritesStore';
 
 
 ended.subscribe((isEnded) => {
@@ -23,8 +22,8 @@ ended.subscribe((isEnded) => {
     const wasPlayingID = get(currentID);
 
     // find the index of the current playing song
-    const index = get(playNextList).findIndex((result) => {
-        return urlToId(result.url) === wasPlayingID;
+    const index = get(playNextList).findIndex((item) => {
+        return item.id === wasPlayingID;
     });
 
     // if the index is the last index, it means the song is the last song
@@ -34,21 +33,19 @@ ended.subscribe((isEnded) => {
     wantPlay(get(playNextList)[index + 1]);
 });
 
-async function wantPlay(result: Result) {
+async function wantPlay(item: FavoriteStore) {
     // reset currentID while fetching
     currentID.set('');
 
-    const id = urlToId(result.url);
-
-    musicTitle.set(result.title);
+    musicTitle.set(item.title);
 
     // reset the current audio stream
     reset();
-    const apiRes = await audioStreamGetter(id);
+    const apiRes = await audioStreamGetter(item.id);
 
     poster.set(apiRes.thumbnailUrl);
-    smallPoster.set(result.thumbnail);
-    artist.set(result.uploaderName);
+    smallPoster.set(item.poster);
+    artist.set(item.artist);
 
     const streamUrl = apiRes.audioStreams.filter(
         (stream) => stream.mimeType === 'audio/mp4'
@@ -57,7 +54,7 @@ async function wantPlay(result: Result) {
     useSource(streamUrl);
     play();
 
-    currentID.set(id)
+    currentID.set(item.id);
 }
 
 if ('mediaSession' in navigator) {
@@ -68,8 +65,8 @@ if ('mediaSession' in navigator) {
         const wasPlayingID = get(currentID);
 
         // find the index of the current playing song
-        const index = get(playNextList).findIndex((result) => {
-            return urlToId(result.url) === wasPlayingID;
+        const index = get(playNextList).findIndex((item) => {
+            return item.id === wasPlayingID;
         });
 
         // if the index is the first index, it means the song is the first song
@@ -85,8 +82,8 @@ if ('mediaSession' in navigator) {
         const wasPlayingID = get(currentID);
 
         // find the index of the current playing song
-        const index = get(playNextList).findIndex((result) => {
-            return urlToId(result.url) === wasPlayingID;
+        const index = get(playNextList).findIndex((item) => {
+            return item.id === wasPlayingID;
         });
 
         // if the index is the last index, it means the song is the last song

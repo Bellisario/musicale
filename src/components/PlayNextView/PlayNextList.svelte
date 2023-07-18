@@ -4,23 +4,22 @@
   import { flip } from 'svelte/animate';
 
   import PlayNextItem from './PlayNextItem.svelte';
-  import urlToId from '$lib/urlToId';
 </script>
 
 <div class="container">
   <div class="results-grid">
-    {#each $playNextList as item, id (item.url)}
+    {#each $playNextList as item, i (item.id)}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         animate:flip={{ duration: 300 }}
         transition:fade={{ duration: 180 }}
         class="result"
-        class:selected={$currentID === urlToId(item.url)}
-        data-id={id}
+        class:selected={$currentID === item.id}
+        data-id={i}
         on:click={() => console.log('clicked')}
       >
-        <PlayNextItem result={item} {id} />
+        <PlayNextItem {item} id={i} />
       </div>
     {/each}
   </div>

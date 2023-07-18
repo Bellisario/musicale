@@ -118,9 +118,18 @@
         title: 'Play Next',
         disabled:
           $currentID === urlToId(result.url) ||
-          $playNextList.map((a) => urlToId(a.url)).includes(resultID) ||
+          $playNextList.map((a) => a.id).includes(resultID) ||
           $currentID === '',
-        action: () => ($playNextList = [...$playNextList, result]),
+        action: () =>
+          ($playNextList = [
+            ...$playNextList,
+            {
+              id: resultID,
+              title: result.title,
+              artist: result.uploaderName,
+              poster: result.thumbnail,
+            },
+          ]),
         breakAfter: true,
       },
       {
@@ -217,7 +226,7 @@
   .result__img {
     width: 6em;
     height: 6em;
- 
+
     object-fit: cover;
     object-position: center;
 

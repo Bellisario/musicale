@@ -1,7 +1,6 @@
 import { get, writable } from 'svelte/store';
 import type { FavoriteStore } from '$types/FavoritesStore';
 import { type MenuEntry } from '$types/MenuEntry';
-import type { Result } from '$types/Results';
 
 export const duration = writable(0);
 export const currentTime = writable(0);
@@ -24,11 +23,16 @@ export const settingsActive = writable(false);
 
 export const menuEntries = writable<MenuEntry[]>([])
 
-export const playNextList = writable<Result[]>([]);
+export const playNextList = writable<FavoriteStore[]>([]);
 
 export const currentSearchType = writable<number>(0);
 
-export const albumsAddedToPlayNext = writable<Record<string, number>[]>([]);
+interface AlbumsAddedToPlayNext {
+    [key: string]: number
+}
+export const albumsAddedToPlayNext = writable<AlbumsAddedToPlayNext>({});
+
+export const favoritesPlayStatus = writable(-1);
 
 // if settings active, reset favorites active to false
 settingsActive.subscribe((value) => value === true ? favoritesActive.set(false) : null);
