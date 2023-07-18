@@ -11,21 +11,15 @@
     smallPoster,
     favorites,
     menuEntries,
+    playNextList,
   } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
   import binIcon from '$assets/bin.svg?raw';
 
-  export let result: FavoriteStore;
+  export let item: FavoriteStore;
   export let id: number;
-
-  let resultID = result.id;
-
-  let selectedResult = {
-    id: -1,
-    uuid: '',
-  };
 
   let canReplaySong = true;
   let hovering = false;
@@ -33,33 +27,24 @@
   let removing = false;
   let removingCancelTimeout: NodeJS.Timeout;
 
-  async function wantPlay(result: FavoriteStore, selectedId: number) {
+  async function wantPlay(item: FavoriteStore, selectedId: number) {
     // reset currentID while fetching
     $currentID = '';
 
-    const id = result.id;
+    const id = item.id;
 
-    $musicTitle = result.title;
+    $musicTitle = item.title;
 
-    const currentResult = {
-      id: selectedId,
-      uuid: id,
-    };
-
-    // prevent song replay if clicks on the same song again before loading
-    if (selectedResult.uuid === currentResult.uuid && !canReplaySong) {
-      return;
-    }
     canReplaySong = false;
 
-    selectedResult = currentResult;
     // reset the current audio stream
     reset();
+
     const apiRes = await audioStreamGetter(id);
 
     $poster = apiRes.thumbnailUrl;
-    $smallPoster = result.poster;
-    $artist = result.artist;
+    $smallPoster = item.poster;
+    $artist = item.artist;
 
     const streamUrl = apiRes.audioStreams.filter(
       (stream) => stream.mimeType === 'audio/mp4'
@@ -67,6 +52,7 @@
     console.log(streamUrl);
     useSource(streamUrl);
     play();
+
     canReplaySong = true;
     $currentID = id;
   }
@@ -87,7 +73,7 @@
     draggingPosition = null;
   }
   function onDragStart(e: DragEvent) {
-    e.dataTransfer.setData('application/musicale-favorite', result.id);
+    e.dataTransfer.setData('application/musicale-favorite', item.id);
     e.dataTransfer.effectAllowed = 'move';
 
     draggingThis = true;
@@ -114,7 +100,7 @@
 
     const movingItem = $favorites.find((f) => f.id === data);
 
-    if (result.id == movingItem.id) {
+    if (item.id == movingItem.id) {
       resetDragging();
       return;
     }
@@ -122,7 +108,7 @@
     // remove the item from the array
     $favorites = $favorites.filter((f) => f.id !== data);
 
-    const targetItemIndex = $favorites.findIndex((f) => f.id === result.id);
+    const targetItemIndex = $favorites.findIndex((f) => f.id === item.id);
 
     // add the item to the array
     $favorites = [
@@ -146,9 +132,9 @@
   in:fade|global
   class="result {draggingPosition ? 'dragging-' + draggingPosition : ''}"
   class:dragging={draggingThis}
-  class:selected={$currentID === result.id}
+  class:selected={$currentID === item.id}
   data-id={id}
-  on:click={() => wantPlay(result, id)}
+  on:click={() => wantPlay(item, id)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
   draggable="true"
@@ -163,27 +149,29 @@
     ($menuEntries = [
       {
         title: 'Play',
-        disabled: $currentID === result.id,
-        action: () => wantPlay(result, id),
+        disabled: $currentID === item.id,
+        action: () => wantPlay(item, id),
       },
       {
-        title: 'Play Next (currently not available)',
-        disabled: true,
-        action: () => {},
+        title: 'Play Next',
+        disabled:
+          $currentID === item.id ||
+          $playNextList.map((a) => a.id).includes(item.id) ||
+          $currentID === '',
+        action: () => ($playNextList = [...$playNextList, item]),
         breakAfter: true,
       },
       {
         title: 'Remove from favorites',
-        action: () =>
-          ($favorites = $favorites.filter((a) => a.id !== resultID)),
+        action: () => ($favorites = $favorites.filter((a) => a.id !== item.id)),
       },
     ])}
 >
-  <div class="result__grid1" style="--img: url('{result.poster}')">
+  <div class="result__grid1" style="--img: url('{item.poster}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
       <img
-        src={intersecting ? result.poster : ''}
-        alt={result.title}
+        src={intersecting ? item.poster : ''}
+        alt={item.title}
         class="result__img"
         use:lazyLoad
       />
@@ -191,12 +179,8 @@
   </div>
   <div class="result__grid2">
     <div class="result__title">
-      <h2
-        title={result.title !== truncate(result.title, 40)
-          ? result.title
-          : null}
-      >
-        {truncate(result.title, 40)}
+      <h2 title={item.title !== truncate(item.title, 40) ? item.title : null}>
+        {truncate(item.title, 40)}
       </h2>
       {#if hovering || removing}
         <div
@@ -205,7 +189,7 @@
           on:click|stopPropagation={() => {
             clearTimeout(removingCancelTimeout);
             if (removing)
-              $favorites = $favorites.filter((a) => a.id !== resultID);
+              $favorites = $favorites.filter((a) => a.id !== item.id);
             else {
               removing = true;
               removingCancelTimeout = setTimeout(() => {
@@ -223,7 +207,7 @@
         </div>
       {/if}
     </div>
-    <p>{result.artist}</p>
+    <p>{item.artist}</p>
   </div>
 </div>
 

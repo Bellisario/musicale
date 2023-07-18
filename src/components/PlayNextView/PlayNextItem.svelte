@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Result } from '$types/Results';
+  import type { FavoriteStore } from '$types/FavoritesStore';
   import audioStreamGetter from '$lib/audioStreamGetter';
   import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
@@ -18,12 +18,10 @@
   import binIcon from '$assets/bin.svg?raw';
   import urlToId from '$lib/urlToId';
 
-  export let result: Result;
+  export let item: FavoriteStore;
   export let id: number;
 
-  let resultID = urlToId(result.url);
-
-  let selectedResult = {
+  let selectedItem = {
     id: -1,
     uuid: '',
   };
@@ -34,33 +32,31 @@
   let removing = false;
   let removingCancelTimeout: NodeJS.Timeout;
 
-  async function wantPlay(result: Result, selectedId: number) {
+  async function wantPlay(item: FavoriteStore, selectedId: number) {
     // reset currentID while fetching
     $currentID = '';
 
-    const id = urlToId(result.url);
+    $musicTitle = item.title;
 
-    $musicTitle = result.title;
-
-    const currentResult = {
+    const currentItem = {
       id: selectedId,
-      uuid: id,
+      uuid: item.id,
     };
 
     // prevent song replay if clicks on the same song again before loading
-    if (selectedResult.uuid === currentResult.uuid && !canReplaySong) {
+    if (selectedItem.uuid === currentItem.uuid && !canReplaySong) {
       return;
     }
     canReplaySong = false;
 
-    selectedResult = currentResult;
+    selectedItem = currentItem;
     // reset the current audio stream
     reset();
-    const apiRes = await audioStreamGetter(id);
+    const apiRes = await audioStreamGetter(item.id);
 
     $poster = apiRes.thumbnailUrl;
-    $smallPoster = result.thumbnail;
-    $artist = result.uploaderName;
+    $smallPoster = item.poster;
+    $artist = item.artist;
 
     const streamUrl = apiRes.audioStreams.filter(
       (stream) => stream.mimeType === 'audio/mp4'
@@ -69,7 +65,7 @@
     useSource(streamUrl);
     play();
 
-    $currentID = id;
+    $currentID = item.id;
   }
 
   const lazyLoad = (el: HTMLDivElement) => {
@@ -88,7 +84,7 @@
     draggingPosition = null;
   }
   function onDragStart(e: DragEvent) {
-    e.dataTransfer.setData('application/musicale-play-next', resultID);
+    e.dataTransfer.setData('application/musicale-play-next', item.id);
     e.dataTransfer.effectAllowed = 'move';
 
     draggingThis = true;
@@ -113,19 +109,17 @@
 
     const data = e.dataTransfer.getData('application/musicale-play-next');
 
-    const movingItem = $playNextList.find((f) => urlToId(f.url) === data);
+    const movingItem = $playNextList.find((f) => f.id === data);
 
-    if (resultID == urlToId(movingItem.url)) {
+    if (item.id == movingItem.id) {
       resetDragging();
       return;
     }
 
     // remove the item from the array
-    $playNextList = $playNextList.filter((f) => urlToId(f.url) !== data);
+    $playNextList = $playNextList.filter((f) => f.id !== data);
 
-    const targetItemIndex = $playNextList.findIndex(
-      (f) => urlToId(f.url) === resultID
-    );
+    const targetItemIndex = $playNextList.findIndex((f) => f.id === item.id);
 
     // add the item to the array
     $playNextList = [
@@ -147,11 +141,11 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   in:fade|global
-  class="result {draggingPosition ? 'dragging-' + draggingPosition : ''}"
+  class="item {draggingPosition ? 'dragging-' + draggingPosition : ''}"
   class:dragging={draggingThis}
-  class:selected={$currentID === resultID}
+  class:selected={$currentID === item.id}
   data-id={id}
-  on:click={() => wantPlay(result, id)}
+  on:click={() => wantPlay(item, id)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
   draggable="true"
@@ -166,47 +160,39 @@
     ($menuEntries = [
       {
         title: 'Play Now',
-        disabled: $currentID === resultID,
-        action: () => wantPlay(result, id),
+        disabled: $currentID === item.id,
+        action: () => wantPlay(item, id),
       },
       {
         title: 'Remove from Play Next',
         action: () =>
-          ($playNextList = $playNextList.filter(
-            (a) => urlToId(a.url) !== resultID
-          )),
+          ($playNextList = $playNextList.filter((a) => a.id !== item.id)),
       },
     ])}
 >
-  <div class="result__grid1" style="--img: url('{result.thumbnail}')">
+  <div class="item__grid1" style="--img: url('{item.poster}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
       <img
-        src={intersecting ? result.thumbnail : ''}
-        alt={result.title}
-        class="result__img"
+        src={intersecting ? item.poster : ''}
+        alt={item.title}
+        class="item__img"
         use:lazyLoad
       />
     </IntersectionObserver>
   </div>
-  <div class="result__grid2">
-    <div class="result__title">
-      <h2
-        title={result.title !== truncate(result.title, 40)
-          ? result.title
-          : null}
-      >
-        {truncate(result.title, 40)}
+  <div class="item__grid2">
+    <div class="item__title">
+      <h2 title={item.title !== truncate(item.title, 40) ? item.title : null}>
+        {truncate(item.title, 40)}
       </h2>
       {#if hovering || removing}
         <div
-          class="result__remove"
+          class="item__remove"
           transition:fade
           on:click|stopPropagation={() => {
             clearTimeout(removingCancelTimeout);
             if (removing)
-              $playNextList = $playNextList.filter(
-                (a) => urlToId(a.url) !== resultID
-              );
+              $playNextList = $playNextList.filter((a) => a.id !== item.id);
             else {
               removing = true;
               removingCancelTimeout = setTimeout(() => {
@@ -224,7 +210,7 @@
         </div>
       {/if}
     </div>
-    <p>{result.uploaderName}</p>
+    <p>{item.artist}</p>
   </div>
 </div>
 
@@ -233,7 +219,7 @@
     user-select: none;
     pointer-events: none;
   }
-  .result {
+  .item {
     display: grid;
     gap: 0.5em;
     grid-template-columns: max-content;
@@ -241,20 +227,20 @@
 
     position: relative;
   }
-  .result > * {
+  .item > * {
     cursor: pointer;
   }
-  .result__title {
+  .item__title {
     position: relative;
     width: max-content;
   }
-  .result__title > h2 {
+  .item__title > h2 {
     overflow: hidden;
     position: relative;
     /* prevent text overflow by allowing a little more space */
     width: calc(100% + 0.1em);
   }
-  .result__title > h2::after {
+  .item__title > h2::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -264,12 +250,12 @@
     opacity: 0;
     transition: opacity 300ms, transform 300ms;
   }
-  .result.selected .result__title > h2::after {
+  .item.selected .item__title > h2::after {
     transform: translate3d(-100%, 0, 0);
     opacity: 1;
   }
 
-  .result__grid1 {
+  .item__grid1 {
     grid-column: 1;
     width: 6em;
     height: 6em;
@@ -279,7 +265,7 @@
 
     overflow: hidden;
   }
-  .result__img {
+  .item__img {
     width: 6em;
     height: 6em;
 
@@ -289,11 +275,11 @@
     opacity: 0;
     transition: opacity 0.5s ease-in;
   }
-  .result__grid2 {
+  .item__grid2 {
     grid-column: 2;
     margin-block: auto;
   }
-  .result__remove {
+  .item__remove {
     position: absolute;
     top: calc(50% - 0.5em);
     left: calc(100% + 0.5em);
@@ -313,7 +299,7 @@
   }
 
   /* keep hoovering while transitioning from title to remove button (fills a little "gap") */
-  .result__title::after {
+  .item__title::after {
     content: '';
     position: absolute;
     width: 100%;
@@ -325,12 +311,12 @@
     /* background-color: rgba(255, 0, 0, 0.3); */
   }
 
-  .result.dragging {
+  .item.dragging {
     opacity: 0.5;
   }
 
-  .result::before,
-  .result::after {
+  .item::before,
+  .item::after {
     content: '';
     position: absolute;
     left: 0;
@@ -341,11 +327,11 @@
 
     --el-padding: 0.5em;
   }
-  .result.dragging-before::before {
+  .item.dragging-before::before {
     top: calc(-0.1em - var(--el-padding));
     opacity: 1;
   }
-  .result.dragging-after::after {
+  .item.dragging-after::after {
     bottom: calc(-0.1em - var(--el-padding));
     opacity: 1;
   }

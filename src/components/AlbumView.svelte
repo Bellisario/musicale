@@ -6,6 +6,7 @@
   import { playNextList, ended, albumsAddedToPlayNext } from '$lib/player';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
+  import urlToId from '$lib/urlToId';
 
   export let id: string;
 
@@ -20,32 +21,58 @@
     return data;
   }
   function playAll(results: Result[]) {
-    if ($albumsAddedToPlayNext.find((album) => album[id] !== undefined)) return;
+    if ($albumsAddedToPlayNext[id] !== undefined) return;
 
     const playNextListOriginalSize = $playNextList.length;
 
-    $playNextList = [...$playNextList, ...results];
+    $playNextList = [
+      ...$playNextList,
+      ...results.map((result) => {
+        return {
+          id: urlToId(result.url),
+          title: result.title,
+          artist: result.uploaderName,
+          poster: result.thumbnail,
+        };
+      }),
+    ];
 
     if (playNextListOriginalSize === 0) {
       // "force" playing the first song
       $ended = true;
     }
 
-    $albumsAddedToPlayNext = [...$albumsAddedToPlayNext, { [id]: 0 }];
+    $albumsAddedToPlayNext = {
+      ...$albumsAddedToPlayNext,
+      [id]: 0,
+    };
   }
   function playShuffleAll(results: Result[]) {
-    if ($albumsAddedToPlayNext.find((album) => album[id] !== undefined)) return;
+    if ($albumsAddedToPlayNext[id] !== undefined) return;
 
     const playNextListOriginalSize = $playNextList.length;
 
-    $playNextList = [...$playNextList, ...shuffle(results)];
+    $playNextList = [
+      ...$playNextList,
+      ...shuffle(results).map((result) => {
+        return {
+          id: urlToId(result.url),
+          title: result.title,
+          artist: result.uploaderName,
+          poster: result.thumbnail,
+        };
+      }),
+    ];
 
     if (playNextListOriginalSize === 0) {
       // "force" playing the first song
       $ended = true;
     }
 
-    $albumsAddedToPlayNext = [...$albumsAddedToPlayNext, { [id]: 1 }];
+    $albumsAddedToPlayNext = {
+      ...$albumsAddedToPlayNext,
+      [id]: 1,
+    };
   }
   function shuffle(array: Result[]) {
     const newArray = [...array];
@@ -106,19 +133,15 @@
             <ActionButton
               title="Play All"
               on:click={() => playAll(album.relatedStreams)}
-              active={!!$albumsAddedToPlayNext.find((album) => album[id] === 0)}
-              disabled={!!$albumsAddedToPlayNext.find(
-                (album) => album[id] === 1
-              )}
+              active={$albumsAddedToPlayNext[id] === 0}
+              disabled={$albumsAddedToPlayNext[id] === 1}
               scale="0.9"
             />
             <ActionButton
               title="Shuffle"
               on:click={() => playShuffleAll(album.relatedStreams)}
-              active={!!$albumsAddedToPlayNext.find((album) => album[id] === 1)}
-              disabled={!!$albumsAddedToPlayNext.find(
-                (album) => album[id] === 0
-              )}
+              active={$albumsAddedToPlayNext[id] === 1}
+              disabled={$albumsAddedToPlayNext[id] === 0}
               scale="0.9"
             />
           </div>

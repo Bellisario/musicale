@@ -1,17 +1,12 @@
 <script lang="ts">
-  import audioStreamGetter from '$lib/audioStreamGetter';
-  import { play, useSource, reset, pause } from '$lib/AudioPlayer.svelte';
   import ActionButton from '$lib/ActionButton.svelte';
 
   import {
-    musicTitle,
-    poster,
-    artist,
     favorites,
     playNextList,
     currentID,
     ended,
-    smallPoster,
+    favoritesPlayStatus,
   } from '$lib/player';
   import { fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
@@ -22,157 +17,85 @@
   import FavoritesItem from './FavoritesItem.svelte';
   import Modal from '$lib/Modal.svelte';
 
-  let resultIndex = -1;
-
-  let autoplay = false;
-  let shuffle = false;
-
   let playWarning = false;
-  let afterWarningAction = () => {};
+  let warningAction = () => {};
 
-  ended.subscribe((value) => {
-    if (!value || resultIndex === -1 || $favorites.length === 0) return;
+  function playAll(results: FavoriteStore[]) {
+    const playNextListOriginalSize = $playNextList.length;
 
-    if (autoplay) {
-      resultIndex++;
-      if (resultIndex >= $favorites.length) resultIndex = 0;
-      wantPlay($favorites[resultIndex], resultIndex);
-      return;
+    results.forEach((result) => {
+      // find if the song is already in the playNextList
+      const found = $playNextList.find((a) => a.id === result.id);
+
+      if (found) return;
+
+      // if it's not, add it
+      $playNextList = [...$playNextList, result];
+    });
+
+    if (playNextListOriginalSize === 0) {
+      // "force" playing the first song
+      $ended = true;
     }
-    if (shuffle) {
-      shufflePlay();
-      return;
-    }
-  });
-
-  function toggleAutoplay() {
-    // check if PlayNextList is empty to prevent unexpected behavior
-    if ($playNextList.length !== 0) return alertPlayNext(toggleAutoplay);
-
-    autoplay = !autoplay;
-    if (autoplay) {
-      // reset shuffle
-      shuffle = false;
-      if (resultIndex === -1) resultIndex = 0;
-      wantPlay($favorites[resultIndex], resultIndex);
-      return;
-    }
-    // pause if play button is pressed
-    pause();
   }
+  function playShuffleAll(results: FavoriteStore[]) {
+    const playNextListOriginalSize = $playNextList.length;
 
-  let shuffleFavorites: number[] = [];
-  let lastShuffleIndex = -1;
+    const shuffledResults = shuffle(results);
 
-  function toggleShuffle() {
-    // check if PlayNextList is empty to prevent unexpected behavior
-    if ($playNextList.length !== 0) return alertPlayNext(toggleShuffle);
+    shuffledResults.forEach((result) => {
+      // find if the song is already in the playNextList
+      const found = $playNextList.find((a) => a.id === result.id);
 
-    shuffle = !shuffle;
-    if (shuffle) {
-      shuffleFavorites = getShuffle();
-      // reset autoplay
-      autoplay = false;
-      shufflePlay();
-      return;
+      if (found) return;
+
+      // if it's not, add it
+      $playNextList = [...$playNextList, result];
+    });
+
+    if (playNextListOriginalSize === 0) {
+      // "force" playing the first song
+      $ended = true;
     }
-    // pause if play button is pressed
-    pause();
   }
-
-  function alertPlayNext(fn: () => void) {
-    playWarning = true;
-    afterWarningAction = fn;
-  }
-
-  function getShuffle(): number[] {
-    // prevent unexpected behavior with 1 item
-    if ($favorites.length === 1) return [0];
-
-    // fill array with favorites indexes
-    let arr = [];
-    for (let i = 0; i < $favorites.length; i++) {
-      arr.push(i);
-    }
-
-    // randomly shuffle the array
-    for (let i = arr.length - 1; i > 0; i--) {
+  function shuffle(array: FavoriteStore[]) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
-    // invalidate shuffle if first item is the same as the last
-    if (lastShuffleIndex === arr[0]) return getShuffle();
-
-    lastShuffleIndex = arr[arr.length - 1];
-
-    return arr;
-  }
-  function shufflePlay() {
-    // if empty, re-roll
-    if (shuffleFavorites.length === 0) shuffleFavorites = getShuffle();
-
-    let i = shuffleFavorites.shift();
-
-    wantPlay($favorites[i], i);
+    return newArray;
   }
 
-  let selectedResult = {
-    id: -1,
-    uuid: '',
-  };
-
-  let canReplaySong = true;
-
-  function scrollWithSpace(el: Element) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  async function wantPlay(result: FavoriteStore, selectedId: number) {
-    // scroll to the selected music
-    setTimeout(() => {
-      const el = document.querySelector(`.result[data-id="${selectedId}"]`);
-      if (el) scrollWithSpace(el);
-    }, 100);
-
-    $currentID = result.id;
-    resultIndex = selectedId;
-    $musicTitle = result.title;
-
-    const currentResult = {
-      id: selectedId,
-      uuid: result.id,
-    };
-
-    // prevent song replay if clicks on the same song again before loading
-    if (selectedResult.uuid === currentResult.uuid && !canReplaySong) {
+  async function togglePlayAll() {
+    if ($favoritesPlayStatus !== -1) {
+      playWarning = true;
+      warningAction = () => togglePlayAll();
       return;
     }
-    canReplaySong = false;
 
-    selectedResult = currentResult;
-    // reset the current audio stream
-    reset();
-    const apiRes = await audioStreamGetter(result.id);
+    playAll($favorites);
 
-    $poster = apiRes.thumbnailUrl;
-    $smallPoster = result.poster;
-    $artist = result.artist;
+    $favoritesPlayStatus = 0;
+  }
+  async function toggleShuffle() {
+    if ($favoritesPlayStatus !== -1) {
+      playWarning = true;
+      warningAction = () => toggleShuffle();
+      return;
+    }
 
-    const streamUrl = apiRes.audioStreams.filter(
-      (stream) => stream.mimeType === 'audio/mp4'
-    )[0].url;
-    console.log(streamUrl);
-    useSource(streamUrl);
-    play();
-    canReplaySong = true;
+    playShuffleAll($favorites);
+
+    $favoritesPlayStatus = 1;
   }
 </script>
 
 <Modal closed={!playWarning} closable={false}>
-  <div slot="title">Play Next is in conflict with your action</div>
+  <div slot="title">Favorites are already on Play Next</div>
   <p>
-    You're trying to play your favorites list, but Play Next is trying to play
-    its own list.
+    You're trying to play your favorites list, but they're already on the Play
+    Next list.
     <br />
     To continue you can either clear the Play Next list or play a single song from
     your favorites list.
@@ -185,18 +108,17 @@
         scale="0.8"
         on:click={() => {
           $playNextList = [];
+          $currentID = '';
           playWarning = false;
-
-          afterWarningAction();
+          $favoritesPlayStatus = -1;
+          warningAction();
         }}
       />
       <ActionButton
         title="Cancel"
         backgroundColor="var(--back-color)"
         scale="0.8"
-        on:click={() => {
-          playWarning = false;
-        }}
+        on:click={() => (playWarning = false)}
       />
     </div>
   </div>
@@ -217,13 +139,13 @@
       <div class="buttons">
         <ActionButton
           title="Play"
-          on:click={toggleAutoplay}
-          active={autoplay}
+          on:click={togglePlayAll}
+          active={$favoritesPlayStatus === 0}
         />
         <ActionButton
           title="Shuffle"
           on:click={toggleShuffle}
-          active={shuffle}
+          active={$favoritesPlayStatus === 1}
         />
       </div>
       {#each $favorites as favorite, id (favorite.id)}
@@ -235,9 +157,8 @@
           class="result"
           class:selected={$currentID === favorite.id}
           data-id={id}
-          on:click={() => wantPlay(favorite, id)}
         >
-          <FavoritesItem result={favorite} {id} />
+          <FavoritesItem item={favorite} {id} />
         </div>
       {/each}
       <Footer size="small" />
