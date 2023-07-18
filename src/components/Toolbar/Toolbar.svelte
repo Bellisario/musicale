@@ -22,6 +22,9 @@
 
     $hash.search = $query;
     $hash.album = '';
+
+    $favoritesActive = false;
+    $settingsActive = false;
   }
 
   function blur() {

@@ -109,7 +109,8 @@
   <Toolbar
     on:submit
     on:home={() => {
-      $hash.search = '';
+      hash.set({});
+
       $favoritesActive = false;
       $settingsActive = false;
     }}
