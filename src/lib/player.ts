@@ -74,6 +74,10 @@ export const hash = writable<Hash>(loadHash());
 function updateHash() {
 
     const hashValues = get(hash);
+
+    // if hash is set to an empty object, remove it
+    if (Object.keys(hashValues).length === 0) return window.history.pushState(null, '', '#');
+
     const urlHash = new URLSearchParams(window.location.hash.slice(1));
 
     // get keys
