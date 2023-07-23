@@ -1,5 +1,5 @@
 <script lang="ts">
-  // cspell:word xlink spacebar keydown mousedown mousemove mouseup keyframes webp seekbackward seekforward
+  // cspell:word spacebar seekbackward seekforward nums
 
   import Range from './Range.svelte';
   import VolumeRange from './VolumeRange.svelte';
@@ -232,10 +232,7 @@
   .player__current-time,
   .player__duration {
     display: inline-block;
-    min-width: 2.75em;
-  }
-  .player__current-time {
-    margin-right: -0.25em;
+    font-variant-numeric: tabular-nums;
   }
   .info__divider {
     color: var(--theme-color);
