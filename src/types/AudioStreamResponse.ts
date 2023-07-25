@@ -58,4 +58,4 @@ interface RelatedStream {
     uploaderVerified: boolean;
 }
 
-export { type AudioStreamResponse };
+export type { AudioStreamResponse, OStream };

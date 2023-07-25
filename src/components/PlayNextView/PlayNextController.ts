@@ -9,7 +9,7 @@ import {
 } from '$lib/player';
 
 import { reset, useSource, play } from '$lib/AudioPlayer.svelte';
-import audioStreamGetter from '$lib/audioStreamGetter';
+import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
 
 import { get } from 'svelte/store';
 
@@ -47,11 +47,7 @@ async function wantPlay(item: FavoriteStore) {
     smallPoster.set(item.poster);
     artist.set(item.artist);
 
-    const streamUrl = apiRes.audioStreams.filter(
-        (stream) => stream.mimeType === 'audio/mp4'
-    )[0].url;
-    console.log(streamUrl);
-    useSource(streamUrl);
+    useSource(findBestStream(apiRes.audioStreams));
     play();
 
     currentID.set(item.id);

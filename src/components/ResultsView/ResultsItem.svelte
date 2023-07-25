@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
-  import audioStreamGetter from '$lib/audioStreamGetter';
+  import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
   import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import {
@@ -66,11 +66,7 @@
     $smallPoster = result.thumbnail;
     $artist = result.uploaderName;
 
-    const streamUrl = apiRes.audioStreams.filter(
-      (stream) => stream.mimeType === 'audio/mp4'
-    )[0].url;
-    console.log(streamUrl);
-    useSource(streamUrl);
+    useSource(findBestStream(apiRes.audioStreams));
     play();
     canReplaySong = true;
     $currentID = id;

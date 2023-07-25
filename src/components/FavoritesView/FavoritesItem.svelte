@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { FavoriteStore } from '$types/FavoritesStore';
-  import audioStreamGetter from '$lib/audioStreamGetter';
+  import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
   import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import {
@@ -46,11 +46,7 @@
     $smallPoster = item.poster;
     $artist = item.artist;
 
-    const streamUrl = apiRes.audioStreams.filter(
-      (stream) => stream.mimeType === 'audio/mp4'
-    )[0].url;
-    console.log(streamUrl);
-    useSource(streamUrl);
+    useSource(findBestStream(apiRes.audioStreams));
     play();
 
     canReplaySong = true;

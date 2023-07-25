@@ -2,7 +2,7 @@
 
 import any from '@ungap/promise-any';
 
-import { type AudioStreamResponse } from '$types/AudioStreamResponse';
+import type { AudioStreamResponse, OStream } from '$types/AudioStreamResponse';
 
 
 function APIFetch(url: string, id: string) {
@@ -60,4 +60,14 @@ export default async function audioStreamGetter(id: string): Promise<AudioStream
     abortAll();
 
     return json;
+}
+
+export function findBestStream(streams: OStream[]): string {
+    return streams
+        // use only mp4 streams
+        .filter(stream => stream.mimeType === 'audio/mp4')
+        // sort by bitrate
+        .sort((a, b) => b.bitrate - a.bitrate)
+        // get the first stream URL (highest bitrate)
+        [0].url;
 }
