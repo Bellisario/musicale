@@ -1,19 +1,10 @@
 <script lang="ts">
+  import { wantPlay } from '$lib/playNext';
   import type { Result } from '$types/Results';
+  import type { FavoriteStore } from '$types/FavoritesStore';
   import urlToId from '$lib/urlToId';
-  import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
-  import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
-  import {
-    musicTitle,
-    poster,
-    artist,
-    currentID,
-    smallPoster,
-    favorites,
-    menuEntries,
-    playNextList,
-  } from '$lib/player';
+  import { currentID, favorites, menuEntries, playNextList } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
@@ -24,53 +15,11 @@
 
   let resultID = urlToId(result.url);
 
-  let selectedResult = {
-    id: -1,
-    uuid: '',
-  };
-
-  let canReplaySong = true;
-
-  //! NOT WORKING
   let hovering = false;
 
   let loved: boolean;
 
   $: loved = $favorites.map((a) => a.id).includes(resultID);
-
-  async function wantPlay(result: Result, selectedId: number) {
-    // reset currentID while fetching
-    $currentID = '';
-
-    const id = urlToId(result.url);
-
-    $musicTitle = result.title;
-
-    const currentResult = {
-      id: selectedId,
-      uuid: id,
-    };
-
-    // prevent song replay if clicks on the same song again before loading
-    if (selectedResult.uuid === currentResult.uuid && !canReplaySong) {
-      return;
-    }
-    canReplaySong = false;
-
-    selectedResult = currentResult;
-    // reset the current audio stream
-    reset();
-    const apiRes = await audioStreamGetter(id);
-
-    $poster = apiRes.thumbnailUrl;
-    $smallPoster = result.thumbnail;
-    $artist = result.uploaderName;
-
-    useSource(findBestStream(apiRes.audioStreams));
-    play();
-    canReplaySong = true;
-    $currentID = id;
-  }
 
   function toggleFavorite() {
     if (loved) $favorites = $favorites.filter((a) => a.id !== resultID);
@@ -91,6 +40,13 @@
       el.style.opacity = '1';
     };
   };
+
+  const favoriteStore: FavoriteStore = {
+    id: resultID,
+    title: result.title,
+    artist: result.uploaderName,
+    poster: result.thumbnail,
+  };
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -100,7 +56,7 @@
   class="result"
   class:selected={$currentID === urlToId(result.url)}
   data-id={id}
-  on:click={() => wantPlay(result, id)}
+  on:click={() => wantPlay(favoriteStore)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
   on:contextmenu={() =>
@@ -108,7 +64,7 @@
       {
         title: 'Play',
         disabled: $currentID === urlToId(result.url),
-        action: () => wantPlay(result, id),
+        action: () => wantPlay(favoriteStore),
       },
       {
         title: 'Play Next',

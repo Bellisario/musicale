@@ -1,68 +1,20 @@
 <script lang="ts">
   import type { FavoriteStore } from '$types/FavoritesStore';
-  import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
-  import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
-  import {
-    musicTitle,
-    poster,
-    artist,
-    currentID,
-    smallPoster,
-    menuEntries,
-    playNextList,
-  } from '$lib/player';
+  import { currentID, menuEntries, playNextList } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
   import binIcon from '$assets/bin.svg?raw';
-  import urlToId from '$lib/urlToId';
+  import { wantPlay } from '$lib/playNext';
 
   export let item: FavoriteStore;
   export let id: number;
 
-  let selectedItem = {
-    id: -1,
-    uuid: '',
-  };
-
-  let canReplaySong = true;
   let hovering = false;
 
   let removing = false;
   let removingCancelTimeout: NodeJS.Timeout;
-
-  async function wantPlay(item: FavoriteStore, selectedId: number) {
-    // reset currentID while fetching
-    $currentID = '';
-
-    $musicTitle = item.title;
-
-    const currentItem = {
-      id: selectedId,
-      uuid: item.id,
-    };
-
-    // prevent song replay if clicks on the same song again before loading
-    if (selectedItem.uuid === currentItem.uuid && !canReplaySong) {
-      return;
-    }
-    canReplaySong = false;
-
-    selectedItem = currentItem;
-    // reset the current audio stream
-    reset();
-    const apiRes = await audioStreamGetter(item.id);
-
-    $poster = apiRes.thumbnailUrl;
-    $smallPoster = item.poster;
-    $artist = item.artist;
-
-    useSource(findBestStream(apiRes.audioStreams));
-    play();
-
-    $currentID = item.id;
-  }
 
   const lazyLoad = (el: HTMLDivElement) => {
     el.onload = () => {
@@ -141,7 +93,7 @@
   class:dragging={draggingThis}
   class:selected={$currentID === item.id}
   data-id={id}
-  on:click={() => wantPlay(item, id)}
+  on:click={() => wantPlay(item)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
   draggable="true"
@@ -157,7 +109,7 @@
       {
         title: 'Play Now',
         disabled: $currentID === item.id,
-        action: () => wantPlay(item, id),
+        action: () => wantPlay(item),
       },
       {
         title: 'Remove from Play Next',

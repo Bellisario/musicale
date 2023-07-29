@@ -2,18 +2,11 @@ import {
     playNextList,
     ended,
     currentID,
-    musicTitle,
-    poster,
-    smallPoster,
-    artist
 } from '$lib/player';
 
-import { reset, useSource, play } from '$lib/AudioPlayer.svelte';
-import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
+import { wantPlay } from '$lib/playNext';
 
 import { get } from 'svelte/store';
-
-import type { FavoriteStore } from '$types/FavoritesStore';
 
 
 ended.subscribe((isEnded) => {
@@ -32,26 +25,6 @@ ended.subscribe((isEnded) => {
     // play the next song
     wantPlay(get(playNextList)[index + 1]);
 });
-
-async function wantPlay(item: FavoriteStore) {
-    // reset currentID while fetching
-    currentID.set('');
-
-    musicTitle.set(item.title);
-
-    // reset the current audio stream
-    reset();
-    const apiRes = await audioStreamGetter(item.id);
-
-    poster.set(apiRes.thumbnailUrl);
-    smallPoster.set(item.poster);
-    artist.set(item.artist);
-
-    useSource(findBestStream(apiRes.audioStreams));
-    play();
-
-    currentID.set(item.id);
-}
 
 if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('previoustrack', () => {
