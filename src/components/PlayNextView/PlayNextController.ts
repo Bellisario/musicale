@@ -4,7 +4,7 @@ import {
     currentID,
 } from '$lib/player';
 
-import { wantPlay } from '$lib/playNext';
+import { wantPlay } from '$lib/wantPlay';
 
 import { get } from 'svelte/store';
 
