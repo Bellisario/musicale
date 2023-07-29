@@ -6,7 +6,7 @@
 
   import truncate from 'just-truncate';
   import binIcon from '$assets/bin.svg?raw';
-  import { wantPlay } from '$lib/playNext';
+  import { wantPlay } from '$lib/wantPlay';
 
   export let item: FavoriteStore;
   export let id: number;

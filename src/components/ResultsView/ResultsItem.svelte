@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wantPlay } from '$lib/playNext';
+  import { wantPlay } from '$lib/wantPlay';
   import type { Result } from '$types/Results';
   import type { FavoriteStore } from '$types/FavoritesStore';
   import urlToId from '$lib/urlToId';

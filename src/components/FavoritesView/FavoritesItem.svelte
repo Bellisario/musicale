@@ -2,7 +2,7 @@
   import type { FavoriteStore } from '$types/FavoritesStore';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import { currentID, favorites, menuEntries, playNextList } from '$lib/player';
-  import { wantPlay } from '$lib/playNext';
+  import { wantPlay } from '$lib/wantPlay';
 
   import { fade } from 'svelte/transition';
 
