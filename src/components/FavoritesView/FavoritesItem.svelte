@@ -1,18 +1,9 @@
 <script lang="ts">
   import type { FavoriteStore } from '$types/FavoritesStore';
-  import audioStreamGetter, { findBestStream } from '$lib/audioStreamGetter';
-  import { play, useSource, reset } from '$lib/AudioPlayer.svelte';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
-  import {
-    musicTitle,
-    poster,
-    artist,
-    currentID,
-    smallPoster,
-    favorites,
-    menuEntries,
-    playNextList,
-  } from '$lib/player';
+  import { currentID, favorites, menuEntries, playNextList } from '$lib/player';
+  import { wantPlay } from '$lib/wantPlay';
+
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
@@ -21,37 +12,10 @@
   export let item: FavoriteStore;
   export let id: number;
 
-  let canReplaySong = true;
   let hovering = false;
 
   let removing = false;
   let removingCancelTimeout: NodeJS.Timeout;
-
-  async function wantPlay(item: FavoriteStore, selectedId: number) {
-    // reset currentID while fetching
-    $currentID = '';
-
-    const id = item.id;
-
-    $musicTitle = item.title;
-
-    canReplaySong = false;
-
-    // reset the current audio stream
-    reset();
-
-    const apiRes = await audioStreamGetter(id);
-
-    $poster = apiRes.thumbnailUrl;
-    $smallPoster = item.poster;
-    $artist = item.artist;
-
-    useSource(findBestStream(apiRes.audioStreams));
-    play();
-
-    canReplaySong = true;
-    $currentID = id;
-  }
 
   const lazyLoad = (el: HTMLDivElement) => {
     el.onload = () => {
@@ -130,7 +94,7 @@
   class:dragging={draggingThis}
   class:selected={$currentID === item.id}
   data-id={id}
-  on:click={() => wantPlay(item, id)}
+  on:click={() => wantPlay(item)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
   draggable="true"
@@ -146,7 +110,7 @@
       {
         title: 'Play',
         disabled: $currentID === item.id,
-        action: () => wantPlay(item, id),
+        action: () => wantPlay(item),
       },
       {
         title: 'Play Next',
