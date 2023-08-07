@@ -10,7 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^2.4.3",
+    "@sveltejs/vite-plugin-svelte": "^2.4.4",
     "@tsconfig/svelte": "^5.0.0",
     "@ungap/promise-any": "^1.1.1",
     "just-truncate": "^2.2.0",
