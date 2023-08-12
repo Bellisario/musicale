@@ -1,14 +1,17 @@
 <script lang="ts">
-    import { playNextList } from '$lib/player';
+  import { playNextList, menuEntries } from '$lib/player';
   import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';
+  import ActionButton from '$lib/ActionButton.svelte';
 
   let modalClosed = true;
   let canOpenModal = true;
 
+  let forceOpenEffect = false;
+
   playNextList.subscribe((val) => {
-    if (val.length === 0) return canOpenModal = false;
+    if (val.length === 0) return (canOpenModal = false);
 
     canOpenModal = true;
   });
@@ -21,8 +24,21 @@
 <div
   class="modal-button translucent"
   class:button-visible={canOpenModal}
-  class:is-open={!modalClosed}
+  class:is-open={!modalClosed || forceOpenEffect}
   on:click={() => (modalClosed = false)}
+  on:contextmenu={() => {
+    forceOpenEffect = true;
+    $menuEntries = [
+      {
+        title: 'Clear Play Next',
+        action: () => {
+          $playNextList = [];
+          forceOpenEffect = false;
+        },
+        discardAction: () => (forceOpenEffect = false),
+      },
+    ];
+  }}
 >
   <svg class="play-next-icon">
     <use xlink:href="#play-next" />
@@ -32,9 +48,20 @@
   </div>
 </div>
 
-<Modal bind:closed={modalClosed} maxWidth={"70vw"}>
-  <div slot="custom__content">
+<Modal bind:closed={modalClosed} maxWidth={'70vw'}>
+  <div slot="custom__content" let:closeAction>
     <div class="title">Play Next <span class="beta">(Beta)</span></div>
+    <div style="padding-top:0.5em;">
+      <ActionButton
+        title="Clear Play Next"
+        scale="0.8"
+        backgroundColor="var(--back-color)"
+        on:click={() => {
+          closeAction(() => ($playNextList = []));
+          modalClosed = true;
+        }}
+      />
+    </div>
     <PlayNextList />
   </div>
 </Modal>

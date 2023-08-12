@@ -1,5 +1,5 @@
 <script lang="ts">
-  // cspell:word evenodd linejoin miterlimit
+  // cspell:word evenodd linejoin miterlimit outroend
 
   import { fade } from 'svelte/transition';
 
@@ -7,6 +7,9 @@
   export let closable = true;
 
   export let maxWidth = '500px';
+
+  let closeAction: () => void;
+  const setCloseAction = (fn: () => void) => (closeAction = fn);
 </script>
 
 {#if !closed}
@@ -16,6 +19,12 @@
     class="modal"
     transition:fade|global={{ duration: 150 }}
     on:click|self={() => (closable ? (closed = true) : null)}
+    on:outroend={() => {
+      if (!closeAction) return;
+
+      closeAction();
+      closeAction = null;
+    }}
   >
     <div class="modal__content" class:closable style:max-width={maxWidth}>
       {#if closable}
@@ -35,7 +44,7 @@
         </div>
       {/if}
       {#if $$slots.custom__content}
-        <slot name="custom__content" />
+        <slot name="custom__content" closeAction={setCloseAction} />
       {:else}
         <div class="content__title">
           <slot name="title" />

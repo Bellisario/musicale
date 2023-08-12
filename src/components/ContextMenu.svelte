@@ -7,6 +7,9 @@
 
   export let entries: MenuEntry[];
 
+  const callDiscardActions = () =>
+    entries.forEach((entry) => entry.discardAction?.());
+
   let position = {
     x: 0,
     y: 0,
@@ -47,7 +50,7 @@
   }
 </script>
 
-<svelte:window on:scroll={() => closeMenu()} />
+<svelte:window on:scroll={() => closeMenu(callDiscardActions)} />
 <svelte:body on:contextmenu|preventDefault={contextMenuAction} />
 
 {#if showMenu}
@@ -57,7 +60,7 @@
   <div
     class="menu translucent"
     bind:this={menuEl}
-    use:clickOutside={closeMenu}
+    use:clickOutside={() => closeMenu(callDiscardActions)}
     on:contextmenu|stopPropagation={() => {}}
     out:fade|global={{ duration: 250 }}
     style="--x: {position.x}; --y: {position.y}"
