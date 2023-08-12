@@ -23,8 +23,6 @@
   function playAll(results: Result[]) {
     if ($albumsAddedToPlayNext[id] !== undefined) return;
 
-    const playNextListOriginalSize = $playNextList.length;
-
     $playNextList = [
       ...$playNextList,
       ...results.map((result) => {
@@ -37,11 +35,6 @@
       }),
     ];
 
-    if (playNextListOriginalSize === 0) {
-      // "force" playing the first song
-      $ended = true;
-    }
-
     $albumsAddedToPlayNext = {
       ...$albumsAddedToPlayNext,
       [id]: 0,
@@ -49,8 +42,6 @@
   }
   function playShuffleAll(results: Result[]) {
     if ($albumsAddedToPlayNext[id] !== undefined) return;
-
-    const playNextListOriginalSize = $playNextList.length;
 
     $playNextList = [
       ...$playNextList,
@@ -63,11 +54,6 @@
         };
       }),
     ];
-
-    if (playNextListOriginalSize === 0) {
-      // "force" playing the first song
-      $ended = true;
-    }
 
     $albumsAddedToPlayNext = {
       ...$albumsAddedToPlayNext,

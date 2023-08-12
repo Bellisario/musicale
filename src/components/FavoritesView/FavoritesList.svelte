@@ -21,8 +21,6 @@
   let warningAction = () => {};
 
   function playAll(results: FavoriteStore[]) {
-    const playNextListOriginalSize = $playNextList.length;
-
     results.forEach((result) => {
       // find if the song is already in the playNextList
       const found = $playNextList.find((a) => a.id === result.id);
@@ -32,15 +30,8 @@
       // if it's not, add it
       $playNextList = [...$playNextList, result];
     });
-
-    if (playNextListOriginalSize === 0) {
-      // "force" playing the first song
-      $ended = true;
-    }
   }
   function playShuffleAll(results: FavoriteStore[]) {
-    const playNextListOriginalSize = $playNextList.length;
-
     const shuffledResults = shuffle(results);
 
     shuffledResults.forEach((result) => {
@@ -52,11 +43,6 @@
       // if it's not, add it
       $playNextList = [...$playNextList, result];
     });
-
-    if (playNextListOriginalSize === 0) {
-      // "force" playing the first song
-      $ended = true;
-    }
   }
   function shuffle(array: FavoriteStore[]) {
     const newArray = [...array];
