@@ -3,6 +3,7 @@ interface MenuEntry {
     disabled?: boolean;
     breakAfter?: boolean;
     action: () => void;
+    discardAction?: () => void;
 }
 
 export { type MenuEntry };
