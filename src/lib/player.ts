@@ -34,6 +34,8 @@ export const albumsAddedToPlayNext = writable<AlbumsAddedToPlayNext>({});
 
 export const favoritesPlayStatus = writable(-1);
 
+export const failedStreamURLs = writable<string[]>([]);
+
 // if settings active, reset favorites active to false
 settingsActive.subscribe((value) => value === true ? favoritesActive.set(false) : null);
 // if favorites active, reset settings active to false
