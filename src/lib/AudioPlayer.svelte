@@ -8,9 +8,12 @@
     volume,
     source,
     ended,
+    failedStreamURLs,
   } from './player';
 
   let el: HTMLAudioElement;
+  let lastApiUrl: string;
+  let fallbackFunction: () => void;
 
   export function play() {
     // prevent play if there is no source set
@@ -24,9 +27,16 @@
     el.pause();
     el.currentTime = 0;
   }
-  export function useSource(src: string) {
+  export function useSource(
+    src: string,
+    API_URL: string,
+    fallback: () => void
+  ) {
     el.src = src;
     source.set(src);
+
+    lastApiUrl = API_URL;
+    fallbackFunction = fallback;
   }
 </script>
 
@@ -38,6 +48,14 @@
   bind:paused={$paused}
   bind:volume={$volume}
   bind:ended={$ended}
+  on:error={() => {
+    console.log('Error loading audio with:', lastApiUrl);
+    console.log('Removing this API from the list of available APIs');
+
+    $failedStreamURLs = [...$failedStreamURLs, lastApiUrl];
+
+    fallbackFunction();
+  }}
   crossorigin="anonymous"
 />
 

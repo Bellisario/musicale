@@ -20,13 +20,13 @@ export async function wantPlay(item: FavoriteStore) {
     // reset the current audio stream
     reset();
 
-    const apiRes = await audioStreamGetter(id);
+    const [apiRes, API_URL] = await audioStreamGetter(id);
 
     poster.set(apiRes.thumbnailUrl);
     smallPoster.set(item.poster);
     artist.set(item.artist);
 
-    useSource(findBestStream(apiRes.audioStreams));
+    useSource(findBestStream(apiRes.audioStreams), API_URL, () => wantPlay(item));
     play();
 
     workingOnId = null;
