@@ -17,6 +17,8 @@
 
   let completionAcceptedIndex = -1;
 
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   function submit() {
     blur();
 
@@ -41,8 +43,8 @@
     return window.matchMedia('(any-hover: none)').matches;
   }
 
-  // allow small toolbar only on non-touch devices
-  if (!isTouch()) {
+  // allow small toolbar only on non-touch devices and non-safari devices
+  if (!(isTouch() || isSafari)) {
     document.addEventListener('scroll', function () {
       if (window.scrollY > 10) {
         isSmall = true;
