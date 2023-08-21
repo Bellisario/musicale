@@ -210,6 +210,9 @@
   }
   .hero__img {
     height: 1.5em;
+
+    /* fix for Safari logo position (hardcoding SVG aspect ratio) */
+    aspect-ratio: 202 / 57;
   }
   .toolbar__search {
     display: flex;
