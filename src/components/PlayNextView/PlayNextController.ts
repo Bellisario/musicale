@@ -2,6 +2,8 @@ import {
     playNextList,
     ended,
     currentID,
+    albumsAddedToPlayNext,
+    favoritesPlayStatus,
 } from '$lib/player';
 
 import { wantPlay } from '$lib/wantPlay';
@@ -65,6 +67,15 @@ playNextList.subscribe((list) => {
         playNext();
     
     playNextWasEmpty = list.length === 0;
+});
+
+// reset albumsAddedToPlayNext and favoritesPlayStatus to default values
+// when the user clears the Play Next list
+playNextList.subscribe((list) => {
+    if (list.length !== 0) return;
+
+    albumsAddedToPlayNext.set({});
+    favoritesPlayStatus.set(-1);
 });
 
 if ('mediaSession' in navigator) {

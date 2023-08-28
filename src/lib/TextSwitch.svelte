@@ -62,6 +62,8 @@
 
   button {
     background-color: unset;
+    color: #fff;
+
     border: 0;
     padding-block: 0.5em;
     font-size: 1rem;

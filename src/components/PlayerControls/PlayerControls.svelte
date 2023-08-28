@@ -79,7 +79,7 @@
       return;
     }
 
-    if (e.key === 'ArrowRight') {
+    if (e.key === 'ArrowRight' && !e.metaKey) {
       // e.preventDefault();
       let newTime = $currentTime + 5;
 
@@ -91,7 +91,7 @@
       return;
     }
 
-    if (e.key === 'ArrowLeft') {
+    if (e.key === 'ArrowLeft' && !e.metaKey) {
       // e.preventDefault();
       let newTime = $currentTime - 5;
 
