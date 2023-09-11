@@ -1,27 +1,19 @@
 <script lang="ts">
-  import { playNextList, currentID } from '$lib/player';
-  import { fade } from 'svelte/transition';
-  import { flip } from 'svelte/animate';
+  import { playNextList } from '$lib/player';
 
   import PlayNextItem from './PlayNextItem.svelte';
+  import Orderable from '$lib/Orderable.svelte';
 </script>
 
 <div class="container">
   <div class="results-grid">
-    {#each $playNextList as item, i (item.id)}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div
-        animate:flip={{ duration: 300 }}
-        transition:fade={{ duration: 180 }}
-        class="result"
-        class:selected={$currentID === item.id}
-        data-id={i}
-        on:click={() => console.log('clicked')}
-      >
-        <PlayNextItem {item} id={i} />
-      </div>
-    {/each}
+    <Orderable
+      class="list"
+      bind:itemsData={$playNextList}
+      Item={PlayNextItem}
+      dataType="play_next"
+      gap="1rem"
+    />
   </div>
 </div>
 

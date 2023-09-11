@@ -2,14 +2,15 @@
   import type { FavoriteStore } from '$types/FavoritesStore';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import { currentID, menuEntries, playNextList } from '$lib/player';
+  import { wantPlay } from '$lib/wantPlay';
+
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';
   import binIcon from '$assets/bin.svg?raw';
-  import { wantPlay } from '$lib/wantPlay';
 
   export let item: FavoriteStore;
-  export let id: number;
+  export let dragEl: boolean = false;
 
   let hovering = false;
 
@@ -18,91 +19,22 @@
 
   const lazyLoad = (el: HTMLDivElement) => {
     el.onload = () => {
-      el.style.opacity = '1';
+      el.classList.add('loaded');
     };
   };
 
   let currentItem: HTMLDivElement;
-  let draggingThis = false;
-  let draggingOverThis = false;
-  let draggingPosition: 'before' | 'after' | null;
-
-  function resetDragging() {
-    draggingOverThis = false;
-    draggingPosition = null;
-  }
-  function onDragStart(e: DragEvent) {
-    e.dataTransfer.setData('application/musicale-play-next', item.id);
-    e.dataTransfer.effectAllowed = 'move';
-
-    draggingThis = true;
-  }
-  function onDragEnd(e: DragEvent) {
-    draggingThis = false;
-    resetDragging();
-  }
-  function onDragOver(e: DragEvent) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-
-    // calculate the y position of the mouse
-    const y = e.clientY - currentItem.getBoundingClientRect().top;
-    // check if the mouse is in the upper half or lower half of the item
-    const isAfterHalf = y > currentItem.offsetHeight / 2;
-    // set the dragging position
-    draggingPosition = isAfterHalf ? 'after' : 'before';
-  }
-  function onDrop(e: DragEvent) {
-    e.preventDefault();
-
-    const data = e.dataTransfer.getData('application/musicale-play-next');
-
-    const movingItem = $playNextList.find((f) => f.id === data);
-
-    if (item.id == movingItem.id) {
-      resetDragging();
-      return;
-    }
-
-    // remove the item from the array
-    $playNextList = $playNextList.filter((f) => f.id !== data);
-
-    const targetItemIndex = $playNextList.findIndex((f) => f.id === item.id);
-
-    // add the item to the array
-    $playNextList = [
-      ...$playNextList.slice(
-        0,
-        targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
-      ),
-      movingItem,
-      ...$playNextList.slice(
-        targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
-      ),
-    ];
-
-    resetDragging();
-  }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   in:fade|global
-  class="item {draggingPosition ? 'dragging-' + draggingPosition : ''}"
-  class:dragging={draggingThis}
+  class="item"
   class:selected={$currentID === item.id}
-  data-id={id}
   on:click={() => wantPlay(item)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
-  draggable="true"
-  on:dragstart={onDragStart}
-  on:dragend={onDragEnd}
-  on:dragover={onDragOver}
-  on:dragenter={onDragOver}
-  on:dragleave={resetDragging}
-  on:drop={onDrop}
   bind:this={currentItem}
   on:contextmenu={() =>
     ($menuEntries = [
@@ -119,14 +51,18 @@
     ])}
 >
   <div class="item__grid1" style="--img: url('{item.poster}')">
-    <IntersectionObserver let:intersecting top={150} once={true}>
-      <img
-        src={intersecting ? item.poster : ''}
-        alt={item.title}
-        class="item__img"
-        use:lazyLoad
-      />
-    </IntersectionObserver>
+    {#if !dragEl}
+      <IntersectionObserver let:intersecting top={150} once={true}>
+        <img
+          src={intersecting ? item.poster : ''}
+          alt={item.title}
+          class="item__img"
+          use:lazyLoad
+        />
+      </IntersectionObserver>
+    {:else}
+      <img src={item.poster} alt={item.title} class="item__img loaded" />
+    {/if}
   </div>
   <div class="item__grid2">
     <div class="item__title">
@@ -223,6 +159,9 @@
     opacity: 0;
     transition: opacity 0.5s ease-in;
   }
+  .item__img.loaded {
+    opacity: 1;
+  }
   .item__grid2 {
     grid-column: 2;
     margin-block: auto;
@@ -257,30 +196,5 @@
 
     /* debug color */
     /* background-color: rgba(255, 0, 0, 0.3); */
-  }
-
-  .item.dragging {
-    opacity: 0.5;
-  }
-
-  .item::before,
-  .item::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 20em;
-    height: 0.1em;
-    background-color: var(--theme-color);
-    opacity: 0;
-
-    --el-padding: 0.5em;
-  }
-  .item.dragging-before::before {
-    top: calc(-0.1em - var(--el-padding));
-    opacity: 1;
-  }
-  .item.dragging-after::after {
-    bottom: calc(-0.1em - var(--el-padding));
-    opacity: 1;
   }
 </style>

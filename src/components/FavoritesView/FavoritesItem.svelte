@@ -10,7 +10,7 @@
   import binIcon from '$assets/bin.svg?raw';
 
   export let item: FavoriteStore;
-  export let id: number;
+  export let dragEl: boolean = false;
 
   let hovering = false;
 
@@ -19,91 +19,22 @@
 
   const lazyLoad = (el: HTMLDivElement) => {
     el.onload = () => {
-      el.style.opacity = '1';
+      el.classList.add('loaded');
     };
   };
 
   let currentItem: HTMLDivElement;
-  let draggingThis = false;
-  let draggingOverThis = false;
-  let draggingPosition: 'before' | 'after' | null;
-
-  function resetDragging() {
-    draggingOverThis = false;
-    draggingPosition = null;
-  }
-  function onDragStart(e: DragEvent) {
-    e.dataTransfer.setData('application/musicale-favorite', item.id);
-    e.dataTransfer.effectAllowed = 'move';
-
-    draggingThis = true;
-  }
-  function onDragEnd(e: DragEvent) {
-    draggingThis = false;
-    resetDragging();
-  }
-  function onDragOver(e: DragEvent) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-
-    // calculate the y position of the mouse
-    const y = e.clientY - currentItem.getBoundingClientRect().top;
-    // check if the mouse is in the upper half or lower half of the item
-    const isAfterHalf = y > currentItem.offsetHeight / 2;
-    // set the dragging position
-    draggingPosition = isAfterHalf ? 'after' : 'before';
-  }
-  function onDrop(e: DragEvent) {
-    e.preventDefault();
-
-    const data = e.dataTransfer.getData('application/musicale-favorite');
-
-    const movingItem = $favorites.find((f) => f.id === data);
-
-    if (item.id == movingItem.id) {
-      resetDragging();
-      return;
-    }
-
-    // remove the item from the array
-    $favorites = $favorites.filter((f) => f.id !== data);
-
-    const targetItemIndex = $favorites.findIndex((f) => f.id === item.id);
-
-    // add the item to the array
-    $favorites = [
-      ...$favorites.slice(
-        0,
-        targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
-      ),
-      movingItem,
-      ...$favorites.slice(
-        targetItemIndex + (draggingPosition === 'after' ? 1 : 0)
-      ),
-    ];
-
-    resetDragging();
-  }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   in:fade|global
-  class="result {draggingPosition ? 'dragging-' + draggingPosition : ''}"
-  class:dragging={draggingThis}
+  class="result"
   class:selected={$currentID === item.id}
-  data-id={id}
   on:click={() => wantPlay(item)}
   on:pointerover={() => (hovering = true)}
   on:pointerout={() => (hovering = false)}
-  draggable="true"
-  on:dragstart={onDragStart}
-  on:dragend={onDragEnd}
-  on:dragover={onDragOver}
-  on:dragenter={onDragOver}
-  on:dragleave={resetDragging}
-  on:drop={onDrop}
   bind:this={currentItem}
   on:contextmenu={() =>
     ($menuEntries = [
@@ -128,14 +59,18 @@
     ])}
 >
   <div class="result__grid1" style="--img: url('{item.poster}')">
-    <IntersectionObserver let:intersecting top={150} once={true}>
-      <img
-        src={intersecting ? item.poster : ''}
-        alt={item.title}
-        class="result__img"
-        use:lazyLoad
-      />
-    </IntersectionObserver>
+    {#if !dragEl}
+      <IntersectionObserver let:intersecting top={150} once={true}>
+        <img
+          src={intersecting ? item.poster : ''}
+          alt={item.title}
+          class="result__img"
+          use:lazyLoad
+        />
+      </IntersectionObserver>
+    {:else}
+      <img src={item.poster} alt={item.title} class="result__img loaded" />
+    {/if}
   </div>
   <div class="result__grid2">
     <div class="result__title">
@@ -232,6 +167,9 @@
     opacity: 0;
     transition: opacity 0.5s ease-in;
   }
+  .result__img.loaded {
+    opacity: 1;
+  }
   .result__grid2 {
     grid-column: 2;
     margin-block: auto;
@@ -266,30 +204,5 @@
 
     /* debug color */
     /* background-color: rgba(255, 0, 0, 0.3); */
-  }
-
-  .result.dragging {
-    opacity: 0.5;
-  }
-
-  .result::before,
-  .result::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 20em;
-    height: 0.1em;
-    background-color: var(--theme-color);
-    opacity: 0;
-
-    --el-padding: 0.5em;
-  }
-  .result.dragging-before::before {
-    top: calc(-0.1em - var(--el-padding));
-    opacity: 1;
-  }
-  .result.dragging-after::after {
-    bottom: calc(-0.1em - var(--el-padding));
-    opacity: 1;
   }
 </style>
