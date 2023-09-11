@@ -228,6 +228,8 @@
     height: var(--bars-height);
     width: 100%;
     bottom: 0;
+
+    z-index: 200;
   }
   .player__current-time,
   .player__duration {

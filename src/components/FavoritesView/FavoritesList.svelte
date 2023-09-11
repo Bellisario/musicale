@@ -5,17 +5,16 @@
     favorites,
     playNextList,
     currentID,
-    ended,
     favoritesPlayStatus,
   } from '$lib/player';
   import { fade } from 'svelte/transition';
-  import { flip } from 'svelte/animate';
 
   import type { FavoriteStore } from '$types/FavoritesStore';
 
   import Footer from '../Footer.svelte';
   import FavoritesItem from './FavoritesItem.svelte';
   import Modal from '$lib/Modal.svelte';
+  import Orderable from '$lib/Orderable.svelte';
 
   let playWarning = false;
   let warningAction = () => {};
@@ -134,19 +133,13 @@
           active={$favoritesPlayStatus === 1}
         />
       </div>
-      {#each $favorites as favorite, id (favorite.id)}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-          animate:flip={{ duration: 300 }}
-          transition:fade={{ duration: 180 }}
-          class="result"
-          class:selected={$currentID === favorite.id}
-          data-id={id}
-        >
-          <FavoritesItem item={favorite} {id} />
-        </div>
-      {/each}
+      <Orderable
+        class="list"
+        bind:itemsData={$favorites}
+        Item={FavoritesItem}
+        dataType="favorites"
+        gap="1rem"
+      />
       <Footer size="small" />
     {/if}
   </div>
@@ -162,9 +155,11 @@
   }
   .results-grid {
     display: grid;
-    gap: 1em;
     padding: 2em;
     min-height: calc(100vh - var(--bars-height) * 2);
+  }
+  .buttons {
+    margin-top: 0.75em;
   }
   .results-grid.align-center {
     align-content: center;
