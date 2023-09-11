@@ -20,7 +20,7 @@
 <style>
   .container {
     scroll-margin-top: calc(var(--bars-height) + 2rem);
-    padding: 1rem 0 1rem 0;
+    padding-bottom: 0.5rem;
   }
   .results-grid {
     display: grid;
