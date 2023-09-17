@@ -7,9 +7,9 @@
   export let dataType: string;
   export let gap: string;
 
-  let draggingId: string;
-  let hoveringIndex: number;
-  let draggingIndex: number;
+  let draggingId: string | undefined;
+  let hoveringIndex: number | undefined;
+  let draggingIndex: number | undefined;
 
   let draggingTemplateEl: HTMLDivElement;
   let draggingEl: HTMLDivElement;
@@ -23,6 +23,8 @@
   });
 
   async function onDragStart(e: DragEvent, data: string) {
+    if (!e.dataTransfer) return;
+
     e.dataTransfer.setData(`application/musicale-${dataType}`, data);
     e.dataTransfer.effectAllowed = 'move';
 
@@ -31,14 +33,14 @@
     await tick();
 
     draggingEl = draggingTemplateEl.cloneNode(true) as HTMLDivElement;
-    draggingEl.style.position = "absolute";
-    draggingEl.style.top = "-1000px";
-    draggingEl.style.opacity = "1";
+    draggingEl.style.position = 'absolute';
+    draggingEl.style.top = '-1000px';
+    draggingEl.style.opacity = '1';
 
     document.body.appendChild(draggingEl);
 
     e.dataTransfer.setDragImage(draggingEl, 0, 0);
-    
+
     requestAnimationFrame(() => {
       draggingId = data;
     });
@@ -52,6 +54,9 @@
   }
   function onDragOver(e: DragEvent) {
     e.preventDefault();
+
+    if (!e.dataTransfer) return;
+
     e.dataTransfer.dropEffect = 'move';
 
     const targetItemId = (e.currentTarget as HTMLDivElement).dataset.id;
@@ -66,6 +71,13 @@
     hoveringIndex = targetItemIndex;
   }
   function onDrop(e: DragEvent) {
+    if (!e.dataTransfer) return;
+
+    if (hoveringIndex === undefined || draggingIndex === undefined)
+      throw new Error(
+        'expected hoveringIndex and draggingIndex to be set before drop'
+      );
+
     let draggingOffset = 0;
 
     const data = e.dataTransfer.getData(`application/musicale-${dataType}`);

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // cspell:word typeof unobserve
 
   // from https://svelte.dev/repl/c461dfe7dbf84998a03fdb30785c27f3?version=3.16.7
@@ -11,7 +11,7 @@
   export let right = 0;
 
   let intersecting = false;
-  let container;
+  let container: Element;
 
   onMount(() => {
     if (typeof IntersectionObserver !== 'undefined') {

@@ -39,7 +39,7 @@
       items = [];
       return;
     }
-    let response: Response;
+    let response: Response | undefined;
     if (controller) {
       controller.abort();
     }
@@ -53,7 +53,7 @@
           signal: controller.signal,
         }
       );
-    } catch (err) {
+    } catch (err: any) {
       if (err.name === 'AbortError') {
         return;
       }

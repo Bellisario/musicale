@@ -32,7 +32,7 @@
   $: $hash.search, setTitle();
   $: $musicTitle, setTitle();
   $: $paused, setTitle();
-  $: $query = $hash.search;
+  $: $query = $hash.search || '';
 
   function setTitle() {
     if ($musicTitle && !$paused) {

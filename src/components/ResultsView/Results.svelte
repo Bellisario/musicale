@@ -58,7 +58,7 @@
     const el = document.querySelector(`.result[data-id="${resultIndex}"]`);
     const toolbar = document.querySelector('.toolbar');
 
-    if (!(el || toolbar)) return;
+    if (!el || !toolbar) return;
 
     scrollTo({
       // allow to see the (old) last result and a part of the previous
@@ -111,6 +111,12 @@
                   if (loadingMore) return;
 
                   loadingMore = true;
+
+                  if (!$hash.search)
+                    throw new Error(
+                      '$hash.search was expected to be a string here'
+                    );
+
                   loadMore($hash.search.trim());
                 }}
                 title={loadingMoreError
