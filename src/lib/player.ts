@@ -68,7 +68,7 @@ export function secondsToTime(seconds: number) {
 interface Hash {
     search?: string;
     album?: string;
-    [key: string]: string;
+    [key: string]: string | undefined;
 }
 
 export const hash = writable<Hash>(loadHash());
@@ -88,7 +88,7 @@ function updateHash() {
         const value = hashValues[key];
 
         // if value is empty, return
-        if (value === '') return urlHash.delete(key);
+        if (!value) return urlHash.delete(key);
 
         // set value
         urlHash.set(key, value);

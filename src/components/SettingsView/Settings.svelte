@@ -34,7 +34,7 @@
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
-  function importFavorites(force) {
+  function importFavorites(force: boolean = false) {
     if (!noFavorites && force !== true) {
       displayImportWarning = true;
       return;
@@ -44,7 +44,12 @@
     input.accept = 'application/json';
     input.onchange = () => {
       importMessage = '';
+
+      if (!input.files)
+        return importMessage = 'Import failed. No file specified.'
+
       const file = input.files[0];
+
       const reader = new FileReader();
       reader.onload = () => {
         try {
@@ -119,7 +124,7 @@
         />
         <ActionButton
           title="Import Favorites"
-          on:click={importFavorites}
+          on:click={() => importFavorites()}
           color="#fff"
           fitContent={false}
           scale="0.9"

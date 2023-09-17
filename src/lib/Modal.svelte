@@ -23,7 +23,7 @@
       if (!closeAction) return;
 
       closeAction();
-      closeAction = null;
+      closeAction = () => {};
     }}
   >
     <div class="modal__content" class:closable style:max-width={maxWidth}>

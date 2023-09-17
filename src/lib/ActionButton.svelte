@@ -5,16 +5,16 @@
 
   export let title = '<empty>';
   export let active = false;
-  export let color: string = null;
-  export let backgroundColor: string = null;
+  export let color: string | null = null;
+  export let backgroundColor: string | null = null;
   export let fitContent = true;
-  export let scale: string = null;
+  export let scale: string | null = null;
 
   /**
    * **warning:** disabled property won't prevent the click behavior from being fired but just style the element
    */
   export let disabled = false;
-  export let hoverTitle: string = null;
+  export let hoverTitle: string | null = null;
 
   let styles = {
     'theme-color': color,
@@ -22,7 +22,7 @@
     fs: scale,
   };
 
-  function getStyle(properties: { [key: string]: string }) {
+  function getStyle(properties: { [key: string]: string | null }) {
     return Object.entries(properties)
       .filter(([_, value]) => value !== null)
       .map(([key, value]) => `--${key}: ${value};`)

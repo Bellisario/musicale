@@ -17,12 +17,12 @@ export async function resultsAlbumGetter(query: string): Promise<AlbumResults> {
     return await res.json();
 }
 
-export async function loadMoreResults(query: string, nextpage: string): Promise<[Results, Error]> {
+export async function loadMoreResults(query: string, nextpage: string): Promise<[Results, null] | [null, Error]> {
     // fetch https://pipedapi.kavin.rocks/nextpage/search?nextpage=<param>
     try {
         const res = await fetch(`${baseURL}/nextpage/search?nextpage=${encodeURIComponent(nextpage)}&q=${encodeURIComponent(query)}&filter=music_songs`);
         return [await res.json(), null];
-    } catch (e) {
+    } catch (e: any) {
         return [null, e];
     }
 }
