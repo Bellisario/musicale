@@ -134,4 +134,21 @@
     margin-top: 1rem;
     font-size: 0.8rem;
   }
+
+  /* custom scrollbar */
+  .modal__content::-webkit-scrollbar-thumb {
+    background-color: #6b6b6b;
+    border: 4px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+  }
+  .modal__content::-webkit-scrollbar-thumb:hover {
+    background-color: #939393;
+  }
+  .modal__content::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  .modal__content::-webkit-scrollbar {
+    width: 16px;
+  }
 </style>
