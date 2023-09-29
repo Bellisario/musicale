@@ -1,15 +1,33 @@
 <script lang="ts">
-  import { playNextList, menuEntries, shuffle } from '$lib/player';
+  import { playNextList, menuEntries, shuffle, currentID } from '$lib/player';
   import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';
   import ActionButton from '$lib/ActionButton.svelte';
   import { wantPlay } from '$lib/wantPlay';
+  import { tick } from 'svelte';
 
   let modalClosed = true;
   let canOpenModal = true;
 
   let forceOpenEffect = false;
+
+  let modalEl: HTMLDivElement | null = null;
+
+  // scrolls to the currently playing item every time the modal is opened
+  $: if (!modalClosed) scrollIntoPlaying();
+  // scrolls smoothly to the currently playing item every time the currentID changes
+  $: $currentID, scrollIntoPlaying(true);
+
+  async function scrollIntoPlaying(smooth = false) {
+    await tick();
+    const playing = modalEl?.querySelector('.item .selected');
+    if (playing)
+      playing.scrollIntoView({
+        block: 'center',
+        behavior: smooth ? 'smooth' : 'instant',
+      });
+  }
 
   playNextList.subscribe((val) => {
     if (val.length === 0) return (canOpenModal = false);
@@ -50,7 +68,7 @@
 </div>
 
 <Modal bind:closed={modalClosed} maxWidth={'70vw'}>
-  <div slot="custom__content" let:closeAction>
+  <div slot="custom__content" let:closeAction bind:this={modalEl}>
     <div class="title">Play Next <span class="beta">(Beta)</span></div>
     <div style="padding-top:0.5em;display:flex;gap:0.5em;">
       <ActionButton
