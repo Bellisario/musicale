@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { playNextList, menuEntries } from '$lib/player';
+  import { playNextList, menuEntries, shuffle } from '$lib/player';
   import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';
   import ActionButton from '$lib/ActionButton.svelte';
+  import { wantPlay } from '$lib/wantPlay';
 
   let modalClosed = true;
   let canOpenModal = true;
@@ -51,7 +52,7 @@
 <Modal bind:closed={modalClosed} maxWidth={'70vw'}>
   <div slot="custom__content" let:closeAction>
     <div class="title">Play Next <span class="beta">(Beta)</span></div>
-    <div style="padding-top:0.5em;">
+    <div style="padding-top:0.5em;display:flex;gap:0.5em;">
       <ActionButton
         title="Clear Play Next"
         scale="0.8"
@@ -59,6 +60,15 @@
         on:click={() => {
           closeAction(() => ($playNextList = []));
           modalClosed = true;
+        }}
+      />
+      <ActionButton
+        title="Re-Shuffle & Play"
+        scale="0.8"
+        backgroundColor="var(--back-color)"
+        on:click={() => {
+          $playNextList = shuffle($playNextList);
+          wantPlay($playNextList[0]);
         }}
       />
     </div>
