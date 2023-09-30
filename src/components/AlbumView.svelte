@@ -3,7 +3,7 @@
   import { fade } from 'svelte/transition';
   import Footer from './Footer.svelte';
   import ResultsItem from './ResultsView/ResultsItem.svelte';
-  import { playNextList, ended, albumsAddedToPlayNext } from '$lib/player';
+  import { playNextList, ended, albumsAddedToPlayNext, shuffle } from '$lib/player';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
@@ -59,14 +59,6 @@
       ...$albumsAddedToPlayNext,
       [id]: 1,
     };
-  }
-  function shuffle(array: Result[]) {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
   }
 
   const lazyLoad = (el: HTMLDivElement) => {
