@@ -8,7 +8,7 @@
   <br />
   <a href="https://musicale.tk">Official Instance</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://discord.gg/VkvSJ4BT">Discord</a>
+  <a href="https://discord.gg/2AJa7nUAUT">Discord</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://github.com/Bellisario/musicale/issues">Issues</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
