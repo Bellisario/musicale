@@ -220,7 +220,7 @@
 
 <style>
   .player {
-    position: sticky;
+    position: fixed;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
