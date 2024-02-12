@@ -16,7 +16,7 @@
     "just-truncate": "^2.2.0",
     "postcss": "^8.4.35",
     "postcss-logical": "^7.0.1",
-    "svelte": "^4.2.9",
+    "svelte": "^4.2.10",
     "svelte-check": "^3.6.4",
     "svelte-preprocess": "^5.1.3",
     "tslib": "^2.6.2",
