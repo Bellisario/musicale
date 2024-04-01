@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
-    "@tsconfig/svelte": "^5.0.3",
+    "@tsconfig/svelte": "^5.0.4",
     "@ungap/promise-any": "^1.1.1",
     "just-truncate": "^2.2.0",
     "postcss": "^8.4.38",
