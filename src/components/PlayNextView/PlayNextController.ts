@@ -4,6 +4,7 @@ import {
     currentID,
     albumsAddedToPlayNext,
     favoritesPlayStatus,
+    playNextIndex,
 } from '$lib/player';
 
 import { wantPlay } from '$lib/wantPlay';
@@ -65,7 +66,7 @@ playNextList.subscribe((list) => {
         && get(currentID) === '' // 2.
     )
         playNext();
-    
+
     playNextWasEmpty = list.length === 0;
 });
 
@@ -78,35 +79,35 @@ playNextList.subscribe((list) => {
     favoritesPlayStatus.set(-1);
 });
 
+export function playPreviousSong() {
+    const index = get(playNextIndex);
+    // if there is no song in playNextList, return
+    if (index === null) return;
+
+    // if the index is the first index, it means the song is already the first song
+    if (index === 0) return;
+
+    // play the previous song
+    wantPlay(get(playNextList)[index - 1]);
+}
+
+export function playNextSong() {
+    const index = get(playNextIndex);
+    // if there is no song in playNextList, return
+    if (index === null) return;
+
+    // if the index is the last index, it means the song is the last song
+    if (index === get(playNextList).length - 1) return;
+
+    // play the next song
+    wantPlay(get(playNextList)[index + 1]);
+}
+
 if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('previoustrack', () => {
-        // if there is no song in playNextList, return
-        if (get(playNextList).length === 0) return;
-
-        // find the index of the last Play Next song
-        const index = get(playNextList).findIndex((item) => {
-            return item.id === lastPlayNextID;
-        });
-
-        // if the index is the first index, it means the song is the first song
-        if (index === 0) return;
-
-        // play the previous song
-        wantPlay(get(playNextList)[index - 1]);
+        playPreviousSong();
     });
     navigator.mediaSession.setActionHandler('nexttrack', () => {
-        // if there is no song in playNextList, return
-        if (get(playNextList).length === 0) return;
-
-        // find the index of the last Play Next song
-        const index = get(playNextList).findIndex((item) => {
-            return item.id === lastPlayNextID;
-        });
-
-        // if the index is the last index, it means the song is the last song
-        if (index === get(playNextList).length - 1) return;
-
-        // play the next song
-        wantPlay(get(playNextList)[index + 1]);
+        playNextSong();
     });
 }

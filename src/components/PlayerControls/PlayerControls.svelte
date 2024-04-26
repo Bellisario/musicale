@@ -12,11 +12,19 @@
     artist,
     poster,
     volume,
+    playNextList,
   } from '$lib/player';
   import { play, pause } from '$lib/AudioPlayer.svelte';
 
   import { fade } from 'svelte/transition';
   import clickOutside from '$lib/clickOutside';
+
+  import { tweened } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
+  import {
+    playNextSong,
+    playPreviousSong,
+  } from '$components/PlayNextView/PlayNextController';
 
   let smallScreen = false;
 
@@ -31,6 +39,18 @@
 
   let resetStatus: 'none' | 'working' | 'done' = 'none';
   let resetTimeout: NodeJS.Timeout;
+
+  // expressed in REMs
+  let playerButtonsWidth = tweened(1.75, {
+    duration: 300,
+    easing: cubicOut,
+  });
+
+  playNextList.subscribe((val) => {
+    if (val.length === 0) return playerButtonsWidth.set(1.75);
+
+    playerButtonsWidth.set(1.75 /*rem*/ * 3 /* buttons*/ + 2 /*rem for gap*/);
+  });
 
   paused.subscribe(() => {
     if ('mediaSession' in navigator) {
@@ -177,10 +197,26 @@
         : 'Keep pressing to reset playing time...'}
     </div>
   {/if}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="player__play-pause" on:click={toggle}>
-    <div class="play-pause__icon" class:pause={!$paused} />
+  <div class="player__buttons" style="--buttons-width:{$playerButtonsWidth}rem">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="player__previous-button" on:click={playPreviousSong}>
+      <svg class="double-arrow-icon">
+        <use xlink:href="#double-arrow" />
+      </svg>
+    </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="player__play-pause" on:click={toggle}>
+      <div class="play-pause__icon" class:pause={!$paused} />
+    </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="player__next-button" on:click={playNextSong}>
+      <svg class="double-arrow-icon">
+        <use xlink:href="#double-arrow" />
+      </svg>
+    </div>
   </div>
   <Range />
   <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -216,6 +252,18 @@
       d="M6 7l8-5v20l-8-5v-10zm-6 10h4v-10h-4v10zm20.264-13.264l-1.497 1.497c1.847 1.783 2.983 4.157 2.983 6.767 0 2.61-1.135 4.984-2.983 6.766l1.498 1.498c2.305-2.153 3.735-5.055 3.735-8.264s-1.43-6.11-3.736-8.264zm-.489 8.264c0-2.084-.915-3.967-2.384-5.391l-1.503 1.503c1.011 1.049 1.637 2.401 1.637 3.888 0 1.488-.623 2.841-1.634 3.891l1.503 1.503c1.468-1.424 2.381-3.309 2.381-5.394z"
     />
   </symbol>
+  <symbol id="double-arrow" viewBox="0 0 24 24">
+    <g id="layer1" transform="translate(-1.2345222e-7,-2.9999998)">
+      <path
+        d="m 18.292605,7.7669902 -7.574831,4.3733308 0,-8.7466618 z"
+        transform="matrix(1.9802421,0,0,2.057928,-12.223787,-3.9839066)"
+      />
+      <path
+        d="m 18.292605,7.7669902 -7.574831,4.3733308 0,-8.7466618 z"
+        transform="matrix(1.9802421,0,0,2.057928,-21.223787,-3.9839066)"
+      />
+    </g>
+  </symbol>
 </svg>
 
 <style>
@@ -239,6 +287,17 @@
   .info__divider {
     color: var(--theme-color);
     font-weight: 800;
+  }
+  .player__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    overflow: hidden;
+    height: auto;
+    animation: width 250ms ease;
+
+    width: var(--buttons-width, 1.75rem);
   }
   .player__play-pause {
     display: inline-block;
@@ -281,12 +340,20 @@
       5% 0%
     );
   }
-  .volume-icon {
+  .player__previous-button {
+    transform: scaleX(-1);
+  }
+  .volume-icon,
+  .double-arrow-icon {
     display: inline-block;
     width: 1.75em;
     height: 1.75em;
     fill: var(--theme-color);
     vertical-align: middle;
+  }
+  .double-arrow-icon {
+    /* quick alignment fix */
+    transform: translateY(0.2rem);
   }
   .player__volume {
     position: relative;

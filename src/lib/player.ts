@@ -1,4 +1,4 @@
-import { get, writable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import type { FavoriteStore } from '$types/FavoritesStore';
 import { type MenuEntry } from '$types/MenuEntry';
 
@@ -24,6 +24,18 @@ export const settingsActive = writable(false);
 export const menuEntries = writable<MenuEntry[]>([])
 
 export const playNextList = writable<FavoriteStore[]>([]);
+
+export const playNextIndex = derived([playNextList, currentID], ([$playNextList, $currentID]) => {
+    // if there is no song in playNextList, return
+    if ($playNextList.length === 0) return null;
+
+    // find the index of the last Play Next song
+    const index = $playNextList.findIndex((item) => {
+        return item.id === $currentID;
+    });
+
+    return index;
+});
 
 export const currentSearchType = writable<number>(0);
 
