@@ -14,6 +14,7 @@
     volume,
     playNextList,
     playNextIndex,
+    previousNextButtonsPreference,
   } from '$lib/player';
   import { play, pause } from '$lib/AudioPlayer.svelte';
 
@@ -47,10 +48,19 @@
     easing: cubicOut,
   });
 
-  playNextList.subscribe((val) => {
-    if (val.length === 0) return playerButtonsWidth.set(1.75);
+  let playNextListUnsubscribe = () => {};
+  previousNextButtonsPreference.subscribe((status) => {
+    if (status === 'off') {
+      playerButtonsWidth.set(1.75);
+      playNextListUnsubscribe();
+      return;
+    }
 
-    playerButtonsWidth.set(1.75 /*rem*/ * 3 /* buttons*/ + 2 /*rem for gap*/);
+    playNextListUnsubscribe = playNextList.subscribe((val) => {
+      if (val.length === 0) return playerButtonsWidth.set(1.75);
+
+      playerButtonsWidth.set(1.75 /*rem*/ * 3 /* buttons*/ + 2 /*rem for gap*/);
+    });
   });
 
   paused.subscribe(() => {

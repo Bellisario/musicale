@@ -63,6 +63,17 @@ favorites.subscribe((value) => {
     localStorage.setItem('favorites', JSON.stringify(value));
 });
 
+function evaluateSavedPreviousNextButtonsPreference() {
+    const preference = localStorage.getItem('previousNextButtonsPreference');
+    if (preference === 'on' || preference === 'off') return preference;
+    return 'on';
+}
+export const previousNextButtonsPreference = writable<'on' | 'off'>(evaluateSavedPreviousNextButtonsPreference());
+
+previousNextButtonsPreference.subscribe((value) => {
+    localStorage.setItem('previousNextButtonsPreference', value);
+});
+
 export function secondsToTime(seconds: number) {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0'),
         m = Math.floor(seconds % 3600 / 60).toString().padStart(2, '0'),

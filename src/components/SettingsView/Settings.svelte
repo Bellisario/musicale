@@ -1,11 +1,12 @@
 <script lang="ts">
   import Footer from '../Footer.svelte';
-  import { favorites } from '$lib/player';
+  import { favorites, previousNextButtonsPreference } from '$lib/player';
   import type { FavoriteStore } from '$types/FavoritesStore';
   import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
 
   import Modal from '$lib/Modal.svelte';
+  import TextSwitch from '$lib/TextSwitch.svelte';
 
   const favoritesVersion = '1.0.0';
   interface FavoritesExport {
@@ -46,7 +47,7 @@
       importMessage = '';
 
       if (!input.files)
-        return importMessage = 'Import failed. No file specified.'
+        return (importMessage = 'Import failed. No file specified.');
 
       const file = input.files[0];
 
@@ -71,6 +72,12 @@
     };
     input.click();
   }
+
+  let previousNextButtonsSelectedIndex =
+    $previousNextButtonsPreference === 'on' ? 0 : 1;
+
+  $: $previousNextButtonsPreference =
+    previousNextButtonsSelectedIndex === 0 ? 'on' : 'off';
 </script>
 
 <main>
@@ -107,32 +114,57 @@
   <div class="settings">
     <div class="settings__title">Settings</div>
     <div class="settings__content">
-      <div class="content__favorites-title">Manage favorites</div>
-      <div class="content__message">
-        Since Musicale saves all your favorites locally, you probably want to
-        export them if you're planning to use a new device.
-      </div>
-      <div class="content__buttons">
-        <ActionButton
-          title="Export Favorites"
-          on:click={() => (noFavorites ? null : exportFavorites())}
-          color="#fff"
-          fitContent={false}
-          scale="0.9"
-          disabled={noFavorites}
-          hoverTitle={noFavorites ? 'No favorites to export' : null}
-        />
-        <ActionButton
-          title="Import Favorites"
-          on:click={() => importFavorites()}
-          color="#fff"
-          fitContent={false}
-          scale="0.9"
-        />
-      </div>
-      {#if importMessage}
-        <div class="import-message" in:fade|global>{importMessage}</div>
-      {/if}
+      <section>
+        <div class="content__title">Manage favorites</div>
+        <div class="content__message">
+          Since Musicale saves all your favorites locally, you probably want to
+          export them if you're planning to use a new device.
+        </div>
+        <div class="content__buttons">
+          <ActionButton
+            title="Export Favorites"
+            on:click={() => (noFavorites ? null : exportFavorites())}
+            color="#fff"
+            fitContent={false}
+            scale="0.9"
+            disabled={noFavorites}
+            hoverTitle={noFavorites ? 'No favorites to export' : null}
+          />
+          <ActionButton
+            title="Import Favorites"
+            on:click={() => importFavorites()}
+            color="#fff"
+            fitContent={false}
+            scale="0.9"
+          />
+        </div>
+        {#if importMessage}
+          <div class="import-message" in:fade|global>{importMessage}</div>
+        {/if}
+      </section>
+      <section>
+        <div class="content__title">Personalization</div>
+        <div class="forced_h-space">
+          <TextSwitch
+            label="Previous/Next buttons on the player"
+            options={['On', 'Off']}
+            bind:selected={previousNextButtonsSelectedIndex}
+            buttonsWidth="3.5em"
+          />
+        </div>
+        <div class="content__message secondary">
+          {#if previousNextButtonsSelectedIndex === 0}
+            <span in:fade
+              >Previous/Next buttons will be displayed on the player when using
+              "Play Next".</span
+            >
+          {:else}
+            <span in:fade
+              >You can use keyboard shortcuts to navigate between tracks.</span
+            >
+          {/if}
+        </div>
+      </section>
     </div>
   </div>
   <Footer size="small" />
@@ -145,6 +177,9 @@
     min-height: calc(100vh - var(--bars-height) * 2);
     align-content: space-between;
   }
+  section + section {
+    margin-top: 2em;
+  }
   .settings__title {
     font-size: var(--fs-big);
     font-weight: 700;
@@ -153,13 +188,17 @@
     max-width: 500px;
     max-width: 50ch;
   }
-  .content__favorites-title {
+  .content__title {
     font-size: var(--fs-medium);
     font-weight: 700;
     margin-bottom: 1rem;
   }
   .content__message {
     margin-bottom: 1rem;
+  }
+  .content__message.secondary {
+    opacity: 0.7;
+    font-size: 0.9rem;
   }
   .content__buttons {
     display: grid;
@@ -177,5 +216,9 @@
     display: flex;
     flex-direction: row;
     gap: 1em;
+  }
+  .forced_h-space > :global(div) {
+    display: flex;
+    justify-content: space-between;
   }
 </style>
