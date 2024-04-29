@@ -13,6 +13,7 @@
     poster,
     volume,
     playNextList,
+    playNextIndex,
   } from '$lib/player';
   import { play, pause } from '$lib/AudioPlayer.svelte';
 
@@ -200,7 +201,11 @@
   <div class="player__buttons" style="--buttons-width:{$playerButtonsWidth}rem">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="player__previous-button" on:click={playPreviousSong}>
+    <div
+      class="player-button player__previous-button"
+      class:disabled={$playNextIndex === 0}
+      on:click={playPreviousSong}
+    >
       <svg class="double-arrow-icon">
         <use xlink:href="#double-arrow" />
       </svg>
@@ -212,7 +217,11 @@
     </div>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="player__next-button" on:click={playNextSong}>
+    <div
+      class="player-button player__next-button"
+      class:disabled={$playNextList.length - 1 === $playNextIndex}
+      on:click={playNextSong}
+    >
       <svg class="double-arrow-icon">
         <use xlink:href="#double-arrow" />
       </svg>
@@ -297,6 +306,13 @@
     animation: width 250ms ease;
 
     width: var(--buttons-width, 1.75rem);
+  }
+  .player-button {
+    transition: opacity 250ms ease;
+  }
+  .player-button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
   .player__play-pause {
     display: inline-block;
