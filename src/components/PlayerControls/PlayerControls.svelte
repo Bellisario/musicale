@@ -272,7 +272,6 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 0.5em;
     height: var(--bars-height);
     width: 100%;
     bottom: 0;
