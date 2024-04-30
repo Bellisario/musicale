@@ -1,11 +1,18 @@
 <script lang="ts">
-  import { playNextList, menuEntries, shuffle, currentID } from '$lib/player';
+  import {
+    playNextList,
+    menuEntries,
+    shuffle,
+    currentID,
+    playNextIndex,
+  } from '$lib/player';
   import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';
   import ActionButton from '$lib/ActionButton.svelte';
   import { wantPlay } from '$lib/wantPlay';
   import { tick } from 'svelte';
+  import { playNextSong, playPreviousSong } from './PlayNextController';
 
   let modalClosed = true;
   let canOpenModal = true;
@@ -54,6 +61,25 @@
           $playNextList = [];
           forceOpenEffect = false;
         },
+        discardAction: () => (forceOpenEffect = false),
+        breakAfter: true,
+      },
+      {
+        title: 'Play Previous',
+        action: () => {
+          playPreviousSong();
+          forceOpenEffect = false;
+        },
+        disabled: $playNextIndex === 0,
+        discardAction: () => (forceOpenEffect = false),
+      },
+      {
+        title: 'Play Next',
+        action: () => {
+          playNextSong();
+          forceOpenEffect = false;
+        },
+        disabled: $playNextIndex === $playNextList.length - 1,
         discardAction: () => (forceOpenEffect = false),
       },
     ];
