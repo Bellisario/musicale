@@ -150,6 +150,8 @@
     display: grid;
     padding: 2em;
     min-height: calc(100vh - var(--bars-height) * 2);
+    /* prevent bottom content from staying under the bars */
+    margin-bottom: var(--bars-height);
   }
   .buttons {
     margin-top: 0.75em;

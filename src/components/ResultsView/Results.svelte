@@ -166,6 +166,8 @@
 
     /* separate TextSwitch */
     margin-top: 1em;
+    /* prevent bottom content from staying under the bars */
+    margin-bottom: var(--bars-height);
   }
   .message {
     /* quick fix for footer positioning (should be re-written completely) */
