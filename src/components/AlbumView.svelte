@@ -162,6 +162,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    /* prevent bottom content from staying under the bars */
+    margin-bottom: var(--bars-height);
   }
 
   .img-container {
