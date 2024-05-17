@@ -169,6 +169,7 @@
   .img-container {
     position: relative;
     width: 10rem;
+    height: 10rem;
     aspect-ratio: 1;
     border-radius: 0.5rem;
 
