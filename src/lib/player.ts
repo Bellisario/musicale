@@ -1,6 +1,8 @@
-import { derived, get, writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import type { FavoriteStore } from '$types/FavoritesStore';
 import { type MenuEntry } from '$types/MenuEntry';
+
+import { createHashStore } from 'svelte-hash';
 
 export const duration = writable(0);
 export const currentTime = writable(0);
@@ -92,63 +94,8 @@ export function shuffle<T>(array: T[]): T[] {
     return newArray;
 }
 
-
-// ------------------------------------------------------------
-// HASH Management
-// ------------------------------------------------------------
-
 interface Hash {
-    search?: string;
-    album?: string;
-    [key: string]: string | undefined;
+    search: string;
+    album: string;
 }
-
-export const hash = writable<Hash>(loadHash());
-
-function updateHash() {
-
-    const hashValues = get(hash);
-
-    // if hash is set to an empty object, remove it
-    if (Object.keys(hashValues).length === 0) return window.history.pushState(null, '', '#');
-
-    const urlHash = new URLSearchParams(window.location.hash.slice(1));
-
-    // get keys
-    Object.keys(hashValues).forEach((key) => {
-        // get value
-        const value = hashValues[key];
-
-        // if value is empty, return
-        if (!value) return urlHash.delete(key);
-
-        // set value
-        urlHash.set(key, value);
-    });
-
-    if (window.location.hash.slice(1) === urlHash.toString()) return;
-
-    // set hash
-    window.history.pushState(null, '', `#${urlHash.toString()}`);
-}
-
-function loadHash() {
-    const urlHash = new URLSearchParams(window.location.hash.slice(1));
-
-    const hashValues: Hash = {};
-
-    // get keys
-    urlHash.forEach((value, key) => {
-        // set value
-        hashValues[key] = value;
-    });
-
-    return hashValues;
-}
-
-hash.subscribe(updateHash);
-
-// listen for history changes
-window.addEventListener('popstate', () => {
-    hash.set(loadHash());
-});
+export const hash = createHashStore<Hash>();
