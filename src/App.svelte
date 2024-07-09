@@ -19,6 +19,7 @@
   } from '$lib/player';
 
   import MainLayout from '$components/MainLayout.svelte';
+  import FocusOutline from '$lib/focuser/FocusOutline.svelte';
 
   const DOCUMENT_ORIGINAL_TITLE = document.title;
 
@@ -117,6 +118,7 @@
   />
   <MainLayout />
   <Player />
+  <FocusOutline />
 </main>
 
 <style>

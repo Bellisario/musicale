@@ -98,21 +98,22 @@
     <div class="title">Play Next <span class="beta">(Beta)</span></div>
     <div style="padding-top:0.5em;display:flex;gap:0.5em;">
       <ActionButton
+        title="Re-Shuffle & Play"
+        scale="0.8"
+        backgroundColor="var(--back-color)"
+        primary={true}
+        on:click={() => {
+          $playNextList = shuffle($playNextList);
+          wantPlay($playNextList[0]);
+        }}
+      />
+      <ActionButton
         title="Clear Play Next"
         scale="0.8"
         backgroundColor="var(--back-color)"
         on:click={() => {
           closeAction(() => ($playNextList = []));
           modalClosed = true;
-        }}
-      />
-      <ActionButton
-        title="Re-Shuffle & Play"
-        scale="0.8"
-        backgroundColor="var(--back-color)"
-        on:click={() => {
-          $playNextList = shuffle($playNextList);
-          wantPlay($playNextList[0]);
         }}
       />
     </div>

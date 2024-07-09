@@ -118,6 +118,8 @@
     width: max-content;
 
     position: relative;
+
+    outline: none;
   }
   .result > * {
     cursor: pointer;

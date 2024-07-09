@@ -1,6 +1,6 @@
 <script lang="ts">
   import Footer from '../Footer.svelte';
-  import { favorites, previousNextButtonsPreference } from '$lib/player';
+  import { favorites, previousNextButtonsPreference, animatedFocusPreference } from '$lib/player';
   import type { FavoriteStore } from '$types/FavoritesStore';
   import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
@@ -78,6 +78,12 @@
 
   $: $previousNextButtonsPreference =
     previousNextButtonsSelectedIndex === 0 ? 'on' : 'off';
+
+  let animatedFocusSelectedIndex =
+    $animatedFocusPreference === 'on' ? 0 : 1;
+
+  $: $animatedFocusPreference =
+    animatedFocusSelectedIndex === 0 ? 'on' : 'off';
 </script>
 
 <main>
@@ -104,6 +110,7 @@
           title="Cancel"
           backgroundColor="var(--back-color)"
           scale="0.8"
+          primary={true}
           on:click={() => {
             displayImportWarning = false;
           }}
@@ -144,25 +151,37 @@
       </section>
       <section>
         <div class="content__title">Personalization</div>
-        <div class="forced_h-space">
-          <TextSwitch
-            label="Previous/Next buttons on the player"
-            options={['On', 'Off']}
-            bind:selected={previousNextButtonsSelectedIndex}
-            buttonsWidth="3.5em"
-          />
+        <div>
+          <div class="forced_h-space">
+            <TextSwitch
+              label="Animated focus outline (Beta)"
+              options={['On', 'Off']}
+              bind:selected={animatedFocusSelectedIndex}
+              buttonsWidth="3.5em"
+            />
+          </div>
         </div>
-        <div class="content__message secondary">
-          {#if previousNextButtonsSelectedIndex === 0}
-            <span in:fade
-              >Previous/Next buttons will be displayed on the player when using
-              "Play Next".</span
-            >
-          {:else}
-            <span in:fade
-              >You can use keyboard shortcuts to navigate between tracks.</span
-            >
-          {/if}
+        <div>
+          <div class="forced_h-space">
+            <TextSwitch
+              label="Previous/Next buttons on the player"
+              options={['On', 'Off']}
+              bind:selected={previousNextButtonsSelectedIndex}
+              buttonsWidth="3.5em"
+            />
+          </div>
+          <div class="content__message secondary">
+            {#if previousNextButtonsSelectedIndex === 0}
+              <span in:fade
+                >Previous/Next buttons will be displayed on the player when using
+                "Play Next".</span
+              >
+            {:else}
+              <span in:fade
+                >You can use keyboard shortcuts to navigate between tracks.</span
+              >
+            {/if}
+          </div>
         </div>
       </section>
     </div>

@@ -1,21 +1,88 @@
 <script lang="ts">
+  import { tick } from 'svelte';
+
   // cspell:word evenodd linejoin miterlimit outroend
 
   import { fade } from 'svelte/transition';
 
   export let closed = false;
   export let closable = true;
+  export let focusTrap = true;
 
   export let maxWidth = '500px';
 
   let closeAction: () => void;
   const setCloseAction = (fn: () => void) => (closeAction = fn);
+
+  let el: HTMLDivElement;
+  let focusableElements: NodeListOf<HTMLButtonElement> | null = null;
+
+  async function getFocusableButtons() {
+    await tick();
+
+    focusableElements = el.querySelectorAll('.focusable');
+
+    focusPrimaryButton();
+  }
+  function clearFocusableButtons() {
+    focusableElements = null;
+  }
+  function focusPrimaryButton() {
+    if (!focusableElements) return;
+    for (let i = 0; i < focusableElements.length; i++) {
+      if (focusableElements[i].classList.contains('primary')) {
+        focusableElements[i].focus();
+        return;
+      }
+    }
+    focusableElements[0].focus();
+  }
+
+  // lock focus on modal buttons
+  function onModalBlur(e: FocusEvent) {
+    if (!focusTrap) return;
+
+    if (!focusableElements) return;
+    if ([...focusableElements].includes(e.relatedTarget as HTMLButtonElement))
+      return;
+
+    let position: number;
+
+    try {
+      position = focusableElements[0].compareDocumentPosition(
+        e.relatedTarget as HTMLElement,
+      );
+    } catch (e) {
+      return;
+    }
+
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      focusableElements[0].focus();
+    } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+      focusableElements[focusableElements.length - 1].focus();
+    } else {
+      focusPrimaryButton();
+    }
+  }
+
+  function handleEscape(e: KeyboardEvent) {
+    if (e.key === 'Escape' && closable) {
+      closed = true;
+    }
+  }
+
+  $: closed === false && focusTrap
+    ? getFocusableButtons()
+    : clearFocusableButtons();
 </script>
+
+<svelte:window on:keydown={handleEscape} />
 
 {#if !closed}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
+    bind:this={el}
     class="modal"
     transition:fade|global={{ duration: 150 }}
     on:click|self={() => (closable ? (closed = true) : null)}
@@ -26,7 +93,12 @@
       closeAction = () => {};
     }}
   >
-    <div class="modal__content" class:closable style:max-width={maxWidth}>
+    <div
+      class="modal__content"
+      class:closable
+      style:max-width={maxWidth}
+      on:focusout={onModalBlur}
+    >
       {#if closable}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="modal__close" on:click={() => (closed = true)}>
@@ -79,7 +151,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 998;
   }
   .modal__content {
     background-color: var(--bars-color);

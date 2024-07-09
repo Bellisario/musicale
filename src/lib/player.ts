@@ -76,6 +76,17 @@ previousNextButtonsPreference.subscribe((value) => {
     localStorage.setItem('previousNextButtonsPreference', value);
 });
 
+function evaluateSavedAnimatedFocusPreference() {
+    const preference = localStorage.getItem('animatedFocusPreference');
+    if (preference === 'on' || preference === 'off') return preference;
+    return 'on';
+}
+export const animatedFocusPreference = writable<'on' | 'off'>(evaluateSavedAnimatedFocusPreference());
+
+animatedFocusPreference.subscribe((value) => {
+    localStorage.setItem('animatedFocusPreference', value);
+});
+
 export function secondsToTime(seconds: number) {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0'),
         m = Math.floor(seconds % 3600 / 60).toString().padStart(2, '0'),

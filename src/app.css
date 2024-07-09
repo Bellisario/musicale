@@ -50,6 +50,18 @@ p {
   margin: 0;
 }
 
+a {
+  color: var(--theme-color);
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 250ms ease-in-out;
+
+  outline-color: var(--theme-color);
+}
+a:hover {
+  opacity: 0.75;
+}
+
 .translucent {
   background-color: var(--bars-color);
   -webkit-backdrop-filter: blur(var(--bars-back-blur));
@@ -77,4 +89,31 @@ p {
 .no-script {
   padding: 1rem 0;
   font-size: 1rem;
+}
+
+input,
+button {
+  outline-color: var(--theme-color);
+}
+button.active {
+  outline-offset: 4px;
+}
+
+div.focusable {
+  outline-color: var(--theme-color);
+}
+
+/* focusable styles */
+body.focusable-active input.focusable,
+body.focusable-active button.focusable,
+body.focusable-active a.focusable,
+body.focusable-active div.focusable {
+  outline: none;
+}
+
+/* safari outline-color fix */
+a:focus,
+input:focus,
+button:focus {
+  outline: 2px solid var(--theme-color);
 }
