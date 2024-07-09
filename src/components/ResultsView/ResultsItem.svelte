@@ -9,6 +9,7 @@
 
   import truncate from 'just-truncate';
   import loveIcon from '$assets/love.svg?raw';
+  import focusable from '$lib/focuser/focusable';
 
   export let result: Result;
   export let id: number;
@@ -51,6 +52,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <div
   in:fade|global
   class="result"
@@ -89,6 +91,8 @@
         action: toggleFavorite,
       },
     ])}
+  use:focusable={{ margin: 7, borderRadius: 5 }}
+  tabindex="0"
 >
   <div class="result__grid1" style="--img: url('{result.thumbnail}')">
     <IntersectionObserver let:intersecting top={150} once={true}>
@@ -158,7 +162,9 @@
     height: 0.1rem;
     background-color: var(--theme-color);
     opacity: 0;
-    transition: opacity 300ms, transform 300ms;
+    transition:
+      opacity 300ms,
+      transform 300ms;
   }
   .result.selected .result__title > h2::after {
     transform: translate3d(-100%, 0, 0);

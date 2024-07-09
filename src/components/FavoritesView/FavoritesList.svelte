@@ -96,6 +96,7 @@
         title="Cancel"
         backgroundColor="var(--back-color)"
         scale="0.8"
+        primary={true}
         on:click={() => (playWarning = false)}
       />
     </div>

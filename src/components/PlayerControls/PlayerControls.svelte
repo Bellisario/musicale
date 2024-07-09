@@ -100,8 +100,12 @@
 
   // listen for spacebar
   window.addEventListener('keydown', (e) => {
-    // if focusing elements (ex. input) don't do anything
-    if (document.activeElement !== document.body) return;
+    // if focusing elements (ex. input) don't do anything (except buttons)
+    if (
+      document.activeElement !== document.body &&
+      document.activeElement?.tagName !== 'BUTTON'
+    )
+      return;
 
     if (e.code === 'Space') {
       e.preventDefault();

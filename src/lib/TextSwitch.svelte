@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
+  import focusable from '$lib/focuser/focusable';
 
   export let buttonsWidth = '5rem';
 
@@ -33,6 +34,7 @@
         on:click={() => {
           selected = i;
         }}
+        use:focusable
       >
         {option}
       </button>
@@ -68,6 +70,8 @@
     padding-block: 0.5em;
     font-size: 1rem;
 
+    border-radius: var(--button-radius);
+
     width: var(--buttons-width);
 
     position: relative;
@@ -82,7 +86,9 @@
     transition: opacity 300ms ease-in-out;
     opacity: 1;
   }
-
+  button:focus {
+    opacity: 1;
+  }
   .selector {
     position: absolute;
     top: var(--padding);

@@ -9,6 +9,7 @@
   import { favoritesActive, settingsActive, query, hash } from '$lib/player';
 
   import Logo from '$assets/logo.svg?raw';
+  import focusable from '$lib/focuser/focusable';
 
   const dispatch = createEventDispatcher();
 
@@ -79,8 +80,8 @@
 
   // focus on "/" key press
   function handleInput(e: KeyboardEvent) {
-    // if focusing elements (ex. input) don't do anything
-    if (document.activeElement !== document.body) return;
+    // if focusing input elements don't do anything
+    if (document.activeElement instanceof HTMLInputElement) return;
 
     if (e.key === '/') {
       e.preventDefault();
@@ -123,30 +124,28 @@
     </div>
   </div>
   <div class="toolbar__right">
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div
+    <button
       class="toolbar__settings"
       on:click={() => ($settingsActive = !$settingsActive)}
       class:active={$settingsActive}
       title="{$settingsActive ? 'Close' : 'Open'} settings"
+      use:focusable
     >
       <svg class="settings__icon">
         <use xlink:href="#settings" />
       </svg>
-    </div>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div
+    </button>
+    <button
       class="toolbar__favorites"
       on:click={() => ($favoritesActive = !$favoritesActive)}
       class:active={$favoritesActive}
       title="{$favoritesActive ? 'Close' : 'Open'} favorites"
+      use:focusable
     >
       <svg class="favorites__icon">
         <use xlink:href="#favorites" />
       </svg>
-    </div>
+    </button>
     <form class="toolbar__search" on:submit|preventDefault={submit}>
       <input
         type="text"
@@ -158,6 +157,7 @@
           completionAcceptedIndex = -1;
           searchFocus = true;
         }}
+        use:focusable
       />
       <Autocomplete
         on:submit={submit}
@@ -225,7 +225,6 @@
   }
   .toolbar__search input {
     border: none;
-    outline: none;
     background-color: var(--back-color);
     color: var(--text-color);
     padding: 0.2em 0.5em;
@@ -240,10 +239,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border: none;
     margin-right: 1em;
     position: relative;
     background-color: var(--back-color);
-    padding: 0.5em;
+    padding: 0.7em;
     border-radius: 50%;
     transition: background-color 0.25s ease-in-out;
     cursor: pointer;

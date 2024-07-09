@@ -1,4 +1,5 @@
 <script lang="ts">
+  import focusable from '$lib/focuser/focusable';
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
@@ -9,6 +10,7 @@
   export let backgroundColor: string | null = null;
   export let fitContent = true;
   export let scale: string | null = null;
+  export let primary = false;
 
   /**
    * **warning:** disabled property won't prevent the click behavior from being fired but just style the element
@@ -17,7 +19,7 @@
   export let hoverTitle: string | null = null;
 
   let styles = {
-    'theme-color': color,
+    'button-theme-color': color,
     'bars-color': backgroundColor,
     fs: scale,
   };
@@ -40,18 +42,21 @@
 <button
   title={hoverTitle}
   class="btn"
-  class:btn--active={active}
+  class:active
+  class:primary
   class:btn--disabled={disabled}
   on:click={click}
   style={getStyle(styles)}
   class:fitContent
+  use:focusable
 >
   <span class="btn__span">{title}</span>
 </button>
 
 <style>
   .btn {
-    all: unset;
+    border: none;
+    font-family: inherit;
 
     font-size: calc(var(--fs, 1) * 1em);
 
@@ -76,14 +81,14 @@
   }
   .btn__span {
     display: block;
-    color: var(--theme-color);
+    color: var(--button-theme-color, var(--theme-color));
     font-size: 1.1em;
     font-weight: 700;
   }
-  .btn--active {
-    background-color: var(--theme-color);
+  .btn.active {
+    background-color: var(--button-theme-color);
   }
-  .btn--active .btn__span {
+  .btn.active .btn__span {
     color: var(--bars-color);
   }
 

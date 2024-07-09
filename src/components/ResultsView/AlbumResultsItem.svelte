@@ -1,4 +1,5 @@
 <script lang="ts">
+  import focusable from '$lib/focuser/focusable';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import { hash } from '$lib/player';
   import type { AlbumResult } from '$types/AlbumResults';
@@ -21,12 +22,11 @@
   };
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
+<button
   class="album"
   in:fade|global
-  on:click={() => ($hash.album = getPlaylistId(album.url))}
+  on:click|capture={() => ($hash.album = getPlaylistId(album.url))}
+  use:focusable={{ margin: 7, borderRadius: 5 }}
 >
   <div class="img-container">
     <IntersectionObserver let:intersecting top={150} once={true}>
@@ -42,7 +42,7 @@
     <div class="title">{album.name}</div>
     <div class="author">{album.uploaderName}</div>
   </div>
-</div>
+</button>
 
 <style>
   .img-container {
@@ -69,6 +69,12 @@
   }
 
   .album {
+    border: none;
+    background-color: unset;
+    font-family: inherit;
+    font-size: inherit;
+    padding: unset;
+
     display: grid;
     grid-template-columns: 1fr;
 

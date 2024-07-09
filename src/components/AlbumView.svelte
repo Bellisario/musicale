@@ -3,10 +3,15 @@
   import { fade } from 'svelte/transition';
   import Footer from './Footer.svelte';
   import ResultsItem from './ResultsView/ResultsItem.svelte';
-  import { playNextList, ended, albumsAddedToPlayNext, shuffle } from '$lib/player';
+  import {
+    playNextList,
+    albumsAddedToPlayNext,
+    shuffle,
+  } from '$lib/player';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
+  import focusable from '../lib/focuser/focusable';
 
   export let id: string;
 
@@ -81,13 +86,15 @@
       </div>
     {:then album}
       <div class="album" in:fade|global>
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div class="back-button" on:click={() => window.history.back()}>
+        <button
+          class="back-button"
+          on:click={() => window.history.back()}
+          use:focusable
+        >
           <svg class="back__icon">
             <use xlink:href="#back" />
           </svg>
-        </div>
+        </button>
         <div class="img-container">
           <img
             src={album.thumbnailUrl}
@@ -202,6 +209,8 @@
   .back-button {
     --size: 2.5rem;
     --padding: 1rem;
+
+    border: none;
 
     position: absolute;
     left: calc(var(--size) * -1 - var(--padding));
