@@ -6,7 +6,6 @@
   import {
     currentTime,
     duration,
-    secondsToTime,
     paused,
     musicTitle,
     artist,
@@ -27,6 +26,7 @@
     playNextSong,
     playPreviousSong,
   } from '$components/PlayNextView/PlayNextController';
+  import { secondsToTime } from '$lib/secondsToTime';
 
   let smallScreen = window.innerWidth < 900;
 

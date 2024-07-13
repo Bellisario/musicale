@@ -6,13 +6,13 @@
   import {
     playNextList,
     albumsAddedToPlayNext,
-    shuffle,
   } from '$lib/player';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
   import focusable from '../lib/focuser/focusable';
   import { lazyLoad } from '$lib/lazyLoad';
+  import { shuffle } from '$lib/shuffle';
 
   export let id: string;
 

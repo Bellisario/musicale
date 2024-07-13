@@ -68,24 +68,6 @@ export const favorites = localStorageWritable<FavoriteStore[]>('favorites', [], 
 export const previousNextButtonsPreference = localStorageWritable<'on' | 'off'>('previousNextButtonsPreference', 'on');
 export const animatedFocusPreference = localStorageWritable<'on' | 'off'>('animatedFocusPreference', 'on');
 
-export function secondsToTime(seconds: number) {
-    const h = Math.floor(seconds / 3600).toString().padStart(2, '0'),
-        m = Math.floor(seconds % 3600 / 60).toString().padStart(2, '0'),
-        s = Math.floor(seconds % 60).toString().padStart(2, '0');
-    if (h === '00')
-        return m + ':' + s;
-    return h + ':' + m + ':' + s;
-};
-
-export function shuffle<T>(array: T[]): T[] {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-}
-
 interface Hash {
     search: string;
     album: string;

@@ -2,7 +2,6 @@
   import {
     playNextList,
     menuEntries,
-    shuffle,
     currentID,
     playNextIndex,
   } from '$lib/player';
@@ -13,6 +12,7 @@
   import { wantPlay } from '$lib/wantPlay';
   import { tick } from 'svelte';
   import { playNextSong, playPreviousSong } from './PlayNextController';
+  import { shuffle } from '$lib/shuffle';
 
   let modalClosed = true;
   let canOpenModal = true;
