@@ -4,7 +4,7 @@ import any from '@ungap/promise-any';
 
 import type { AudioStreamResponse, OStream } from '$types/AudioStreamResponse';
 import { get } from 'svelte/store';
-import { failedStreamURLs } from './player';
+import { failedStreamURLs } from '$store';
 
 class Fetcher {
     private controller: AbortController;

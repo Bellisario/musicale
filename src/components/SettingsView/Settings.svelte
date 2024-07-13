@@ -1,6 +1,6 @@
 <script lang="ts">
   import Footer from '../Footer.svelte';
-  import { favorites, previousNextButtonsPreference, animatedFocusPreference } from '$lib/player';
+  import { favorites, previousNextButtonsPreference, animatedFocusPreference } from '$store';
   import type { FavoriteStore } from '$types/FavoritesStore';
   import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';

@@ -14,7 +14,7 @@
     playNextList,
     playNextIndex,
     previousNextButtonsPreference,
-  } from '$lib/player';
+  } from '$store';
   import { play, pause } from '$lib/AudioPlayer.svelte';
 
   import { fade } from 'svelte/transition';

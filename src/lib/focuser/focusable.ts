@@ -1,7 +1,7 @@
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { get, writable } from 'svelte/store';
-import { animatedFocusPreference } from '$lib/player';
+import { animatedFocusPreference } from '$store';
 
 const cubicTweened = (value: number, duration: number = 150) =>
     tweened(value, {

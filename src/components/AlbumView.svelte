@@ -6,7 +6,7 @@
   import {
     playNextList,
     albumsAddedToPlayNext,
-  } from '$lib/player';
+  } from '$store';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';

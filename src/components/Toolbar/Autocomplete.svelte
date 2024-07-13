@@ -3,7 +3,7 @@
 
   import { createEventDispatcher } from 'svelte';
   import truncate from 'just-truncate';
-  import { query } from '$lib/player';
+  import { query } from '$store';
 
   const dispatch = createEventDispatcher();
 

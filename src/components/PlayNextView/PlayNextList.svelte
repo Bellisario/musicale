@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { playNextList } from '$lib/player';
+  import { playNextList } from '$store';
 
   import PlayNextItem from './PlayNextItem.svelte';
   import Orderable from '$lib/Orderable.svelte';

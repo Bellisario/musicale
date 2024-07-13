@@ -6,7 +6,7 @@
     settingsActive,
     menuEntries,
     hash,
-  } from '$lib/player';
+  } from '$store';
   import { fade } from 'svelte/transition';
   import PlayingPreview from './PlayingView/PlayingPoster.svelte';
   import FrequencyBars from './PlayingView/FrequencyBars.svelte';

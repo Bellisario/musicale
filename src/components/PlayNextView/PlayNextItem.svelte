@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { FavoriteStore } from '$types/FavoritesStore';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
-  import { currentID, menuEntries, playNextList } from '$lib/player';
+  import { currentID, menuEntries, playNextList } from '$store';
   import { wantPlay } from '$lib/wantPlay';
   import { lazyLoad } from '$lib/lazyLoad';
 

@@ -82,6 +82,7 @@ export default defineConfig({
       $lib: resolve(__dirname, "./src/lib"),
       $components: resolve(__dirname, "./src/components"),
       $types: resolve(__dirname, "./src/types"),
+      $store: resolve(__dirname, "./src/lib/player.ts"),
     },
   },
 })

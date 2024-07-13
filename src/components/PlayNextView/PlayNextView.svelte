@@ -4,7 +4,7 @@
     menuEntries,
     currentID,
     playNextIndex,
-  } from '$lib/player';
+  } from '$store';
   import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';

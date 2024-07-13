@@ -4,7 +4,7 @@
   import type { FavoriteStore } from '$types/FavoritesStore';
   import urlToId from '$lib/urlToId';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
-  import { currentID, favorites, menuEntries, playNextList } from '$lib/player';
+  import { currentID, favorites, menuEntries, playNextList } from '$store';
   import { fade } from 'svelte/transition';
 
   import truncate from 'just-truncate';

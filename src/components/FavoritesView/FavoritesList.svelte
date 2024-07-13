@@ -6,7 +6,7 @@
     playNextList,
     currentID,
     favoritesPlayStatus,
-  } from '$lib/player';
+  } from '$store';
   import { fade } from 'svelte/transition';
 
   import type { FavoriteStore } from '$types/FavoritesStore';
