@@ -3,13 +3,16 @@ import type { FavoriteStore } from '$types/FavoritesStore';
 import { type MenuEntry } from '$types/MenuEntry';
 
 import { createHashStore } from 'svelte-hash';
+import { localStorageWritable } from './localStorageWritable';
 
 export const duration = writable(0);
 export const currentTime = writable(0);
 export const paused = writable(true);
 export const musicTitle = writable('');
-export const volume = writable(Number(localStorage.getItem('volume')) || 0.7);
-volume.subscribe((value) => localStorage.setItem('volume', String(value)));
+export const volume = localStorageWritable('volume', 0.7, {
+    serialize: String,
+    deserialize: Number,
+});
 export const ended = writable(false);
 
 export const poster = writable('');
@@ -20,7 +23,10 @@ export const currentID = writable('');
 
 export const query = writable('');
 
-export const favoritesActive = writable(localStorage.getItem('favoritesActive') === 'true');
+export const favoritesActive = localStorageWritable('favoritesActive', false, {
+    serialize: (value) => value.toString(),
+    deserialize: Boolean,
+});
 export const settingsActive = writable(false);
 
 export const menuEntries = writable<MenuEntry[]>([])
@@ -55,37 +61,12 @@ settingsActive.subscribe((value) => value === true ? favoritesActive.set(false) 
 // if favorites active, reset settings active to false
 favoritesActive.subscribe((value) => value === true ? settingsActive.set(false) : null);
 
-favoritesActive.subscribe((value) => {
-    localStorage.setItem('favoritesActive', value.toString());
+export const favorites = localStorageWritable<FavoriteStore[]>('favorites', [], {
+    serialize: (value) => JSON.stringify(value),
+    deserialize: (value) => JSON.parse(value),
 });
-
-export const favorites = writable<FavoriteStore[]>(localStorage.getItem('favorites') ? JSON.parse(localStorage.getItem('favorites')!) : []);
-
-favorites.subscribe((value) => {
-    localStorage.setItem('favorites', JSON.stringify(value));
-});
-
-function evaluateSavedPreviousNextButtonsPreference() {
-    const preference = localStorage.getItem('previousNextButtonsPreference');
-    if (preference === 'on' || preference === 'off') return preference;
-    return 'on';
-}
-export const previousNextButtonsPreference = writable<'on' | 'off'>(evaluateSavedPreviousNextButtonsPreference());
-
-previousNextButtonsPreference.subscribe((value) => {
-    localStorage.setItem('previousNextButtonsPreference', value);
-});
-
-function evaluateSavedAnimatedFocusPreference() {
-    const preference = localStorage.getItem('animatedFocusPreference');
-    if (preference === 'on' || preference === 'off') return preference;
-    return 'on';
-}
-export const animatedFocusPreference = writable<'on' | 'off'>(evaluateSavedAnimatedFocusPreference());
-
-animatedFocusPreference.subscribe((value) => {
-    localStorage.setItem('animatedFocusPreference', value);
-});
+export const previousNextButtonsPreference = localStorageWritable<'on' | 'off'>('previousNextButtonsPreference', 'on');
+export const animatedFocusPreference = localStorageWritable<'on' | 'off'>('animatedFocusPreference', 'on');
 
 export function secondsToTime(seconds: number) {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0'),
