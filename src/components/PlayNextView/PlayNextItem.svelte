@@ -3,6 +3,7 @@
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
   import { currentID, menuEntries, playNextList } from '$lib/player';
   import { wantPlay } from '$lib/wantPlay';
+  import { lazyLoad } from '$lib/lazyLoad';
 
   import { fade } from 'svelte/transition';
 
@@ -16,12 +17,6 @@
 
   let removing = false;
   let removingCancelTimeout: NodeJS.Timeout;
-
-  const lazyLoad = (el: HTMLDivElement) => {
-    el.onload = () => {
-      el.classList.add('loaded');
-    };
-  };
 
   let currentItem: HTMLDivElement;
 </script>

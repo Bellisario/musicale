@@ -10,6 +10,7 @@
   import truncate from 'just-truncate';
   import loveIcon from '$assets/love.svg?raw';
   import focusable from '$lib/focuser/focusable';
+  import { lazyLoad } from '$lib/lazyLoad';
 
   export let result: Result;
   export let id: number;
@@ -35,12 +36,6 @@
         ...$favorites,
       ];
   }
-
-  const lazyLoad = (el: HTMLDivElement) => {
-    el.onload = () => {
-      el.style.opacity = '1';
-    };
-  };
 
   const favoriteStore: FavoriteStore = {
     id: resultID,
@@ -100,7 +95,7 @@
         src={intersecting ? result.thumbnail : ''}
         alt={result.title}
         class="result__img"
-        use:lazyLoad
+        use:lazyLoad={true}
       />
     </IntersectionObserver>
   </div>
