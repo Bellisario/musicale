@@ -110,7 +110,6 @@
     }
 
     if (e.key === 'ArrowRight' && !e.metaKey) {
-      // e.preventDefault();
       let newTime = $currentTime + 5;
 
       // prevent going over duration
@@ -122,7 +121,6 @@
     }
 
     if (e.key === 'ArrowLeft' && !e.metaKey) {
-      // e.preventDefault();
       let newTime = $currentTime - 5;
 
       // prevent going under 0

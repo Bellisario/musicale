@@ -14,8 +14,6 @@ function localStorageWritable<T>(key: string, initialValue: T, serialization: Se
 function localStorageWritable<T extends string>(key: string, initialValue: T): Writable<T>;
 function localStorageWritable<T extends string>(key: string, initialValue: T, serialization: Serialization<T>): Writable<T>;
 
-// function localStorageWritable<T>(key: string, initialValue: T, serialization?: T extends string ? Serialization<T> : undefined): Writable<T>;
-
 function localStorageWritable<T>(key: string, initialValue: T, serialization: Serialization<T> = defaultSerialization): Writable<T> {
     const initialValueString = serialization.serialize(initialValue)
     const storedValueString = localStorage.getItem(key);

@@ -19,10 +19,8 @@
   let lastText: string;
 
   $: $query, update();
-  // $: searchFocus, updateFocus();
 
   let items: string[] = [];
-  // const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
 
   $: completionAcceptedIndex, updateQuery();
 
@@ -62,14 +60,6 @@
       items = data.slice(0, 5);
     } catch {}
   }
-
-  // function updateFocus() {
-  //   // delay to allow element click to complete
-  //   setTimeout(() => {
-  //     if (choosing) return;
-  //     isVisible = searchFocus;
-  //   }, 300);
-  // }
 
   async function submit(item: string) {
     $query = item;

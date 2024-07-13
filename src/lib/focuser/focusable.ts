@@ -29,7 +29,6 @@ showFocusOutline.subscribe((value) => {
     }, 50);
 });
 
-// animatedFocusPreference.update(value => value);
 animatedFocusPreference.subscribe((value) => {
     if (value === 'off') {
         document.body.classList.remove('focusable-active');

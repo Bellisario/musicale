@@ -36,7 +36,6 @@
   }
 
   function favoritesToggle() {
-    // loving = !loving;
     if (!loving) {
       const favorite: FavoriteStore = {
         id: $currentID,
