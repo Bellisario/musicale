@@ -86,7 +86,7 @@
     font-weight: 700;
   }
   .btn.active {
-    background-color: var(--button-theme-color);
+    background-color: var(--button-theme-color, var(--theme-color));
   }
   .btn.active .btn__span {
     color: var(--bars-color);
