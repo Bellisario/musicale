@@ -26,9 +26,7 @@
 
   // if volume < 0 || > 1, set to 0 or 1
   function sanitizeVolume(volume: number) {
-    let sanitized1 = volume < 0 ? 0 : volume;
-    let sanitized2 = sanitized1 > 1 ? 1 : sanitized1;
-    return sanitized2;
+    return Math.min(Math.max(volume, 0), 1);
   }
 
   function handleMouseDown(e: MouseEvent) {
