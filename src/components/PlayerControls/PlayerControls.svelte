@@ -28,11 +28,7 @@
     playPreviousSong,
   } from '$components/PlayNextView/PlayNextController';
 
-  let smallScreen = false;
-
-  window.addEventListener('resize', () => {
-    smallScreen = window.innerWidth < 900;
-  });
+  let smallScreen = window.innerWidth < 900;
 
   let progressChanging = false;
   let changingPreview = 0;
@@ -98,8 +94,7 @@
     $paused ? play() : pause();
   }
 
-  // listen for spacebar
-  window.addEventListener('keydown', (e) => {
+  function handleKeyDownActions(e: KeyboardEvent) {
     // if focusing elements (ex. input) don't do anything (except buttons)
     if (
       document.activeElement !== document.body &&
@@ -167,7 +162,7 @@
 
       return;
     }
-  });
+  };
 
   function handleResetBegin(e: KeyboardEvent) {
     // if focusing elements (ex. input) don't do anything
@@ -202,6 +197,7 @@
   }
 </script>
 
+<svelte:window on:keydown={handleKeyDownActions} on:resize={() => (smallScreen = window.innerWidth < 900)} />
 <svelte:body on:keydown={handleResetBegin} on:keyup={handleResetEnd} />
 
 <div class="player translucent">

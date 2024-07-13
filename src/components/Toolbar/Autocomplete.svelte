@@ -1,7 +1,7 @@
 <script lang="ts">
   // cspell:word mousedown mouseup mouseleave HTMLUListElement
 
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import truncate from 'just-truncate';
   import { query } from '$lib/player';
 
@@ -11,8 +11,6 @@
 
   export let searchFocus: boolean;
   export let completionAcceptedIndex: number;
-
-  let el: HTMLUListElement;
 
   let choosing = false;
 
@@ -77,22 +75,13 @@
     $query = item;
     dispatch('submit');
   }
-
-  onMount(() => {
-    el.addEventListener('mousedown', (_) => {
-      choosing = true;
-    });
-    el.addEventListener('mouseup', (_) => {
-      choosing = false;
-    });
-    el.addEventListener('mouseleave', (_) => {
-      choosing = false;
-    });
-  });
 </script>
 
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <ul
-  bind:this={el}
+  on:mousedown={() => (choosing = true)}
+  on:mouseup={() => (choosing = false)}
+  on:mouseleave={() => (choosing = false)}
   class:visible={items.length !== 0 && (searchFocus || choosing)}
 >
   {#each items as item, index}
