@@ -108,10 +108,10 @@
 </script>
 
 <div class="size-checker" bind:this={sizeCheckerEl}>
-  <Item item={itemsData[0]} />
+  <svelte:component this={Item} item={itemsData[0]} />
 </div>
 <div class="dragging-el" bind:this={draggingTemplateEl}>
-  <Item item={itemsData[draggingIndex || 0]} dragEl={true} />
+  <svelte:component this={Item} item={itemsData[draggingIndex || 0]} dragEl={true} />
 </div>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -141,7 +141,7 @@
       on:drop={onDrop}
       animate:flip={{ duration: 300 }}
     >
-      <Item item={itemData} />
+      <svelte:component this={Item} item={itemData} />
     </div>
   {/each}
 </div>
