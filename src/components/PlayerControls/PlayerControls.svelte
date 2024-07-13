@@ -200,6 +200,9 @@
 <svelte:window on:keydown={handleKeyDownActions} on:resize={() => (smallScreen = window.innerWidth < 900)} />
 <svelte:body on:keydown={handleResetBegin} on:keyup={handleResetEnd} />
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div class="player translucent">
   {#if resetStatus !== 'none'}
     <div class="reset-message" transition:fade|global>
@@ -209,8 +212,6 @@
     </div>
   {/if}
   <div class="player__buttons" style="--buttons-width:{$playerButtonsWidth}rem">
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="player-button player__previous-button"
       class:disabled={$playNextIndex === 0}
@@ -220,13 +221,9 @@
         <use xlink:href="#double-arrow" />
       </svg>
     </div>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="player__play-pause" on:click={toggle}>
       <div class="play-pause__icon" class:pause={!$paused} />
     </div>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="player-button player__next-button"
       class:disabled={$playNextList.length - 1 === $playNextIndex}
@@ -238,8 +235,6 @@
     </div>
   </div>
   <Range />
-  <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="player__volume"
     class:hiding={smallScreen}

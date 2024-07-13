@@ -78,6 +78,7 @@
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <ul
   on:mousedown={() => (choosing = true)}
   on:mouseup={() => (choosing = false)}
@@ -85,8 +86,6 @@
   class:visible={items.length !== 0 && (searchFocus || choosing)}
 >
   {#each items as item, index}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <li
       class:highlight={completionAcceptedIndex === index}
       on:click={() => submit(item)}

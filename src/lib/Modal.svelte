@@ -78,9 +78,9 @@
 
 <svelte:window on:keydown={handleEscape} />
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 {#if !closed}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     bind:this={el}
     class="modal"
@@ -100,7 +100,6 @@
       on:focusout={onModalBlur}
     >
       {#if closable}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="modal__close" on:click={() => (closed = true)}>
           <svg
             clip-rule="evenodd"
