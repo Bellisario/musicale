@@ -25,7 +25,7 @@ export const query = writable('');
 
 export const favoritesActive = localStorageWritable('favoritesActive', false, {
     serialize: (value) => value.toString(),
-    deserialize: Boolean,
+    deserialize: (value) => value === 'true',
 });
 export const settingsActive = writable(false);
 
