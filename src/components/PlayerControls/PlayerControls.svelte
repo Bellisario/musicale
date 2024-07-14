@@ -6,6 +6,7 @@
   import {
     currentTime,
     duration,
+    secondsToTime,
     paused,
     musicTitle,
     artist,
@@ -14,7 +15,7 @@
     playNextList,
     playNextIndex,
     previousNextButtonsPreference,
-  } from '$store';
+  } from '$lib/player';
   import { play, pause } from '$lib/AudioPlayer.svelte';
 
   import { fade } from 'svelte/transition';
@@ -26,9 +27,12 @@
     playNextSong,
     playPreviousSong,
   } from '$components/PlayNextView/PlayNextController';
-  import { secondsToTime } from '$lib/secondsToTime';
 
-  let smallScreen = window.innerWidth < 900;
+  let smallScreen = false;
+
+  window.addEventListener('resize', () => {
+    smallScreen = window.innerWidth < 900;
+  });
 
   let progressChanging = false;
   let changingPreview = 0;
@@ -94,7 +98,8 @@
     $paused ? play() : pause();
   }
 
-  function handleKeyDownActions(e: KeyboardEvent) {
+  // listen for spacebar
+  window.addEventListener('keydown', (e) => {
     // if focusing elements (ex. input) don't do anything (except buttons)
     if (
       document.activeElement !== document.body &&
@@ -110,6 +115,7 @@
     }
 
     if (e.key === 'ArrowRight' && !e.metaKey) {
+      // e.preventDefault();
       let newTime = $currentTime + 5;
 
       // prevent going over duration
@@ -121,6 +127,7 @@
     }
 
     if (e.key === 'ArrowLeft' && !e.metaKey) {
+      // e.preventDefault();
       let newTime = $currentTime - 5;
 
       // prevent going under 0
@@ -160,7 +167,7 @@
 
       return;
     }
-  };
+  });
 
   function handleResetBegin(e: KeyboardEvent) {
     // if focusing elements (ex. input) don't do anything
@@ -195,12 +202,8 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeyDownActions} on:resize={() => (smallScreen = window.innerWidth < 900)} />
 <svelte:body on:keydown={handleResetBegin} on:keyup={handleResetEnd} />
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div class="player translucent">
   {#if resetStatus !== 'none'}
     <div class="reset-message" transition:fade|global>
@@ -210,6 +213,8 @@
     </div>
   {/if}
   <div class="player__buttons" style="--buttons-width:{$playerButtonsWidth}rem">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="player-button player__previous-button"
       class:disabled={$playNextIndex === 0}
@@ -219,9 +224,13 @@
         <use xlink:href="#double-arrow" />
       </svg>
     </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="player__play-pause" on:click={toggle}>
       <div class="play-pause__icon" class:pause={!$paused} />
     </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="player-button player__next-button"
       class:disabled={$playNextList.length - 1 === $playNextIndex}
@@ -233,6 +242,8 @@
     </div>
   </div>
   <Range />
+  <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="player__volume"
     class:hiding={smallScreen}

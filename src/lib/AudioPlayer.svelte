@@ -9,7 +9,7 @@
     source,
     ended,
     failedStreamURLs,
-  } from '$store';
+  } from './player';
 
   let el: HTMLAudioElement;
   let lastApiUrl: string;

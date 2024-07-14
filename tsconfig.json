@@ -21,7 +21,6 @@
       "$lib/*": ["src/lib/*"],
       "$components/*": ["src/components/*"],
       "$types/*": ["src/types/*"],
-      "$store": ["src/lib/store.ts"]
     }
   },
   "include": [

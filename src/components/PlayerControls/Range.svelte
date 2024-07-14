@@ -1,6 +1,7 @@
 <script lang="ts">
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
-  import { currentTime, duration } from '$store';
+  import { currentTime, duration } from '$lib/player';
+  import { onMount } from 'svelte';
 
   let progress = 0;
   let range: HTMLDivElement;
@@ -9,55 +10,56 @@
 
   $: progress = (progressChanging ? changingPreview : $currentTime) / $duration;
 
-  function handleMouseDown(e: MouseEvent) {
-    if (e.button === 1 || e.button === 2) {
-      return;
-    }
-    progressChanging = true;
-    let x = e.offsetX;
-    let width = range.offsetWidth;
-    let percent = x / width;
-    let seconds = percent * $duration;
-    changingPreview = seconds;
-  }
-  function handleMouseMove(e: MouseEvent) {
-    if (!progressChanging) return;
+  onMount(() => {
+    // listen for click start
+    range.addEventListener('mousedown', (e) => {
+      if (e.button === 1 || e.button === 2) {
+        return;
+      }
+      progressChanging = true;
+      let x = e.offsetX;
+      let width = range.offsetWidth;
+      let percent = x / width;
+      let seconds = percent * $duration;
+      changingPreview = seconds;
+    });
+    // listen for mouse move
+    range.addEventListener('mousemove', (e) => {
+      if (!progressChanging) return;
 
-    let x = e.offsetX;
-    let width = range.offsetWidth;
-    let percent = x / width;
-    let seconds = percent * $duration;
-    changingPreview = seconds;
-  }
-  function handleMouseUp(e: MouseEvent) {
-    if (e.button === 1 || e.button === 2) {
-      return;
-    }
-    progressChanging = false;
-    $currentTime = changingPreview;
-  }
-  function handleMouseLeave(_: MouseEvent) {
-    if (!progressChanging) return;
-
-    if (progress <= 0.05 || progress >= 0.95) {
-      if (progress <= 0.1) {
-        $currentTime = 0;
-      } else if (progress >= 0.9) {
-        $currentTime = $duration;
+      let x = e.offsetX;
+      let width = range.offsetWidth;
+      let percent = x / width;
+      let seconds = percent * $duration;
+      changingPreview = seconds;
+    });
+    // listen for click end
+    range.addEventListener('mouseup', (e) => {
+      if (e.button === 1 || e.button === 2) {
+        return;
       }
       progressChanging = false;
-    }
-  }
+      $currentTime = changingPreview;
+    });
+
+    range.addEventListener('mouseleave', (_) => {
+      if (!progressChanging) return;
+
+      if (progress <= 0.05 || progress >= 0.95) {
+        if (progress <= 0.1) {
+          $currentTime = 0;
+        } else if (progress >= 0.9) {
+          $currentTime = $duration;
+        }
+        progressChanging = false;
+      }
+    });
+  });
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="player__range"
   style="--progress: {progress || 0}"
-  on:mousedown={handleMouseDown}
-  on:mousemove={handleMouseMove}
-  on:mouseup={handleMouseUp}
-  on:mouseleave={handleMouseLeave}
   bind:this={range}
 >
   <div class="player__volume-range">

@@ -5,7 +5,7 @@
     loadMoreResults,
     resultsAlbumGetter,
   } from '$lib/resultsGetter';
-  import { currentSearchType, hash } from '$store';
+  import { currentSearchType, hash } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import Footer from '../Footer.svelte';

@@ -6,7 +6,8 @@
     playNextList,
     currentID,
     favoritesPlayStatus,
-  } from '$store';
+    shuffle,
+  } from '$lib/player';
   import { fade } from 'svelte/transition';
 
   import type { FavoriteStore } from '$types/FavoritesStore';
@@ -15,7 +16,6 @@
   import FavoritesItem from './FavoritesItem.svelte';
   import Modal from '$lib/Modal.svelte';
   import Orderable from '$lib/Orderable.svelte';
-  import { shuffle } from '$lib/shuffle';
 
   let playWarning = false;
   let warningAction = () => {};

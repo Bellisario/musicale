@@ -1,7 +1,7 @@
 <script lang="ts">
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
-  import { volume } from '$store';
-  import { createEventDispatcher } from 'svelte';
+  import { volume } from '$lib/player';
+  import { onMount, createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -26,51 +26,54 @@
 
   // if volume < 0 || > 1, set to 0 or 1
   function sanitizeVolume(volume: number) {
-    return Math.min(Math.max(volume, 0), 1);
+    let sanitized1 = volume < 0 ? 0 : volume;
+    let sanitized2 = sanitized1 > 1 ? 1 : sanitized1;
+    return sanitized2;
   }
 
-  function handleMouseDown(e: MouseEvent) {
-    if (e.button === 1 || e.button === 2) {
-      return;
-    }
-    progressChanging = true;
-    let x = e.offsetX;
-    let width = range.offsetWidth;
-    let percent = x / width;
+  onMount(() => {
+    // listen for click start
+    range.addEventListener('mousedown', (e) => {
+      if (e.button === 1 || e.button === 2) {
+        return;
+      }
+      progressChanging = true;
+      let x = e.offsetX;
+      let width = range.offsetWidth;
+      let percent = x / width;
 
-    $volume = sanitizeVolume(percent);
-  }
-  function handleMouseMove(e: MouseEvent) {
-    if (!progressChanging) return;
+      $volume = sanitizeVolume(percent);
+    });
+    // listen for mouse move
+    range.addEventListener('mousemove', (e) => {
+      if (!progressChanging) return;
 
-    let x = e.offsetX;
-    let width = range.offsetWidth;
-    let percent = x / width;
+      let x = e.offsetX;
+      let width = range.offsetWidth;
+      let percent = x / width;
 
-    $volume = sanitizeVolume(percent);
-  }
-  function handleMouseUp(e: MouseEvent) {
-    if (e.button === 1 || e.button === 2) {
-      return;
-    }
-    progressChanging = false;
-  }
-  function handleMouseLeave(_: MouseEvent) {
-    if ($volume <= 0.05 || $volume >= 0.95) {
-      $volume = $volume <= 0.05 ? 0 : 1;
+      $volume = sanitizeVolume(percent);
+    });
+    // listen for click end
+    range.addEventListener('mouseup', (e) => {
+      if (e.button === 1 || e.button === 2) {
+        return;
+      }
       progressChanging = false;
-    }
-  }
+    });
+
+    range.addEventListener('mouseleave', (_) => {
+      if ($volume <= 0.05 || $volume >= 0.95) {
+        $volume = $volume <= 0.05 ? 0 : 1;
+        progressChanging = false;
+      }
+    });
+  });
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="player__range"
   style="--progress: {progress || 0}"
-  on:mousedown={handleMouseDown}
-  on:mousemove={handleMouseMove}
-  on:mouseup={handleMouseUp}
-  on:mouseleave={handleMouseLeave}
   bind:this={range}
 >
   <div class="player__volume-range">

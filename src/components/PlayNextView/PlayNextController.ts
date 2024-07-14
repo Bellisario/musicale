@@ -5,7 +5,7 @@ import {
     albumsAddedToPlayNext,
     favoritesPlayStatus,
     playNextIndex,
-} from '$store';
+} from '$lib/player';
 
 import { wantPlay } from '$lib/wantPlay';
 

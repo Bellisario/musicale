@@ -6,13 +6,12 @@
   import {
     playNextList,
     albumsAddedToPlayNext,
-  } from '$store';
+    shuffle,
+  } from '$lib/player';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
   import focusable from '../lib/focuser/focusable';
-  import { lazyLoad } from '$lib/lazyLoad';
-  import { shuffle } from '$lib/shuffle';
 
   export let id: string;
 
@@ -66,6 +65,12 @@
       [id]: 1,
     };
   }
+
+  const lazyLoad = (el: HTMLDivElement) => {
+    el.onload = () => {
+      el.style.opacity = '1';
+    };
+  };
 </script>
 
 <div class="container">
@@ -95,7 +100,7 @@
             src={album.thumbnailUrl}
             alt={album.name}
             class="result__img"
-            use:lazyLoad={true}
+            use:lazyLoad
           />
         </div>
         <div class="info-container">

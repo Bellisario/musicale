@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { animatedFocusPreference } from '$store';
+  import { animatedFocusPreference } from '$lib/player';
   import {
     showFocusOutline,
     top,

@@ -16,7 +16,7 @@
     favoritesActive,
     settingsActive,
     hash,
-  } from '$store';
+  } from '$lib/player';
 
   import MainLayout from '$components/MainLayout.svelte';
   import FocusOutline from '$lib/focuser/FocusOutline.svelte';

@@ -1,7 +1,7 @@
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { get, writable } from 'svelte/store';
-import { animatedFocusPreference } from '$store';
+import { animatedFocusPreference } from '$lib/player';
 
 const cubicTweened = (value: number, duration: number = 150) =>
     tweened(value, {
@@ -29,6 +29,7 @@ showFocusOutline.subscribe((value) => {
     }, 50);
 });
 
+// animatedFocusPreference.update(value => value);
 animatedFocusPreference.subscribe((value) => {
     if (value === 'off') {
         document.body.classList.remove('focusable-active');

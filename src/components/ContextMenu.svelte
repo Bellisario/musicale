@@ -53,10 +53,10 @@
 <svelte:window on:scroll={() => closeMenu(callDiscardActions)} />
 <svelte:body on:contextmenu|preventDefault={contextMenuAction} />
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
 {#if showMenu}
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div class="transparent-back" on:contextmenu|stopPropagation={() => {}} />
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="menu translucent"
     bind:this={menuEl}
@@ -66,6 +66,7 @@
     style="--x: {position.x}; --y: {position.y}"
   >
     {#each entries as entry}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         class="menu-item"
         class:disabled={entry.disabled}

@@ -1,8 +1,7 @@
 <script lang="ts">
   import focusable from '$lib/focuser/focusable';
   import IntersectionObserver from '$lib/IntersectionObserver.svelte';
-  import { lazyLoad } from '$lib/lazyLoad';
-  import { hash } from '$store';
+  import { hash } from '$lib/player';
   import type { AlbumResult } from '$types/AlbumResults';
   import { fade } from 'svelte/transition';
 
@@ -15,6 +14,12 @@
 
     return playlistId;
   }
+
+  const lazyLoad = (el: HTMLDivElement) => {
+    el.onload = () => {
+      el.style.opacity = '1';
+    };
+  };
 </script>
 
 <button
@@ -29,7 +34,7 @@
         src={intersecting ? album.thumbnail : ''}
         alt={album.name}
         class="result__img"
-        use:lazyLoad={true}
+        use:lazyLoad
       />
     </IntersectionObserver>
   </div>

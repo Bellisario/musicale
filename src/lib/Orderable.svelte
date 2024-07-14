@@ -108,18 +108,18 @@
 </script>
 
 <div class="size-checker" bind:this={sizeCheckerEl}>
-  <svelte:component this={Item} item={itemsData[0]} />
+  <Item item={itemsData[0]} />
 </div>
 <div class="dragging-el" bind:this={draggingTemplateEl}>
-  <svelte:component this={Item} item={itemsData[draggingIndex || 0]} dragEl={true} />
+  <Item item={itemsData[draggingIndex || 0]} dragEl={true} />
 </div>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class:is-dragging={draggingId !== undefined}
   style="--orderable-height:{orderableHeight}px;--gap:{gap};"
   class="orderable {$$props.class}"
 >
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="drop-handler"
     data-id="before-first"
@@ -129,6 +129,8 @@
     on:drop={onDrop}
   />
   {#each itemsData as itemData, i (itemData.id)}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="item"
       data-id={itemData.id}
@@ -141,7 +143,7 @@
       on:drop={onDrop}
       animate:flip={{ duration: 300 }}
     >
-      <svelte:component this={Item} item={itemData} />
+      <Item item={itemData} />
     </div>
   {/each}
 </div>
