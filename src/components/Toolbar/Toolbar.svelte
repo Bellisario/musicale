@@ -6,7 +6,7 @@
 
   import { receive } from '$lib/crossFade';
 
-  import { favoritesActive, settingsActive, query, hash } from '$lib/player';
+  import { favoritesActive, settingsActive, query, hash } from '$store';
 
   import Logo from '$assets/logo.svg?raw';
   import focusable from '$lib/focuser/focusable';

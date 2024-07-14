@@ -9,7 +9,7 @@
     source,
     currentID,
     favorites,
-  } from '$lib/player';
+  } from '$store';
   import type { FavoriteStore } from '$types/FavoritesStore';
   import { fade } from 'svelte/transition';
   import truncate from 'just-truncate';
@@ -36,7 +36,6 @@
   }
 
   function favoritesToggle() {
-    // loving = !loving;
     if (!loving) {
       const favorite: FavoriteStore = {
         id: $currentID,
@@ -93,9 +92,9 @@
     Play a song to see info here
   </div>
   {#if $musicTitle !== '' && $artist !== ''}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="preview-info" transition:fade|global>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="bars-button"
         class:enabled={barsVisible}
@@ -106,8 +105,6 @@
           <use xlink:href="#bars" />
         </svg>
       </div>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="download-button"
         on:click={() => downloadSource()}
@@ -117,8 +114,6 @@
           <use xlink:href="#download" />
         </svg>
       </div>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="love-button"
         class:loving

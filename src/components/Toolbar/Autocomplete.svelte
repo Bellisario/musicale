@@ -1,9 +1,9 @@
 <script lang="ts">
   // cspell:word mousedown mouseup mouseleave HTMLUListElement
 
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import truncate from 'just-truncate';
-  import { query } from '$lib/player';
+  import { query } from '$store';
 
   const dispatch = createEventDispatcher();
 
@@ -12,8 +12,6 @@
   export let searchFocus: boolean;
   export let completionAcceptedIndex: number;
 
-  let el: HTMLUListElement;
-
   let choosing = false;
 
   let controller: AbortController;
@@ -21,10 +19,8 @@
   let lastText: string;
 
   $: $query, update();
-  // $: searchFocus, updateFocus();
 
   let items: string[] = [];
-  // const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
 
   $: completionAcceptedIndex, updateQuery();
 
@@ -65,39 +61,21 @@
     } catch {}
   }
 
-  // function updateFocus() {
-  //   // delay to allow element click to complete
-  //   setTimeout(() => {
-  //     if (choosing) return;
-  //     isVisible = searchFocus;
-  //   }, 300);
-  // }
-
   async function submit(item: string) {
     $query = item;
     dispatch('submit');
   }
-
-  onMount(() => {
-    el.addEventListener('mousedown', (_) => {
-      choosing = true;
-    });
-    el.addEventListener('mouseup', (_) => {
-      choosing = false;
-    });
-    el.addEventListener('mouseleave', (_) => {
-      choosing = false;
-    });
-  });
 </script>
 
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <ul
-  bind:this={el}
+  on:mousedown={() => (choosing = true)}
+  on:mouseup={() => (choosing = false)}
+  on:mouseleave={() => (choosing = false)}
   class:visible={items.length !== 0 && (searchFocus || choosing)}
 >
   {#each items as item, index}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <li
       class:highlight={completionAcceptedIndex === index}
       on:click={() => submit(item)}

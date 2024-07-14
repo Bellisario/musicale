@@ -1,4 +1,4 @@
-import { artist, currentID, musicTitle, poster, smallPoster } from "./player";
+import { artist, currentID, musicTitle, poster, smallPoster } from "$store";
 import audioStreamGetter, { findBestStream } from "./audioStreamGetter";
 import { play, reset, useSource } from "./AudioPlayer.svelte";
 
