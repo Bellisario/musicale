@@ -14,7 +14,7 @@
     "@tsconfig/svelte": "^5.0.4",
     "@ungap/promise-any": "^1.1.1",
     "just-truncate": "^2.2.0",
-    "postcss": "^8.4.39",
+    "postcss": "^8.4.40",
     "postcss-logical": "^7.0.1",
     "svelte": "^4.2.18",
     "svelte-check": "^3.8.4",
