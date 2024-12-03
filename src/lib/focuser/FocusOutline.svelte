@@ -14,7 +14,7 @@
   class="focus-outline"
   class:hidden={!$showFocusOutline || $animatedFocusPreference === 'off'}
   style="--top: {$top}px; --left: {$left}px; --width: {$width}px; --height: {$height}px; --radius: {$radius}px;"
-/>
+></div>
 
 <style>
   .focus-outline {

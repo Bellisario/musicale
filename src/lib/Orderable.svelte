@@ -1,21 +1,32 @@
+<!-- @migration-task Error while migrating Svelte code: $$props is used together with named props in a way that cannot be automatically migrated. -->
 <script lang="ts">
   import { flip } from 'svelte/animate';
-  import { onMount, tick, type SvelteComponent } from 'svelte';
+  import { onMount, tick, type Component } from 'svelte';
 
-  export let itemsData: any[];
-  export let Item: typeof SvelteComponent<{ item: any; dragEl?: boolean }>;
-  export let dataType: string;
-  export let gap: string;
+  interface Props {
+    itemsData: any[],
+    Item: Component<{ item: any; dragEl?: boolean }, {}, ''>,
+    dataType: string,
+    gap: string,
+    class: string
+  }
 
-  let draggingId: string | undefined;
-  let hoveringIndex: number | undefined;
-  let draggingIndex: number | undefined;
+let { itemsData = $bindable(), Item, dataType, gap, class: classProps }: Props = $props()
+
+  // export let itemsData: any[];
+  // export let Item: Component<{ item: any; dragEl?: boolean }, {}, ''>;
+  // export let dataType: string;
+  // export let gap: string;
+
+  let draggingId: string | undefined = $state();
+  let hoveringIndex: number | undefined = $state();
+  let draggingIndex: number | undefined = $state();
 
   let draggingTemplateEl: HTMLDivElement;
   let draggingEl: HTMLDivElement;
 
   let sizeCheckerEl: HTMLDivElement;
-  let orderableHeight: number;
+  let orderableHeight: number| undefined = $state();
 
   onMount(() => {
     orderableHeight = sizeCheckerEl.offsetHeight;
@@ -45,14 +56,14 @@
       draggingId = data;
     });
   }
-  function onDragEnd(_: DragEvent) {
+  function ondragend(_: DragEvent) {
     draggingId = undefined;
     hoveringIndex = undefined;
     draggingIndex = undefined;
 
     draggingEl.remove();
   }
-  function onDragOver(e: DragEvent) {
+  function ondragover(e: DragEvent) {
     e.preventDefault();
 
     if (!e.dataTransfer) return;
@@ -70,12 +81,12 @@
 
     hoveringIndex = targetItemIndex;
   }
-  function onDrop(e: DragEvent) {
+  function ondrop(e: DragEvent) {
     if (!e.dataTransfer) return;
 
     if (hoveringIndex === undefined || draggingIndex === undefined)
       throw new Error(
-        'expected hoveringIndex and draggingIndex to be set before drop'
+        'expected hoveringIndex and draggingIndex to be set before drop',
       );
 
     let draggingOffset = 0;
@@ -88,6 +99,7 @@
       return;
     }
 
+    // @ts-ignore
     itemsData = itemsData.filter((f) => f.id !== data);
 
     if (hoveringIndex < draggingIndex) {
@@ -99,6 +111,7 @@
     }
 
     // add the item to the array
+    // @ts-ignore
     itemsData = [
       ...itemsData.slice(0, hoveringIndex + draggingOffset),
       movingItem,
@@ -108,26 +121,26 @@
 </script>
 
 <div class="size-checker" bind:this={sizeCheckerEl}>
-  <svelte:component this={Item} item={itemsData[0]} />
+  <Item item={itemsData[0]} />
 </div>
 <div class="dragging-el" bind:this={draggingTemplateEl}>
-  <svelte:component this={Item} item={itemsData[draggingIndex || 0]} dragEl={true} />
+  <Item item={itemsData[draggingIndex || 0]} dragEl={true} />
 </div>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class:is-dragging={draggingId !== undefined}
   style="--orderable-height:{orderableHeight}px;--gap:{gap};"
-  class="orderable {$$props.class}"
+  class="orderable {classProps}"
 >
   <div
     class="drop-handler"
     data-id="before-first"
     class:hovering={hoveringIndex === -1}
-    on:dragover={onDragOver}
-    on:dragend={onDragEnd}
-    on:drop={onDrop}
-  />
+    {ondragover}
+    {ondragend}
+    {ondrop}
+  ></div>
   {#each itemsData as itemData, i (itemData.id)}
     <div
       class="item"
@@ -135,13 +148,13 @@
       class:dragging={draggingId === itemData.id}
       class:hovering={hoveringIndex === i}
       draggable="true"
-      on:dragstart={(e) => onDragStart(e, itemData.id)}
-      on:dragover={onDragOver}
-      on:dragend={onDragEnd}
-      on:drop={onDrop}
+      ondragstart={(e) => onDragStart(e, itemData.id)}
+      {ondragover}
+      {ondragend}
+      {ondrop}
       animate:flip={{ duration: 300 }}
     >
-      <svelte:component this={Item} item={itemData} />
+      <Item item={itemData} />
     </div>
   {/each}
 </div>

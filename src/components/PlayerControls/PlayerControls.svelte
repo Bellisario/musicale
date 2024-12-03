@@ -1,5 +1,5 @@
 <script lang="ts">
-  // cspell:word spacebar seekbackward seekforward nums
+  // cspell:word seekbackward seekforward nums
 
   import Range from './Range.svelte';
   import VolumeRange from './VolumeRange.svelte';
@@ -28,14 +28,14 @@
   } from '$components/PlayNextView/PlayNextController';
   import { secondsToTime } from '$lib/secondsToTime';
 
-  let smallScreen = window.innerWidth < 900;
+  let smallScreen = $state(window.innerWidth < 900);
 
   let progressChanging = false;
   let changingPreview = 0;
 
-  let volumeRangeShowing = false;
+  let volumeRangeShowing = $state(false);
 
-  let resetStatus: 'none' | 'working' | 'done' = 'none';
+  let resetStatus: 'none' | 'working' | 'done' = $state('none');
   let resetTimeout: NodeJS.Timeout;
 
   // expressed in REMs
@@ -160,7 +160,7 @@
 
       return;
     }
-  };
+  }
 
   function handleResetBegin(e: KeyboardEvent) {
     // if focusing elements (ex. input) don't do anything
@@ -195,12 +195,15 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeyDownActions} on:resize={() => (smallScreen = window.innerWidth < 900)} />
-<svelte:body on:keydown={handleResetBegin} on:keyup={handleResetEnd} />
+<svelte:window
+  onkeydown={handleKeyDownActions}
+  onresize={() => (smallScreen = window.innerWidth < 900)}
+/>
+<svelte:body onkeydown={handleResetBegin} onkeyup={handleResetEnd} />
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div class="player translucent">
   {#if resetStatus !== 'none'}
     <div class="reset-message" transition:fade|global>
@@ -213,19 +216,19 @@
     <div
       class="player-button player__previous-button"
       class:disabled={$playNextIndex === 0}
-      on:click={playPreviousSong}
+      onclick={playPreviousSong}
     >
       <svg class="double-arrow-icon">
         <use xlink:href="#double-arrow" />
       </svg>
     </div>
-    <div class="player__play-pause" on:click={toggle}>
-      <div class="play-pause__icon" class:pause={!$paused} />
+    <div class="player__play-pause" onclick={toggle}>
+      <div class="play-pause__icon" class:pause={!$paused}></div>
     </div>
     <div
       class="player-button player__next-button"
       class:disabled={$playNextList.length - 1 === $playNextIndex}
-      on:click={playNextSong}
+      onclick={playNextSong}
     >
       <svg class="double-arrow-icon">
         <use xlink:href="#double-arrow" />
@@ -236,7 +239,7 @@
   <div
     class="player__volume"
     class:hiding={smallScreen}
-    on:mouseover={() => (volumeRangeShowing = true)}
+    onmouseover={() => (volumeRangeShowing = true)}
     use:clickOutside={() => (volumeRangeShowing = false)}
   >
     <svg class="volume-icon">
@@ -244,7 +247,7 @@
     </svg>
     {#if volumeRangeShowing}
       <div class="volume__container translucent" transition:fade|global>
-        <VolumeRange on:autoClose={() => (volumeRangeShowing = false)} />
+        <VolumeRange autoClose={() => (volumeRangeShowing = false)} />
       </div>
     {/if}
   </div>
@@ -254,7 +257,7 @@
     </div>
     <span class="info__divider">/</span>
     <div class="player__duration">
-      {secondsToTime($duration)}
+      {secondsToTime($duration || 0)}
     </div>
   </div>
 </div>

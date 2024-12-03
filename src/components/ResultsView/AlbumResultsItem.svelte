@@ -6,7 +6,11 @@
   import type { AlbumResult } from '$types/AlbumResults';
   import { fade } from 'svelte/transition';
 
-  export let album: AlbumResult;
+  interface Props {
+    album: AlbumResult;
+  }
+
+  let { album }: Props = $props();
 
   function getPlaylistId(url: string) {
     const playlistId = url.split('list=')[1];
@@ -20,17 +24,19 @@
 <button
   class="album"
   in:fade|global
-  on:click|capture={() => ($hash.album = getPlaylistId(album.url))}
+  onclickcapture={() => ($hash.album = getPlaylistId(album.url))}
   use:focusable={{ margin: 7, borderRadius: 5 }}
 >
   <div class="img-container">
-    <IntersectionObserver let:intersecting top={150} once={true}>
-      <img
-        src={intersecting ? album.thumbnail : ''}
-        alt={album.name}
-        class="result__img"
-        use:lazyLoad={true}
-      />
+    <IntersectionObserver top={150} once={true}>
+      {#snippet children({ intersecting })}
+        <img
+          src={intersecting ? album.thumbnail : ''}
+          alt={album.name}
+          class="result__img"
+          use:lazyLoad={true}
+        />
+      {/snippet}
     </IntersectionObserver>
   </div>
   <div class="text">

@@ -3,19 +3,28 @@
   import { cubicOut } from 'svelte/easing';
   import focusable from '$lib/focuser/focusable';
 
-  export let buttonsWidth = '5rem';
+  interface Props {
+    buttonsWidth?: string;
+    label: string;
+    options: string[];
+    selected?: number;
+  }
 
-  export let label: string;
-  export let options: string[];
-
-  export let selected = 0;
+  let {
+    buttonsWidth = '5rem',
+    label,
+    options,
+    selected = $bindable(0)
+  }: Props = $props();
 
   let tweenedSelected = tweened(selected, {
     duration: 300,
     easing: cubicOut,
   });
 
-  $: $tweenedSelected = selected;
+  $effect(() => {
+    $tweenedSelected = selected
+  })
 
   const padding = '0.3em';
 </script>
@@ -27,11 +36,11 @@
   <span>{label}</span>
 
   <div class="buttons-container">
-    <div class="selector" />
+    <div class="selector"></div>
     {#each options as option, i}
       <button
         class:selected={selected === i}
-        on:click={() => {
+        onclick={() => {
           selected = i;
         }}
         use:focusable

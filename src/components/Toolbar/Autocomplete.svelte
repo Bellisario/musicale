@@ -1,39 +1,37 @@
 <script lang="ts">
-  // cspell:word mousedown mouseup mouseleave HTMLUListElement
-
-  import { createEventDispatcher } from 'svelte';
   import truncate from 'just-truncate';
   import { query } from '$store';
 
-  const dispatch = createEventDispatcher();
-
   type ApiResponse = string[];
 
-  export let searchFocus: boolean;
-  export let completionAcceptedIndex: number;
+  interface Props {
+    searchFocus: boolean;
+    completionAcceptedIndex: number;
+    dispatchSubmit: (e?: any) => void;
+  }
 
-  let choosing = false;
+  let {
+    searchFocus = $bindable(),
+    completionAcceptedIndex = $bindable(),
+    dispatchSubmit,
+  }: Props = $props();
+
+  let choosing = $state(false);
 
   let controller: AbortController;
 
   let lastText: string;
 
-  $: $query, update();
+  let lastItems: string[] = $state([]);
+  $effect(() => {
+    lastText = $query = lastItems[completionAcceptedIndex] || $query;
+  });
 
-  let items: string[] = [];
+  async function update(q: string) {
+    if (q === lastText) return lastItems;
 
-  $: completionAcceptedIndex, updateQuery();
-
-  function updateQuery() {
-    lastText = $query = items[completionAcceptedIndex] || $query;
-  }
-
-  async function update() {
-    if ($query === lastText) return;
-
-    if ($query.trim() === '') {
-      items = [];
-      return;
+    if (q.trim() === '') {
+      return [];
     }
     let response: Response | undefined;
     if (controller) {
@@ -43,47 +41,62 @@
     try {
       response = await fetch(
         `https://pipedapi.kavin.rocks/suggestions?query=${encodeURIComponent(
-          $query.trim()
+          q.trim(),
         )}`,
         {
           signal: controller.signal,
-        }
+        },
       );
     } catch (err: any) {
       if (err.name === 'AbortError') {
-        return;
+        return [];
       }
     }
-    if (response === undefined) return (items = []);
+    if (response === undefined) return [];
     const data: ApiResponse = await response.json();
     try {
-      items = data.slice(0, 5);
-    } catch {}
+      lastItems = data.slice(0, 5);
+      return lastItems;
+    } catch {
+      return [];
+    }
   }
 
   async function submit(item: string) {
     $query = item;
-    dispatch('submit');
+    dispatchSubmit();
   }
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<ul
-  on:mousedown={() => (choosing = true)}
-  on:mouseup={() => (choosing = false)}
-  on:mouseleave={() => (choosing = false)}
-  class:visible={items.length !== 0 && (searchFocus || choosing)}
->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+{#snippet list(items: string[])}
   {#each items as item, index}
     <li
       class:highlight={completionAcceptedIndex === index}
-      on:click={() => submit(item)}
+      onclick={() => submit(item)}
     >
       {truncate(item, 30)}
     </li>
   {/each}
-</ul>
+{/snippet}
+
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+{#if $query.trim() !== '' && (searchFocus || choosing)}
+  <ul
+    onmousedown={() => (choosing = true)}
+    onmouseup={() => (choosing = false)}
+    onmouseleave={() => (choosing = false)}
+    class:visible={lastItems.length !== 0}
+  >
+    {#await update($query)}
+      {@render list(lastItems)}
+    {:then items}
+      {@render list(items)}
+    {/await}
+  </ul>
+{/if}
 
 <style>
   ul {

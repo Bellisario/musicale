@@ -17,8 +17,8 @@
   import Orderable from '$lib/Orderable.svelte';
   import { shuffle } from '$lib/shuffle';
 
-  let playWarning = false;
-  let warningAction = () => {};
+  let playWarning = $state(false);
+  let warningAction = $state(() => {});
 
   function playAll(results: FavoriteStore[]) {
     results.forEach((result) => {
@@ -70,7 +70,9 @@
 </script>
 
 <Modal closed={!playWarning} closable={false}>
-  <div slot="title">Favorites are already on Play Next</div>
+  {#snippet title()}
+    <div>Favorites are already on Play Next</div>
+  {/snippet}
   <p>
     You're trying to play your favorites list, but they're already on the Play
     Next list.
@@ -78,29 +80,31 @@
     To continue you can either clear the Play Next list or play a single song from
     your favorites list.
   </p>
-  <div slot="content__bottom">
-    <div class="flex-buttons">
-      <ActionButton
-        title="Clear Play Next"
-        backgroundColor="var(--back-color)"
-        scale="0.8"
-        on:click={() => {
-          $playNextList = [];
-          $currentID = '';
-          playWarning = false;
-          $favoritesPlayStatus = -1;
-          warningAction();
-        }}
-      />
-      <ActionButton
-        title="Cancel"
-        backgroundColor="var(--back-color)"
-        scale="0.8"
-        primary={true}
-        on:click={() => (playWarning = false)}
-      />
+  {#snippet content__bottom()}
+    <div>
+      <div class="flex-buttons">
+        <ActionButton
+          title="Clear Play Next"
+          backgroundColor="var(--back-color)"
+          scale="0.8"
+          onclick={() => {
+            $playNextList = [];
+            $currentID = '';
+            playWarning = false;
+            $favoritesPlayStatus = -1;
+            warningAction();
+          }}
+        />
+        <ActionButton
+          title="Cancel"
+          backgroundColor="var(--back-color)"
+          scale="0.8"
+          primary={true}
+          onclick={() => (playWarning = false)}
+        />
+      </div>
     </div>
-  </div>
+  {/snippet}
 </Modal>
 
 <div class="container">
@@ -118,12 +122,12 @@
       <div class="buttons">
         <ActionButton
           title="Play"
-          on:click={togglePlayAll}
+          onclick={togglePlayAll}
           active={$favoritesPlayStatus === 0}
         />
         <ActionButton
           title="Shuffle"
-          on:click={toggleShuffle}
+          onclick={toggleShuffle}
           active={$favoritesPlayStatus === 1}
         />
       </div>

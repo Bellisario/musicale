@@ -10,28 +10,29 @@
   import truncate from 'just-truncate';
   import binIcon from '$assets/bin.svg?raw';
 
-  export let item: FavoriteStore;
-  export let dragEl: boolean = false;
+  interface Props {
+    item: FavoriteStore;
+    dragEl?: boolean;
+  }
 
-  let hovering = false;
+  let { item, dragEl = false }: Props = $props();
 
-  let removing = false;
-  let removingCancelTimeout: NodeJS.Timeout;
+  let hovering = $state(false);
 
-  let currentItem: HTMLDivElement;
+  let removing = $state(false);
+  let removingCancelTimeout: NodeJS.Timeout | undefined = $state();
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   in:fade|global
   class="item"
   class:selected={$currentID === item.id}
-  on:click={() => wantPlay(item)}
-  on:pointerover={() => (hovering = true)}
-  on:pointerout={() => (hovering = false)}
-  bind:this={currentItem}
-  on:contextmenu={() =>
+  onclick={() => wantPlay(item)}
+  onpointerover={() => (hovering = true)}
+  onpointerout={() => (hovering = false)}
+  oncontextmenu={() =>
     ($menuEntries = [
       {
         title: 'Play Now',
@@ -47,13 +48,15 @@
 >
   <div class="item__grid1" style="--img: url('{item.poster}')">
     {#if !dragEl}
-      <IntersectionObserver let:intersecting top={150} once={true}>
-        <img
-          src={intersecting ? item.poster : ''}
-          alt={item.title}
-          class="item__img"
-          use:lazyLoad
-        />
+      <IntersectionObserver top={150} once={true}>
+        {#snippet children({ intersecting })}
+          <img
+            src={intersecting ? item.poster : ''}
+            alt={item.title}
+            class="item__img"
+            use:lazyLoad
+          />
+        {/snippet}
       </IntersectionObserver>
     {:else}
       <img src={item.poster} alt={item.title} class="item__img loaded" />
@@ -68,7 +71,8 @@
         <div
           class="item__remove"
           transition:fade
-          on:click|stopPropagation={() => {
+          onclick={(e) => {
+            e.stopPropagation();
             clearTimeout(removingCancelTimeout);
             if (removing)
               $playNextList = $playNextList.filter((a) => a.id !== item.id);
@@ -127,7 +131,9 @@
     height: 0.1rem;
     background-color: var(--theme-color);
     opacity: 0;
-    transition: opacity 300ms, transform 300ms;
+    transition:
+      opacity 300ms,
+      transform 300ms;
   }
   .item.selected .item__title > h2::after {
     transform: translate3d(-100%, 0, 0);

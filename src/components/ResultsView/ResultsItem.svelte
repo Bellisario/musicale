@@ -12,18 +12,22 @@
   import focusable from '$lib/focuser/focusable';
   import { lazyLoad } from '$lib/lazyLoad';
 
-  export let result: Result;
-  export let id: number;
+  interface Props {
+    result: Result;
+    id: number;
+  }
+
+  let { result, id }: Props = $props();
 
   let resultID = urlToId(result.url);
 
-  let hovering = false;
+  let hovering = $state(false);
 
-  let loved: boolean;
+  let loved: boolean = $derived($favorites.map((a) => a.id).includes(resultID));
 
-  $: loved = $favorites.map((a) => a.id).includes(resultID);
+  function toggleFavorite(e: MouseEvent) {
+    e.preventDefault();
 
-  function toggleFavorite() {
     if (loved) $favorites = $favorites.filter((a) => a.id !== resultID);
     else
       $favorites = [
@@ -45,18 +49,18 @@
   };
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   in:fade|global
   class="result"
   class:selected={$currentID === urlToId(result.url)}
   data-id={id}
-  on:click={() => wantPlay(favoriteStore)}
-  on:pointerover={() => (hovering = true)}
-  on:pointerout={() => (hovering = false)}
-  on:contextmenu={() =>
+  onclick={() => wantPlay(favoriteStore)}
+  onpointerover={() => (hovering = true)}
+  onpointerout={() => (hovering = false)}
+  oncontextmenu={() =>
     ($menuEntries = [
       {
         title: 'Play',
@@ -90,13 +94,15 @@
   tabindex="0"
 >
   <div class="result__grid1" style="--img: url('{result.thumbnail}')">
-    <IntersectionObserver let:intersecting top={150} once={true}>
-      <img
-        src={intersecting ? result.thumbnail : ''}
-        alt={result.title}
-        class="result__img"
-        use:lazyLoad={true}
-      />
+    <IntersectionObserver top={150} once={true}>
+      {#snippet children({ intersecting })}
+        <img
+          src={intersecting ? result.thumbnail : ''}
+          alt={result.title}
+          class="result__img"
+          use:lazyLoad={true}
+        />
+      {/snippet}
     </IntersectionObserver>
   </div>
   <div class="result__grid2">
@@ -113,7 +119,7 @@
           class="result__loved"
           class:loved
           transition:fade
-          on:click|stopPropagation={toggleFavorite}
+          onclick={toggleFavorite}
         >
           {@html loveIcon}
         </div>

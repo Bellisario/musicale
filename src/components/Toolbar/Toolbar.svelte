@@ -1,6 +1,5 @@
 <script lang="ts">
   // cspell:word instanceof keydown onfocus onblur xlink
-  import { createEventDispatcher } from 'svelte';
   import { onMount } from 'svelte';
   import Autocomplete from './Autocomplete.svelte';
 
@@ -11,16 +10,20 @@
   import Logo from '$assets/logo.svg?raw';
   import focusable from '$lib/focuser/focusable';
 
-  const dispatch = createEventDispatcher();
+  interface Props {
+    onHome: () => void;
+  }
+  const { onHome }: Props = $props();
 
-  let search: HTMLInputElement;
-  let searchFocus = false;
+  let search: HTMLInputElement | undefined = $state();
+  let searchFocus = $state(false);
 
-  let completionAcceptedIndex = -1;
+  let completionAcceptedIndex = $state(-1);
 
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-  function submit() {
+  function submit(e: SubmitEvent) {
+    e.preventDefault();
     blur();
 
     $hash.search = $query;
@@ -32,13 +35,13 @@
 
   function blur() {
     try {
-      search.blur();
+      search?.blur();
     } catch {
-      onMount(() => search.blur());
+      onMount(() => search?.blur());
     }
   }
 
-  let isSmall = false;
+  let isSmall = $state(false);
 
   function isTouch() {
     return window.matchMedia('(any-hover: none)').matches;
@@ -85,37 +88,33 @@
 
     if (e.key === '/') {
       e.preventDefault();
-      search.focus();
-      search.select();
+      search?.focus();
+      search?.select();
     }
   }
 
   // focus after loading
   onMount(() => {
-    if (!$hash.search) search.focus();
+    if (!$hash.search) search!.focus();
 
-    search.onfocus = () => {
+    search!.onfocus = () => {
       searchFocus = true;
     };
-    search.onblur = () => {
+    search!.onblur = () => {
       searchFocus = false;
     };
   });
-
-  function heroClick() {
-    dispatch('home');
-  }
 </script>
 
-<svelte:window on:keydown={handleInput} />
+<svelte:window onkeydown={handleInput} />
 
 <div class="toolbar translucent {isSmall ? 'toolbar__small' : ''}">
   <div class="toolbar__left">
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="toolbar__hero"
-      on:click={heroClick}
+      onclick={onHome}
       transition:receive|global={{ key: 'loading-screen', duration: 1000 }}
     >
       <div class="hero__img">
@@ -123,10 +122,11 @@
       </div>
     </div>
   </div>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
   <div class="toolbar__right">
     <button
       class="toolbar__settings"
-      on:click={() => ($settingsActive = !$settingsActive)}
+      onclick={() => ($settingsActive = !$settingsActive)}
       class:active={$settingsActive}
       title="{$settingsActive ? 'Close' : 'Open'} settings"
       use:focusable
@@ -137,7 +137,7 @@
     </button>
     <button
       class="toolbar__favorites"
-      on:click={() => ($favoritesActive = !$favoritesActive)}
+      onclick={() => ($favoritesActive = !$favoritesActive)}
       class:active={$favoritesActive}
       title="{$favoritesActive ? 'Close' : 'Open'} favorites"
       use:focusable
@@ -146,21 +146,21 @@
         <use xlink:href="#favorites" />
       </svg>
     </button>
-    <form class="toolbar__search" on:submit|preventDefault={submit}>
+    <form class="toolbar__search" onsubmit={submit}>
       <input
         type="text"
         placeholder="Search"
         bind:value={$query}
         bind:this={search}
-        on:keydown={handleInputKeys}
-        on:input={() => {
+        onkeydown={handleInputKeys}
+        oninput={() => {
           completionAcceptedIndex = -1;
           searchFocus = true;
         }}
         use:focusable
       />
       <Autocomplete
-        on:submit={submit}
+        dispatchSubmit={submit}
         bind:completionAcceptedIndex
         bind:searchFocus
       />

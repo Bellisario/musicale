@@ -4,14 +4,26 @@
   // from https://svelte.dev/repl/c461dfe7dbf84998a03fdb30785c27f3?version=3.16.7
   import { onMount } from 'svelte';
 
-  export let once = false;
-  export let top = 0;
-  export let bottom = 0;
-  export let left = 0;
-  export let right = 0;
+  interface Props {
+    once?: boolean;
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+    children?: import('svelte').Snippet<[any]>;
+  }
 
-  let intersecting = false;
-  let container: Element;
+  let {
+    once = false,
+    top = 0,
+    bottom = 0,
+    left = 0,
+    right = 0,
+    children,
+  }: Props = $props();
+
+  let intersecting = $state(false);
+  let container: Element = $state() as Element;
 
   onMount(() => {
     if (typeof IntersectionObserver !== 'undefined') {
@@ -26,7 +38,7 @@
         },
         {
           rootMargin,
-        }
+        },
       );
 
       observer.observe(container);
@@ -52,7 +64,7 @@
 </script>
 
 <div bind:this={container}>
-  <slot {intersecting} />
+  {@render children?.({ intersecting })}
 </div>
 
 <style>

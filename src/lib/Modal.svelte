@@ -1,23 +1,44 @@
 <script lang="ts">
-  import { tick } from 'svelte';
-
   // cspell:word evenodd linejoin miterlimit outroend
-
+  import type { Snippet } from 'svelte';
+  import { tick } from 'svelte';
   import { fade } from 'svelte/transition';
 
-  export let closed = false;
-  export let closable = true;
-  export let focusTrap = true;
+  interface Props {
+    closed?: boolean;
+    closable?: boolean;
+    focusTrap?: boolean;
+    maxWidth?: string;
+    custom__content?: Snippet<[any]>;
+    title?: Snippet;
+    children?: Snippet;
+    content__bottom?: Snippet;
+    content__bottom_center?: Snippet;
+    content__bottom_small?: Snippet;
+  }
 
-  export let maxWidth = '500px';
+  let {
+    closed = $bindable(false),
+    closable = true,
+    focusTrap = true,
+    maxWidth = '500px',
+    custom__content,
+    title,
+    children,
+    content__bottom,
+    content__bottom_center,
+    content__bottom_small,
+  }: Props = $props();
 
-  let closeAction: () => void;
+  let closeAction: () => void = $state(() => {});
   const setCloseAction = (fn: () => void) => (closeAction = fn);
 
-  let el: HTMLDivElement;
+  let el: HTMLDivElement | undefined = $state();
   let focusableElements: NodeListOf<HTMLButtonElement> | null = null;
 
   async function getFocusableButtons() {
+    if (!el) return;
+
     await tick();
 
     focusableElements = el.querySelectorAll('.focusable');
@@ -70,23 +91,35 @@
       closed = true;
     }
   }
+  function onClickSelf(e: MouseEvent) {
+    // @ts-ignore
+    if (e.target !== this) {
+      return;
+    }
 
-  $: closed === false && focusTrap
-    ? getFocusableButtons()
-    : clearFocusableButtons();
+    if (closable) {
+      closed = true;
+    }
+  }
+
+  $effect(() => {
+    closed === false && focusTrap
+      ? getFocusableButtons()
+      : clearFocusableButtons();
+  });
 </script>
 
-<svelte:window on:keydown={handleEscape} />
+<svelte:window onkeydown={handleEscape} />
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 {#if !closed}
   <div
     bind:this={el}
     class="modal"
     transition:fade|global={{ duration: 150 }}
-    on:click|self={() => (closable ? (closed = true) : null)}
-    on:outroend={() => {
+    onclick={onClickSelf}
+    onoutroend={() => {
       if (!closeAction) return;
 
       closeAction();
@@ -97,10 +130,10 @@
       class="modal__content"
       class:closable
       style:max-width={maxWidth}
-      on:focusout={onModalBlur}
+      onfocusout={onModalBlur}
     >
       {#if closable}
-        <div class="modal__close" on:click={() => (closed = true)}>
+        <div class="modal__close" onclick={() => (closed = true)}>
           <svg
             clip-rule="evenodd"
             fill-rule="evenodd"
@@ -114,24 +147,24 @@
           >
         </div>
       {/if}
-      {#if $$slots.custom__content}
-        <slot name="custom__content" closeAction={setCloseAction} />
+      {#if custom__content}
+        {@render custom__content?.({ closeAction: setCloseAction })}
       {:else}
         <div class="content__title">
-          <slot name="title" />
+          {@render title?.()}
         </div>
-        <slot />
-        {#if $$slots.content__bottom}
+        {@render children?.()}
+        {#if content__bottom}
           <div class="content__bottom">
-            <slot name="content__bottom" />
+            {@render content__bottom?.()}
           </div>
-        {:else if $$slots.content__bottom_center}
+        {:else if content__bottom_center}
           <div class="content__bottom-center">
-            <slot name="content__bottom_center" />
+            {@render content__bottom_center?.()}
           </div>
-        {:else if $$slots.content__bottom_small}
+        {:else if content__bottom_small}
           <div class="content__bottom-small">
-            <slot name="content__bottom_small" />
+            {@render content__bottom_small?.()}
           </div>
         {/if}
       {/if}

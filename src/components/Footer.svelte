@@ -2,7 +2,11 @@
   import focusable from '$lib/focuser/focusable';
 
   type Size = 'normal' | 'small';
-  export let size: Size = 'normal';
+  interface Props {
+    size?: Size;
+  }
+
+  let { size = 'normal' }: Props = $props();
 
   const focusableProps = { margin: 2, borderRadius: 2 };
 </script>
@@ -31,6 +35,7 @@
       target="_blank"
       rel="noopener noreferrer"
       use:focusable={focusableProps}
+      aria-label="GitHub"
       ><svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"

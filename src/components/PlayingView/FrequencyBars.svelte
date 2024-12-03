@@ -5,7 +5,7 @@
   import type { Unsubscriber } from 'svelte/store';
   import { currentTime, paused } from '$store';
 
-  let el: HTMLCanvasElement;
+  let el: HTMLCanvasElement | undefined = $state();
   let audio: HTMLAudioElement;
 
   let backColor: string;
@@ -19,11 +19,16 @@
   let currentTimeUnsubscribe: Unsubscriber;
 
   onMount(() => {
+    if (!el)
+      return console.error(
+        'Frequency bars canvas was expected to be defined on mount',
+      );
+
     backColor = getComputedStyle(document.body).getPropertyValue(
-      '--back-color'
+      '--back-color',
     );
     themeColor = getComputedStyle(document.body).getPropertyValue(
-      '--theme-color'
+      '--theme-color',
     );
 
     audio = document.querySelector('#audio-player') as HTMLAudioElement;
@@ -143,7 +148,7 @@
   height="188"
   style="width:100%;height:100%;display:block"
   bind:this={el}
-/>
+></canvas>
 
 <style>
 </style>

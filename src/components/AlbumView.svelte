@@ -3,10 +3,7 @@
   import { fade } from 'svelte/transition';
   import Footer from './Footer.svelte';
   import ResultsItem from './ResultsView/ResultsItem.svelte';
-  import {
-    playNextList,
-    albumsAddedToPlayNext,
-  } from '$store';
+  import { playNextList, albumsAddedToPlayNext } from '$store';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
@@ -14,7 +11,11 @@
   import { lazyLoad } from '$lib/lazyLoad';
   import { shuffle } from '$lib/shuffle';
 
-  export let id: string;
+  interface Props {
+    id: string;
+  }
+
+  let { id }: Props = $props();
 
   async function fetchPlaylist(id: string): Promise<Album> {
     // fetch https://pipedapi.kavin.rocks/playlists/:id
@@ -83,8 +84,9 @@
       <div class="album" in:fade|global>
         <button
           class="back-button"
-          on:click={() => window.history.back()}
+          onclick={() => window.history.back()}
           use:focusable
+          aria-label="Go Back"
         >
           <svg class="back__icon">
             <use xlink:href="#back" />
@@ -112,14 +114,14 @@
           <div class="buttons">
             <ActionButton
               title="Play All"
-              on:click={() => playAll(album.relatedStreams)}
+              onclick={() => playAll(album.relatedStreams)}
               active={$albumsAddedToPlayNext[id] === 0}
               disabled={$albumsAddedToPlayNext[id] === 1}
               scale="0.9"
             />
             <ActionButton
               title="Shuffle"
-              on:click={() => playShuffleAll(album.relatedStreams)}
+              onclick={() => playShuffleAll(album.relatedStreams)}
               active={$albumsAddedToPlayNext[id] === 1}
               disabled={$albumsAddedToPlayNext[id] === 0}
               scale="0.9"

@@ -2,7 +2,7 @@ interface MenuEntry {
     title: string;
     disabled?: boolean;
     breakAfter?: boolean;
-    action: () => void;
+    action: (e?: any) => void;
     discardAction?: () => void;
 }
 

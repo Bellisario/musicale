@@ -16,10 +16,10 @@
   import type { AlbumResult } from '$types/AlbumResults';
   import AlbumResultsItem from './AlbumResultsItem.svelte';
 
-  let results: Result[];
-  let albumResults: AlbumResult[];
+  let results: Result[] = $state([]);
+  let albumResults: AlbumResult[] = $state([]);
 
-  let loadingMore = false;
+  let loadingMore = $state(false);
   let loadingMoreError = false;
   let nextPageToken: string;
 
@@ -107,14 +107,14 @@
             {/each}
             <div class="center">
               <ActionButton
-                on:click={() => {
+                onclick={() => {
                   if (loadingMore) return;
 
                   loadingMore = true;
 
                   if (!$hash.search)
                     throw new Error(
-                      '$hash.search was expected to be a string here'
+                      '$hash.search was expected to be a string here',
                     );
 
                   loadMore($hash.search.trim());
@@ -122,8 +122,8 @@
                 title={loadingMoreError
                   ? 'Error'
                   : loadingMore
-                  ? 'Loading...'
-                  : 'Load more'}
+                    ? 'Loading...'
+                    : 'Load more'}
                 backgroundColor="rgba(0, 0, 0, 0.2)"
                 disabled={loadingMore}
               />
