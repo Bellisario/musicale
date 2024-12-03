@@ -5,23 +5,28 @@
 
   import { type MenuEntry } from '$types/MenuEntry';
 
-  export let entries: MenuEntry[];
+  interface Props {
+    entries: MenuEntry[];
+  }
+
+  let { entries = $bindable() }: Props = $props();
 
   const callDiscardActions = () =>
     entries.forEach((entry) => entry.discardAction?.());
 
-  let position = {
+  let position = $state({
     x: 0,
     y: 0,
-  };
+  });
 
-  let menuEl: HTMLDivElement;
-  let showMenu = false;
+  let menuEl: HTMLDivElement = $state() as HTMLDivElement;
+  let showMenu = $state(false);
 
-  async function contextMenuAction(event: MouseEvent) {
+  async function contextMenuAction(e: MouseEvent) {
+    e.preventDefault();
     if (entries.length === 0) return;
 
-    const { clientX, clientY } = event;
+    const { clientX, clientY } = e;
 
     showMenu = true;
 
@@ -50,18 +55,21 @@
   }
 </script>
 
-<svelte:window on:scroll={() => closeMenu(callDiscardActions)} />
-<svelte:body on:contextmenu|preventDefault={contextMenuAction} />
+<svelte:window onscroll={() => closeMenu(callDiscardActions)} />
+<svelte:body oncontextmenu={contextMenuAction} />
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 {#if showMenu}
-  <div class="transparent-back" on:contextmenu|stopPropagation={() => {}} />
+  <div
+    class="transparent-back"
+    oncontextmenu={(e) => e.stopPropagation()}
+  ></div>
   <div
     class="menu translucent"
     bind:this={menuEl}
     use:clickOutside={() => closeMenu(callDiscardActions)}
-    on:contextmenu|stopPropagation={() => {}}
+    oncontextmenu={(e) => e.stopPropagation()}
     out:fade|global={{ duration: 250 }}
     style="--x: {position.x}; --y: {position.y}"
   >
@@ -69,12 +77,12 @@
       <div
         class="menu-item"
         class:disabled={entry.disabled}
-        on:click={() => (entry.disabled ? null : closeMenu(entry.action))}
+        onclick={() => (entry.disabled ? null : closeMenu(entry.action))}
       >
         {entry.title}
       </div>
       {#if entry.breakAfter}
-        <div class="break-item" />
+        <div class="break-item"></div>
       {/if}
     {/each}
   </div>

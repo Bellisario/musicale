@@ -2,12 +2,12 @@
   // cspell:word xlink spacebar keydown mousedown mousemove mouseup mouseleave
   import { currentTime, duration } from '$store';
 
-  let progress = 0;
-  let range: HTMLDivElement;
-  let progressChanging = false;
-  let changingPreview = 0;
-
-  $: progress = (progressChanging ? changingPreview : $currentTime) / $duration;
+  let range: HTMLDivElement = $state() as HTMLDivElement;
+  let progressChanging = $state(false);
+  let changingPreview = $state(0);
+  let progress = $derived(
+    (progressChanging ? changingPreview : $currentTime) / $duration,
+  );
 
   function handleMouseDown(e: MouseEvent) {
     if (e.button === 1 || e.button === 2) {
@@ -50,19 +50,19 @@
   }
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="player__range"
   style="--progress: {progress || 0}"
-  on:mousedown={handleMouseDown}
-  on:mousemove={handleMouseMove}
-  on:mouseup={handleMouseUp}
-  on:mouseleave={handleMouseLeave}
+  onmousedown={handleMouseDown}
+  onmousemove={handleMouseMove}
+  onmouseup={handleMouseUp}
+  onmouseleave={handleMouseLeave}
   bind:this={range}
 >
   <div class="player__volume-range">
-    <div class="volume-range__selector" />
-    <div class="volume-range__main" />
+    <div class="volume-range__selector"></div>
+    <div class="volume-range__main"></div>
   </div>
 </div>
 

@@ -23,19 +23,16 @@
 
   const DOCUMENT_ORIGINAL_TITLE = document.title;
 
-  let loading = true;
-  let loadingHiding = false;
+  let loading = $state(true);
+  let loadingHiding = $state(false);
 
-  let mobileModal = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  let isOnline = navigator.onLine;
-  $: isOnline = navigator.onLine;
+  let mobileModal = $state(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  let isOnline = $derived(navigator.onLine);
+  $effect(() => {
+    $query = $hash.search || ''
+  })
 
-  $: $hash.search, setTitle();
-  $: $musicTitle, setTitle();
-  $: $paused, setTitle();
-  $: $query = $hash.search || '';
-
-  function setTitle() {
+  $effect(() => {
     if ($musicTitle && !$paused) {
       document.title = `${$musicTitle} | Musicale`;
       return;
@@ -48,7 +45,7 @@
       document.title = `"${$hash.search}" on Musicale`;
       return;
     }
-  }
+  })
 
   onMount(() => {
     (
@@ -65,11 +62,6 @@
   }, 1000);
 </script>
 
-<svelte:window
-  on:online={() => (isOnline = true)}
-  on:offline={() => (isOnline = false)}
-/>
-
 <main>
   {#if loading}
     <div class="loading-screen" class:hiding={loadingHiding}>
@@ -78,38 +70,45 @@
   {/if}
   <!-- modal displayed on load for mobile devices -->
   <Modal closed={!mobileModal}>
-    <div slot="title">Mobile device detected</div>
+    {#snippet title()}
+        <div >Mobile device detected</div>
+      {/snippet}
     <p>
       Musicale is not optimized for mobile devices.<br />You can still use it,
       but it's really suggested to get a computer to enjoy the full experience.
     </p>
-    <div slot="content__bottom">
-      <ActionButton
-        title="Close"
-        backgroundColor="var(--back-color)"
-        scale="0.8"
-        on:click={() => {
-          mobileModal = false;
-        }}
-      />
-    </div>
+    {#snippet content__bottom()}
+        <div >
+        <ActionButton
+          title="Close"
+          backgroundColor="var(--back-color)"
+          scale="0.8"
+          onclick={() => {
+            mobileModal = false;
+          }}
+        />
+      </div>
+      {/snippet}
   </Modal>
   <Modal closed={isOnline}>
-    <div slot="title">No Internet connection</div>
+    {#snippet title()}
+        <div >No Internet connection</div>
+      {/snippet}
     <p>
       Musicale needs an Internet connection to work.<br />Please check your
       connection and try again.
     </p>
-    <div slot="content__bottom_small">
-      This popup will automatically disappear as soon as the connection is back
-      again.
-    </div>
+    {#snippet content__bottom_small()}
+        <div >
+        This popup will automatically disappear as soon as the connection is back
+        again.
+      </div>
+      {/snippet}
   </Modal>
   <SwManager />
   <AudioPlayer />
   <Toolbar
-    on:submit
-    on:home={() => {
+    onHome={() => {
       hash.set({});
 
       $favoritesActive = false;

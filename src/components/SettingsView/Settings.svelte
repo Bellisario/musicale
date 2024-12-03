@@ -1,6 +1,10 @@
 <script lang="ts">
   import Footer from '../Footer.svelte';
-  import { favorites, previousNextButtonsPreference, animatedFocusPreference } from '$store';
+  import {
+    favorites,
+    previousNextButtonsPreference,
+    animatedFocusPreference,
+  } from '$store';
   import type { FavoriteStore } from '$types/FavoritesStore';
   import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
@@ -14,12 +18,10 @@
     version: string;
     favorites: FavoriteStore[];
   }
-  let importMessage = '';
-  let displayImportWarning = false;
+  let importMessage = $state('');
+  let displayImportWarning = $state(false);
 
-  let noFavorites = true;
-
-  $: noFavorites = $favorites.length === 0 ? true : false;
+  let noFavorites = $derived($favorites.length === 0 ? true : false);
 
   function exportFavorites() {
     const data = JSON.stringify({
@@ -73,50 +75,59 @@
     input.click();
   }
 
-  let previousNextButtonsSelectedIndex =
-    $previousNextButtonsPreference === 'on' ? 0 : 1;
+  let previousNextButtonsSelectedIndex = $state(
+    $previousNextButtonsPreference === 'on' ? 0 : 1,
+  );
 
-  $: $previousNextButtonsPreference =
-    previousNextButtonsSelectedIndex === 0 ? 'on' : 'off';
+  $effect(() => {
+    $previousNextButtonsPreference =
+      previousNextButtonsSelectedIndex === 0 ? 'on' : 'off';
+  });
 
-  let animatedFocusSelectedIndex =
-    $animatedFocusPreference === 'on' ? 0 : 1;
+  let animatedFocusSelectedIndex = $state(
+    $animatedFocusPreference === 'on' ? 0 : 1,
+  );
 
-  $: $animatedFocusPreference =
-    animatedFocusSelectedIndex === 0 ? 'on' : 'off';
+  $effect(() => {
+    $animatedFocusPreference = animatedFocusSelectedIndex === 0 ? 'on' : 'off';
+  });
 </script>
 
 <main>
   <!-- modal displayed to alert favorites import will remove the present ones -->
   <Modal closed={!displayImportWarning} closable={false}>
-    <div slot="title">Favorites already present</div>
+    {#snippet title()}
+      <div>Favorites already present</div>
+    {/snippet}
     <p>
       Seems there are some favorites already saved on Musicale.<br />By
       importing new ones, all the olds will be lost.
     </p>
     <p>If you want to keep the olds, press "Cancel" to abort.</p>
-    <div slot="content__bottom">
-      <div class="flex-buttons">
-        <ActionButton
-          title="Import"
-          backgroundColor="var(--back-color)"
-          scale="0.8"
-          on:click={() => {
-            displayImportWarning = false;
-            importFavorites(true);
-          }}
-        />
-        <ActionButton
-          title="Cancel"
-          backgroundColor="var(--back-color)"
-          scale="0.8"
-          primary={true}
-          on:click={() => {
-            displayImportWarning = false;
-          }}
-        />
+    {#snippet content__bottom()}
+      <div>
+        <div class="flex-buttons">
+          <ActionButton
+            title="Import"
+            backgroundColor="var(--back-color)"
+            scale="0.8"
+            onclick={() => {
+              displayImportWarning = false;
+              importFavorites(true);
+            }}
+          />
+          <ActionButton
+            title="Cancel"
+            backgroundColor="var(--back-color)"
+            scale="0.8"
+            primary={true}
+            onclick={() => {
+              displayImportWarning = false;
+            }}
+          />
+        </div>
       </div>
-    </div>
+    {/snippet}
   </Modal>
   <div class="settings">
     <div class="settings__title">Settings</div>
@@ -130,7 +141,7 @@
         <div class="content__buttons">
           <ActionButton
             title="Export Favorites"
-            on:click={() => (noFavorites ? null : exportFavorites())}
+            onclick={() => (noFavorites ? null : exportFavorites())}
             color="#fff"
             fitContent={false}
             scale="0.9"
@@ -139,7 +150,7 @@
           />
           <ActionButton
             title="Import Favorites"
-            on:click={() => importFavorites()}
+            onclick={() => importFavorites()}
             color="#fff"
             fitContent={false}
             scale="0.9"
@@ -173,8 +184,8 @@
           <div class="content__message secondary">
             {#if previousNextButtonsSelectedIndex === 0}
               <span in:fade
-                >Previous/Next buttons will be displayed on the player when using
-                "Play Next".</span
+                >Previous/Next buttons will be displayed on the player when
+                using "Play Next".</span
               >
             {:else}
               <span in:fade

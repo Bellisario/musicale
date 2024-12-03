@@ -1,22 +1,34 @@
 <script lang="ts">
   import focusable from '$lib/focuser/focusable';
-  import { createEventDispatcher } from 'svelte';
 
-  const dispatch = createEventDispatcher();
+  interface Props {
+    title?: string;
+    active?: boolean;
+    color?: string | null;
+    backgroundColor?: string | null;
+    fitContent?: boolean;
+    scale?: string | null;
+    primary?: boolean;
+    /**
+     * **warning:** disabled property won't prevent the click behavior from being fired but just style the element
+     */
+    disabled?: boolean;
+    hoverTitle?: string | null;
+    onclick: () => void;
+  }
 
-  export let title = '<empty>';
-  export let active = false;
-  export let color: string | null = null;
-  export let backgroundColor: string | null = null;
-  export let fitContent = true;
-  export let scale: string | null = null;
-  export let primary = false;
-
-  /**
-   * **warning:** disabled property won't prevent the click behavior from being fired but just style the element
-   */
-  export let disabled = false;
-  export let hoverTitle: string | null = null;
+  let {
+    title = '<empty>',
+    active = false,
+    color = null,
+    backgroundColor = null,
+    fitContent = true,
+    scale = null,
+    primary = false,
+    disabled = false,
+    hoverTitle = null,
+    onclick: fireClick
+  }: Props = $props();
 
   let styles = {
     'button-theme-color': color,
@@ -31,9 +43,9 @@
       .join(' ');
   }
 
-  function click() {
-    dispatch('click');
-
+  function handleClick() {
+    // @ts-ignore
+    fireClick()
     // focus on body to prevent the button from staying focused
     (document.activeElement as HTMLButtonElement).blur();
   }
@@ -45,7 +57,7 @@
   class:active
   class:primary
   class:btn--disabled={disabled}
-  on:click={click}
+  onclick={handleClick}
   style={getStyle(styles)}
   class:fitContent
   use:focusable

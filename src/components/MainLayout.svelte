@@ -17,7 +17,7 @@
   import PlayNextView from './PlayNextView/PlayNextView.svelte';
   import AlbumView from './AlbumView.svelte';
 
-  let barsVisible = false;
+  let barsVisible = $state(false);
 </script>
 
 <PlayNextView />

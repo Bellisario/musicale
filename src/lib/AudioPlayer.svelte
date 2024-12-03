@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   // cspell:word crossorigin
 
   import {
@@ -30,7 +30,7 @@
   export function useSource(
     src: string,
     API_URL: string,
-    fallback: () => void
+    fallback: () => void,
   ) {
     el.src = src;
     source.set(src);
@@ -48,7 +48,7 @@
   bind:paused={$paused}
   bind:volume={$volume}
   bind:ended={$ended}
-  on:error={() => {
+  onerror={() => {
     console.log('Error loading audio with:', lastApiUrl);
     console.log('Removing this API from the list of available APIs');
 
@@ -57,7 +57,7 @@
     fallbackFunction();
   }}
   crossorigin="anonymous"
-/>
+></audio>
 
 <style>
   #audio-player {

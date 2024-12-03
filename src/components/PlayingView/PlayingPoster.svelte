@@ -14,18 +14,20 @@
   import { fade } from 'svelte/transition';
   import truncate from 'just-truncate';
 
-  // just for demo purposes
-  let loving = false;
+  let loving = $derived(
+    $favorites.some((favorite) => favorite.id === $currentID),
+  );
 
-  // check if the current song is in favorites
-  $: loving = $favorites.some((favorite) => favorite.id === $currentID);
+  let localPoster: string = $state('');
+  let posterHidden = $state(true);
 
-  let localPoster: string;
-  let posterHidden = true;
+  let firstLoad = $state(true);
 
-  let firstLoad = true;
+  interface Props {
+    barsVisible: boolean;
+  }
 
-  export let barsVisible: boolean;
+  let { barsVisible = $bindable() }: Props = $props();
 
   function revokePoster() {
     try {
@@ -81,7 +83,7 @@
         transition:fade|global
         class="poster-image"
         style="background-image: url({localPoster});"
-      />
+      ></div>
     {:else if firstLoad}
       <svg class="party-icon">
         <use xlink:href="#party" />
@@ -92,13 +94,13 @@
     Play a song to see info here
   </div>
   {#if $musicTitle !== '' && $artist !== ''}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="preview-info" transition:fade|global>
       <div
         class="bars-button"
         class:enabled={barsVisible}
-        on:click={() => (barsVisible = !barsVisible)}
+        onclick={() => (barsVisible = !barsVisible)}
         title="{barsVisible ? 'Hide' : 'Show'} bars"
       >
         <svg class="bars-icon">
@@ -107,7 +109,7 @@
       </div>
       <div
         class="download-button"
-        on:click={() => downloadSource()}
+        onclick={() => downloadSource()}
         title="Download current music"
       >
         <svg class="download-icon">
@@ -118,7 +120,7 @@
         class="love-button"
         class:loving
         class:disabled={$currentID === ''}
-        on:click={favoritesToggle}
+        onclick={favoritesToggle}
         title="{loving ? 'Remove from' : 'Add to'} favorites"
       >
         <svg class="love-icon">
@@ -232,7 +234,9 @@
     fill: var(--theme-color);
     border-radius: 50%;
     cursor: pointer;
-    transition: background-color, opacity 0.25s ease-in-out;
+    transition:
+      background-color,
+      opacity 0.25s ease-in-out;
   }
   .bars-icon {
     width: 2em;
@@ -286,7 +290,9 @@
     fill: var(--theme-color);
     border-radius: 50%;
     cursor: pointer;
-    transition: background-color, opacity 0.25s ease-in-out;
+    transition:
+      background-color,
+      opacity 0.25s ease-in-out;
   }
   .love-button:hover {
     opacity: 0.75;

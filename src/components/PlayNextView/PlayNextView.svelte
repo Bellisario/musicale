@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    playNextList,
-    menuEntries,
-    currentID,
-    playNextIndex,
-  } from '$store';
+  import { playNextList, menuEntries, currentID, playNextIndex } from '$store';
   import Modal from '$lib/Modal.svelte';
   import './PlayNextController';
   import PlayNextList from './PlayNextList.svelte';
@@ -14,17 +9,12 @@
   import { playNextSong, playPreviousSong } from './PlayNextController';
   import { shuffle } from '$lib/shuffle';
 
-  let modalClosed = true;
-  let canOpenModal = true;
+  let modalClosed = $state(true);
+  let canOpenModal = $state(true);
 
-  let forceOpenEffect = false;
+  let forceOpenEffect = $state(false);
 
-  let modalEl: HTMLDivElement | null = null;
-
-  // scrolls to the currently playing item every time the modal is opened
-  $: if (!modalClosed) scrollIntoPlaying();
-  // scrolls smoothly to the currently playing item every time the currentID changes
-  $: $currentID, scrollIntoPlaying(true);
+  let modalEl: HTMLDivElement | null = $state(null);
 
   async function scrollIntoPlaying(smooth = false) {
     await tick();
@@ -42,17 +32,28 @@
     canOpenModal = true;
   });
 
-  $: canOpenModal, canOpenModal === false && (modalClosed = true);
+  $effect(() => {
+    canOpenModal === false && (modalClosed = true);
+  });
+  // scrolls to the currently playing item every time the modal is opened
+  $effect(() => {
+    if (!modalClosed) scrollIntoPlaying();
+  });
+  // scrolls smoothly to the currently playing item every time the currentID changes
+  $effect(() => {
+    $currentID;
+    scrollIntoPlaying(true);
+  });
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="modal-button translucent"
   class:button-visible={canOpenModal}
   class:is-open={!modalClosed || forceOpenEffect}
-  on:click={() => (modalClosed = false)}
-  on:contextmenu={() => {
+  onclick={() => (modalClosed = false)}
+  oncontextmenu={() => {
     forceOpenEffect = true;
     $menuEntries = [
       {
@@ -94,31 +95,33 @@
 </div>
 
 <Modal bind:closed={modalClosed} maxWidth={'70vw'}>
-  <div slot="custom__content" let:closeAction bind:this={modalEl}>
-    <div class="title">Play Next <span class="beta">(Beta)</span></div>
-    <div style="padding-top:0.5em;display:flex;gap:0.5em;">
-      <ActionButton
-        title="Re-Shuffle & Play"
-        scale="0.8"
-        backgroundColor="var(--back-color)"
-        primary={true}
-        on:click={() => {
-          $playNextList = shuffle($playNextList);
-          wantPlay($playNextList[0]);
-        }}
-      />
-      <ActionButton
-        title="Clear Play Next"
-        scale="0.8"
-        backgroundColor="var(--back-color)"
-        on:click={() => {
-          closeAction(() => ($playNextList = []));
-          modalClosed = true;
-        }}
-      />
+  {#snippet custom__content({ closeAction })}
+    <div bind:this={modalEl}>
+      <div class="title">Play Next <span class="beta">(Beta)</span></div>
+      <div style="padding-top:0.5em;display:flex;gap:0.5em;">
+        <ActionButton
+          title="Re-Shuffle & Play"
+          scale="0.8"
+          backgroundColor="var(--back-color)"
+          primary={true}
+          onclick={() => {
+            $playNextList = shuffle($playNextList);
+            wantPlay($playNextList[0]);
+          }}
+        />
+        <ActionButton
+          title="Clear Play Next"
+          scale="0.8"
+          backgroundColor="var(--back-color)"
+          onclick={() => {
+            closeAction(() => ($playNextList = []));
+            modalClosed = true;
+          }}
+        />
+      </div>
+      <PlayNextList />
     </div>
-    <PlayNextList />
-  </div>
+  {/snippet}
 </Modal>
 
 <svg style="display: none;">

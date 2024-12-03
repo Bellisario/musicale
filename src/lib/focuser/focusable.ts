@@ -37,7 +37,7 @@ animatedFocusPreference.subscribe((value) => {
     }
 });
 
-let blinkInterval: NodeJS.Timeout;
+let blinkInterval: number;
 
 interface FocusableProps {
     margin?: number;
