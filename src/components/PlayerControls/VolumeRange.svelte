@@ -12,7 +12,7 @@
   let progressChanging = false;
 
   {
-    let clock: NodeJS.Timeout;
+    let clock: number;
     function dispatchAutoClose() {
       return setTimeout(() => {
         autoClose();

@@ -20,7 +20,7 @@
   let hovering = $state(false);
 
   let removing = $state(false);
-  let removingCancelTimeout: NodeJS.Timeout | undefined = $state();
+  let removingCancelTimeout: number | undefined = $state();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

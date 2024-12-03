@@ -36,7 +36,7 @@
   let volumeRangeShowing = $state(false);
 
   let resetStatus: 'none' | 'working' | 'done' = $state('none');
-  let resetTimeout: NodeJS.Timeout;
+  let resetTimeout: number;
 
   // expressed in REMs
   let playerButtonsWidth = tweened(1.75, {
