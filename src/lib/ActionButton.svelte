@@ -1,8 +1,5 @@
 <script lang="ts">
   import focusable from '$lib/focuser/focusable';
-  import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher();
 
   interface Props {
     title?: string;
@@ -30,6 +27,7 @@
     primary = false,
     disabled = false,
     hoverTitle = null,
+    onclick: fireClick
   }: Props = $props();
 
   let styles = {
@@ -45,9 +43,9 @@
       .join(' ');
   }
 
-  function click() {
-    dispatch('click');
-
+  function handleClick() {
+    // @ts-ignore
+    fireClick()
     // focus on body to prevent the button from staying focused
     (document.activeElement as HTMLButtonElement).blur();
   }
@@ -59,7 +57,7 @@
   class:active
   class:primary
   class:btn--disabled={disabled}
-  onclick={click}
+  onclick={handleClick}
   style={getStyle(styles)}
   class:fitContent
   use:focusable
