@@ -30,16 +30,13 @@ class Fetcher {
     }
 }
 
-export const API_URLs = [
-    'https://pipedapi.kavin.rocks',
-    'https://api.piped.projectsegfau.lt',
-    // 'https://pipedapi.moomoo.me',
-    'https://de-api-piped.shimul.me',
-    'https://papius.palash.dev',
-    'https://piped-api.garudalinux.org',
-    'https://pa.il.ax',
-    'https://p.plibre.com',
-]
+let API_URLs = ['https://pipedapi.kavin.rocks'];
+
+// dynamic instances powered by uma
+// https://github.com/n-ce/Uma
+fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
+    .then(res => res.json())
+    .then(data => API_URLs = API_URLs.concat(data.piped.concat(data.hls)));
 
 export default async function audioStreamGetter(id: string): Promise<[AudioStreamResponse, string]> {
     // filter out failed APIs
