@@ -36,7 +36,10 @@ let API_URLs = ['https://pipedapi.kavin.rocks'];
 // https://github.com/n-ce/Uma
 fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
     .then(res => res.json())
-    .then(data => API_URLs = API_URLs.concat(data.piped.concat(data.hls)));
+    .then(data => {
+        if (data.piped.length || data.hls.length)
+            API_URLs = data.piped.concat(data.hls);
+    });
 
 export default async function audioStreamGetter(id: string): Promise<[AudioStreamResponse, string]> {
     // filter out failed APIs
