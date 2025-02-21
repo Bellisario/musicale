@@ -13,11 +13,8 @@ export const API_URLs = derived(apiUrlsWritable, $apiUrlsWritable => $apiUrlsWri
 fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
     .then(res => res.json())
     .then(data => {
-        if (data.piped?.length || data.hls?.length) {
-            let instances = data.piped.concat(data.hls);
-            if (!data.status) instances = instances.reverse();
-            apiUrlsWritable.set(instances);
-        }
+        if (data.piped?.length || data.hls?.length)
+            apiUrlsWritable.set(data.hls.concat(data.piped));
     });
 
 export const duration = writable(0);
