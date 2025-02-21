@@ -1,11 +1,10 @@
 import type { Results } from '$types/Results';
 import type { AlbumResults } from '$types/AlbumResults';
-
-const baseURL = 'https://pipedapi.kavin.rocks';
+import { API_URLs } from '$store';
 
 export async function resultsGetter(query: string): Promise<Results> {
     // fetch https://pipedapi.kavin.rocks/search?q=<param>&filter=music_songs
-    const res = await fetch(`${baseURL}/search?q=${encodeURIComponent(query)}&filter=music_songs`);
+    const res = await fetch(`${$API_URLs[0]}/search?q=${encodeURIComponent(query)}&filter=music_songs`);
 
     return await res.json();
 }
