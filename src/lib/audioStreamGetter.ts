@@ -4,7 +4,7 @@ import any from '@ungap/promise-any';
 
 import type { AudioStreamResponse, OStream } from '$types/AudioStreamResponse';
 import { get } from 'svelte/store';
-import { failedStreamURLs } from '$store';
+import { failedStreamURLs, apiURLs } from '$store';
 
 class Fetcher {
     private controller: AbortController;
@@ -30,20 +30,10 @@ class Fetcher {
     }
 }
 
-let API_URLs = ['https://pipedapi.kavin.rocks'];
-
-// dynamic instances powered by uma
-// https://github.com/n-ce/Uma
-fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
-    .then(res => res.json())
-    .then(data => {
-        if (data.piped.length || data.hls.length)
-            API_URLs = data.piped.concat(data.hls);
-    });
 
 export default async function audioStreamGetter(id: string): Promise<[AudioStreamResponse, string]> {
     // filter out failed APIs
-    const WORKING_APIs = API_URLs.filter((url) => get(failedStreamURLs).includes(url) === false);
+    const WORKING_APIs = get(apiURLs).filter((url) => get(failedStreamURLs).includes(url) === false);
 
     const APIs = WORKING_APIs.map((url) => new Fetcher(url, id));
 
