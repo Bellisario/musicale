@@ -1,6 +1,6 @@
 <script lang="ts">
   import truncate from 'just-truncate';
-  import { query, API_URLs } from '$store';
+  import { query, apiURLs } from '$store';
 
   type ApiResponse = string[];
 
@@ -40,7 +40,7 @@
     controller = new AbortController();
     try {
       response = await fetch(
-        `${$API_URLs[0]}/suggestions?query=${encodeURIComponent(
+        `${$apiURLs[0]}/suggestions?query=${encodeURIComponent(
           q.trim(),
         )}`,
         {

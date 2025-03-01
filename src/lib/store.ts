@@ -5,8 +5,7 @@ import { type MenuEntry } from '$types/MenuEntry';
 import { createHashStore } from 'svelte-hash';
 import { localStorageWritable } from './localStorageWritable';
 
-const apiUrlsWritable = writable(['https://pipedapi.kavin.rocks']);
-export const API_URLs = derived(apiUrlsWritable, $apiUrlsWritable => $apiUrlsWritable);
+export const apiURLs = writable(['https://pipedapi.kavin.rocks']);
 
 // dynamic instances powered by uma
 // https://github.com/n-ce/Uma
@@ -14,7 +13,7 @@ fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
     .then(res => res.json())
     .then(data => {
         if (data.piped?.length || data.hls?.length)
-            apiUrlsWritable.set(data.hls.concat(data.piped));
+            apiURLs.set(data.hls.concat(data.piped));
     });
 
 export const duration = writable(0);

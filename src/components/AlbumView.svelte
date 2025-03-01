@@ -3,7 +3,7 @@
   import { fade } from 'svelte/transition';
   import Footer from './Footer.svelte';
   import ResultsItem from './ResultsView/ResultsItem.svelte';
-  import { playNextList, albumsAddedToPlayNext, API_URLs } from '$store';
+  import { playNextList, albumsAddedToPlayNext, apiURLs } from '$store';
   import ActionButton from '$lib/ActionButton.svelte';
   import type { Result } from '$types/Results';
   import urlToId from '$lib/urlToId';
@@ -19,7 +19,7 @@
 
   async function fetchPlaylist(id: string): Promise<Album> {
     // fetch https://pipedapi.kavin.rocks/playlists/:id
-    const res = await fetch(`${$API_URLs[0]}/playlists/${id}`);
+    const res = await fetch(`${$apiURLs[0]}/playlists/${id}`);
 
     if (!res.ok) throw new Error('Failed to fetch playlist');
 
