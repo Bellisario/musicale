@@ -7,13 +7,14 @@ import { localStorageWritable } from './localStorageWritable';
 
 export const apiURLs = writable(['https://pipedapi.kavin.rocks']);
 
-// dynamic instances powered by uma
-// https://github.com/n-ce/Uma
+// instances from by https://github.com/n-ce/Uma
 fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
     .then(res => res.json())
     .then(data => {
-        if (data.piped?.length || data.hls?.length)
-            apiURLs.set(data.hls.concat(data.piped));
+        if (data.proxy?.length)
+            apiURLs.set(data.proxy));
+        else if (data.piped?.length)
+            apiURLs.set(data.piped));
     });
 
 export const duration = writable(0);
