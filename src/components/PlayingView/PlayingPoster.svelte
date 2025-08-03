@@ -59,17 +59,15 @@
     a.click();
   }
 
-  poster.subscribe(async () => {
+  poster.subscribe(async (poster) => {
     posterHidden = true;
     revokePoster();
-    if ($poster === '') {
-      return;
-    }
+    if (poster === '') return;
+
     firstLoad = false;
-    const res = await fetch($poster);
-    if (!res.ok) {
-      return;
-    }
+    const res = await fetch(poster);
+    if (!res.ok) return;
+
     const blob = await res.blob();
     localPoster = URL.createObjectURL(blob);
     posterHidden = false;
