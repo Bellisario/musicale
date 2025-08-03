@@ -12,9 +12,9 @@ fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
     .then(res => res.json())
     .then(data => {
         if (data.proxy?.length)
-            apiURLs.set(data.proxy));
+            apiURLs.set(data.proxy);
         else if (data.piped?.length)
-            apiURLs.set(data.piped));
+            apiURLs.set(data.piped);
     });
 
 export const duration = writable(0);
