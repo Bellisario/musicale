@@ -11,9 +11,26 @@
   const focusableProps = { margin: 2, borderRadius: 2 };
 </script>
 
+{#snippet otherLinks()}
+    <div class="other-links">
+      <a
+        href="https://github.com/sponsors/Bellisario"
+        target="_blank"
+        rel="noopener noreferrer"
+        use:focusable={focusableProps}>Support development</a
+      >
+      <a
+        href="https://github.com/Bellisario/musicale?tab=readme-ov-file#legal"
+        target="_blank"
+        rel="noopener noreferrer"
+        use:focusable={focusableProps}>Legal</a
+      >
+    </div>
+{/snippet}
+
 <div class="footer {size}">
   <div class="copyrights">
-    Copyright (c) {new Date().getFullYear()}
+    {size === 'normal' ? 'Copyright ' : ''}&copy; {new Date().getFullYear()}
     <a
       href="https://github.com/Bellisario"
       target="_blank"
@@ -29,6 +46,9 @@
       use:focusable={focusableProps}>MIT License</a
     >.
   </div>
+  {#if size === 'normal'}
+    {@render otherLinks()}
+  {/if}
   <div class="github">
     <a
       href="https://github.com/Bellisario/musicale"
@@ -48,6 +68,9 @@
       ></a
     >
   </div>
+  {#if size === 'small'}
+    {@render otherLinks()}
+  {/if}
 </div>
 
 <style>
@@ -79,6 +102,20 @@
   }
   .footer.small::before {
     transform: translateY(-2em);
+  }
+  .footer > * {
+    text-align: center;
+    text-wrap: balance;
+  }
+  .other-links > * {
+    white-space: pre;
+  }
+  .other-links > a + a::before {
+    content: '| ';
+    pointer-events: none;
+    font-size: 1rem;
+    color: #c1c1c1;
+    align-self: baseline;
   }
   .github {
     padding-top: 0.5em;
