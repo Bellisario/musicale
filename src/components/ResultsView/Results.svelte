@@ -5,7 +5,7 @@
     loadMoreResults,
     resultsAlbumGetter,
   } from '$lib/resultsGetter';
-  import { currentSearchType, hash } from '$store';
+  import { apiURLs, currentSearchType, hash } from '$store';
   import { fade } from 'svelte/transition';
 
   import Footer from '../Footer.svelte';
@@ -91,60 +91,62 @@
     </div>
     <div class="results-grid">
       {#key $currentSearchType}
-        {#await findResults($hash.search.trim())}
-          <div in:fade|global={{ delay: 1000 }} class="loading">
-            Loading... <span in:fade|global={{ delay: 4000 }}
-              >this seems to take some more time...</span
-            ><br /><span in:fade|global={{ delay: 7000 }}
-              >Maybe there is a problem with API? Anyway no error for now.
-              Working on...</span
-            >
-          </div>
-        {:then}
-          {#if $currentSearchType === 0}
-            {#each results as result, id}
-              <ResultsItem {result} {id} />
-            {/each}
-            <div class="center">
-              <ActionButton
-                onclick={() => {
-                  if (loadingMore) return;
-
-                  loadingMore = true;
-
-                  if (!$hash.search)
-                    throw new Error(
-                      '$hash.search was expected to be a string here',
-                    );
-
-                  loadMore($hash.search.trim());
-                }}
-                title={loadingMoreError
-                  ? 'Error'
-                  : loadingMore
-                    ? 'Loading...'
-                    : 'Load more'}
-                backgroundColor="rgba(0, 0, 0, 0.2)"
-                disabled={loadingMore}
-              />
+        {#key $apiURLs}
+          {#await findResults($hash.search.trim())}
+            <div in:fade|global={{ delay: 1000 }} class="loading">
+              Loading... <span in:fade|global={{ delay: 4000 }}
+                >this seems to take some more time...</span
+              ><br /><span in:fade|global={{ delay: 7000 }}
+                >Maybe there is a problem with API? Anyway no error for now.
+                Working on...</span
+              >
             </div>
-          {:else}
-            <div class="albums">
-              {#each albumResults as album}
-                <AlbumResultsItem {album} />
+          {:then}
+            {#if $currentSearchType === 0}
+              {#each results as result, id}
+                <ResultsItem {result} {id} />
               {/each}
+              <div class="center">
+                <ActionButton
+                  onclick={() => {
+                    if (loadingMore) return;
+
+                    loadingMore = true;
+
+                    if (!$hash.search)
+                      throw new Error(
+                        '$hash.search was expected to be a string here',
+                      );
+
+                    loadMore($hash.search.trim());
+                  }}
+                  title={loadingMoreError
+                    ? 'Error'
+                    : loadingMore
+                      ? 'Loading...'
+                      : 'Load more'}
+                  backgroundColor="rgba(0, 0, 0, 0.2)"
+                  disabled={loadingMore}
+                />
+              </div>
+            {:else}
+              <div class="albums">
+                {#each albumResults as album}
+                  <AlbumResultsItem {album} />
+                {/each}
+              </div>
+            {/if}
+            <Footer />
+          {:catch}
+            <div class="message" in:fade|global>
+              <div class="texts">
+                <h1>Something went wrong</h1>
+                <p>Try again.</p>
+              </div>
+              <Footer size="small" />
             </div>
-          {/if}
-          <Footer />
-        {:catch}
-          <div class="message" in:fade|global>
-            <div class="texts">
-              <h1>Something went wrong</h1>
-              <p>Try again.</p>
-            </div>
-            <Footer size="small" />
-          </div>
-        {/await}
+          {/await}
+        {/key}
       {/key}
     </div>
   {/if}
