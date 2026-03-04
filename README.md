@@ -48,7 +48,7 @@ The interesting thing about Musicale is that there is no backend and the API it'
 
 ## Development
 
-To get started, make sure to have Git and Node.js (>= 16.0.0) installed.
+To get started, make sure to have `git` and [`bun`](https://bun.sh/) installed.
 
 Clone the repo and `cd` it:
 
@@ -58,19 +58,19 @@ git clone https://github.com/Bellisario/musicale.git && cd musicale
 
 Install dependencies:
 ```bash
-npm install
+bun install
 ```
 
 Then, you can run the following command to start the server (in DEV mode):
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 After done, to build the project run:
 
 ```bash
-npm run build
+bun run build
 ```
 
 > **Info:** we're using [Deno Deploy](https://deno.com/deploy) as server hosting so all the build files will go inside `dist/public` and not `dist`.\
@@ -79,10 +79,10 @@ npm run build
 If you want to preview the build run:
 
 ```bash
-npm run preview
+bun run preview
 ```
 
-Before opening a pull, please make sure to run `npm run check` to check for warnings, errors, etc. and format your code with VSCode (Svelte extension).
+Before opening a pull, please make sure to run `bun run check` to check for warnings, errors, etc. and format your code with VSCode (Svelte extension).
 
 ## Contributing
 
