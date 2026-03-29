@@ -22,7 +22,7 @@ export default defineConfig({
     banner,
   },
   build: {
-    outDir: './dist/public',
+    outDir: './dist',
   },
   plugins: [svelte({
     compilerOptions: {
