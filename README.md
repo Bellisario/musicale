@@ -25,12 +25,11 @@ Musicale is a music player for the web. It's built with Svelte, Vite and TypeScr
 ## Features
 
 - Simple and clean UI
-- Search musics and preview their thumbnail
+- Search music and preview their thumbnail
 - Click on a result to play in a snap
 - App loads fully offline (with SW) _(note results and music playing requires an internet connection)_
 - Frequency bars with a click _(YouTube Music doesn't have this feature)_
-- Favorite musics (with local storage and shuffle option + import/export on settings)
-- Free server on the Edge (thanks to [Deno Deploy](https://deno.com/deploy))
+- Favorite music (with local storage and shuffle option + import/export on settings)
 
 Why don't see any photo?
 
@@ -72,9 +71,6 @@ After done, to build the project run:
 ```bash
 bun run build
 ```
-
-> **Info:** we're using [Deno Deploy](https://deno.com/deploy) as server hosting so all the build files will go inside `dist/public` and not `dist`.\
-> (This behavior may change in the future)
 
 If you want to preview the build run:
 

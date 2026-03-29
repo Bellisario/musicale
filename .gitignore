@@ -23,7 +23,7 @@ dist-ssr
 *.sw?
 
 # Build will go here
-dist/public
+dist/
 
 # vite-plugin-pwa dev files
 dev-dist
