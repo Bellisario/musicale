@@ -5,74 +5,41 @@
     previousNextButtonsPreference,
     animatedFocusPreference,
   } from '$store';
-  import type { FavoriteStore } from '$types/FavoritesStore';
   import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
 
   import Modal from '$lib/Modal.svelte';
   import TextSwitch from '$lib/TextSwitch.svelte';
+  import {
+    exportFavorites,
+    FavoritesImportError,
+    importFavorites,
+  } from './favoritesHandler';
 
-  const favoritesVersion = '1.0.0';
-  interface FavoritesExport {
-    __app__: 'musicale';
-    version: string;
-    favorites: FavoriteStore[];
-  }
   let importMessage = $state('');
   let displayImportWarning = $state(false);
 
   let noFavorites = $derived($favorites.length === 0 ? true : false);
 
-  function exportFavorites() {
-    const data = JSON.stringify({
-      __app__: 'musicale',
-      version: favoritesVersion,
-      favorites: $favorites,
-    } as FavoritesExport);
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.download = 'favorites.musicale.json';
-    a.href = url;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-  }
-  function importFavorites(force: boolean = false) {
-    if (!noFavorites && force !== true) {
+  function handleImportFavorites(force = false) {
+    displayImportWarning = false;
+
+    if ($favorites.length !== 0 && force === false) {
       displayImportWarning = true;
       return;
     }
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/json';
-    input.onchange = () => {
-      importMessage = '';
 
-      if (!input.files)
-        return (importMessage = 'Import failed. No file specified.');
-
-      const file = input.files[0];
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const data: FavoritesExport = JSON.parse(reader.result as string);
-          if (
-            data.__app__ !== 'musicale' ||
-            data.version !== favoritesVersion
-          ) {
-            importMessage = 'Import failed. Invalid file.';
-            return;
-          }
-          favorites.set(data.favorites);
-          importMessage = 'Import successful.';
-        } catch (err) {
+    importMessage = '';
+    importFavorites().catch((e: FavoritesImportError) => {
+      switch (e) {
+        case FavoritesImportError.NO_FILE_SPECIFIED:
+          importMessage = 'Import failed. No file specified.';
+          break;
+        case FavoritesImportError.INVALID_FILE:
           importMessage = 'Import failed. Invalid file.';
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
+          break;
+      }
+    });
   }
 
   let previousNextButtonsSelectedIndex = $state(
@@ -113,7 +80,7 @@
             scale="0.8"
             onclick={() => {
               displayImportWarning = false;
-              importFavorites(true);
+              handleImportFavorites(true);
             }}
           />
           <ActionButton
@@ -150,14 +117,16 @@
           />
           <ActionButton
             title="Import Favorites"
-            onclick={() => importFavorites()}
+            onclick={() => handleImportFavorites()}
             color="#fff"
             fitContent={false}
             scale="0.9"
           />
         </div>
         {#if importMessage}
-          <div class="import-message" in:fade|global>{importMessage}</div>
+          <div class="import-message" in:fade|global>
+            {importMessage}
+          </div>
         {/if}
       </section>
       <section>
