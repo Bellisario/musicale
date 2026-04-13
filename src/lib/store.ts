@@ -1,21 +1,23 @@
-import { derived, writable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import type { FavoriteStore } from '$types/FavoritesStore';
 import { type MenuEntry } from '$types/MenuEntry';
 
 import { createHashStore } from 'svelte-hash';
 import { localStorageWritable } from './localStorageWritable';
 
-export const apiURLs = writable(['https://pipedapi.kavin.rocks']);
+const initialApiURLs = ['https://pipedapi.kavin.rocks']
+export const apiURLs = writable(initialApiURLs);
 
+// NOTE: currently disabled, see https://github.com/Bellisario/musicale/issues/465
 // instances from by https://github.com/n-ce/Uma
-fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
-    .then(res => res.json())
-    .then(data => {
-        if (data.proxy?.length)
-            apiURLs.set(data.proxy);
-        else if (data.piped?.length)
-            apiURLs.set(data.piped);
-    });
+// fetch('https://raw.githubusercontent.com/n-ce/Uma/main/dynamic_instances.json')
+//     .then(res => res.json())
+//     .then(data => {
+//         if (data.proxy?.length)
+//             apiURLs.set(data.proxy);
+//         else if (data.piped?.length)
+//             apiURLs.set(data.piped);
+//     });
 
 export const duration = writable(0);
 export const currentTime = writable(0);
@@ -79,6 +81,19 @@ export const favorites = localStorageWritable<FavoriteStore[]>('favorites', [], 
 });
 export const previousNextButtonsPreference = localStorageWritable<'on' | 'off'>('previousNextButtonsPreference', 'on');
 export const animatedFocusPreference = localStorageWritable<'on' | 'off'>('animatedFocusPreference', 'on');
+
+
+export const customInstancePreference = localStorageWritable<string>('custom-instance:piped', '')
+
+updateAPIEndpoints(get(customInstancePreference))
+customInstancePreference.subscribe(updateAPIEndpoints)
+
+function updateAPIEndpoints(instancePreference: string) {
+    if (instancePreference === '') return apiURLs.set(initialApiURLs)
+
+    apiURLs.set([instancePreference])
+}
+
 
 interface Hash {
     search: string;

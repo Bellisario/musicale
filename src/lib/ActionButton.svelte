@@ -27,7 +27,7 @@
     primary = false,
     disabled = false,
     hoverTitle = null,
-    onclick: fireClick
+    onclick: fireClick,
   }: Props = $props();
 
   let styles = {
@@ -45,7 +45,7 @@
 
   function handleClick() {
     // @ts-ignore
-    fireClick()
+    fireClick();
     // focus on body to prevent the button from staying focused
     (document.activeElement as HTMLButtonElement).blur();
   }
