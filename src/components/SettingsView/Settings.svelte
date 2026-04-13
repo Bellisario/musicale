@@ -4,6 +4,7 @@
     favorites,
     previousNextButtonsPreference,
     animatedFocusPreference,
+    customInstancePreference,
   } from '$store';
   import ActionButton from '$lib/ActionButton.svelte';
   import { fade } from 'svelte/transition';
@@ -15,6 +16,7 @@
     FavoritesImportError,
     importFavorites,
   } from './favoritesHandler';
+  import focusable from '$lib/focuser/focusable';
 
   let importMessage = $state('');
   let displayImportWarning = $state(false);
@@ -58,6 +60,38 @@
   $effect(() => {
     $animatedFocusPreference = animatedFocusSelectedIndex === 0 ? 'on' : 'off';
   });
+
+  // custom instance
+  let customInstance = $state($customInstancePreference);
+  let customInstanceValid = $derived.by(() => {
+    if (customInstance === '') return true; // no custom instance => use default intances
+
+    try {
+      new URL(customInstance);
+      return true;
+    } catch {
+      return false;
+    }
+  });
+
+  function saveInstance() {
+    if (customInstance === $customInstancePreference) return;
+
+    if (customInstance !== '') {
+      let url: string;
+      try {
+        url = new URL(customInstance).origin;
+      } catch {
+        console.error(
+          'ERROR: custom instance expected to be a valid URL but found invalid data',
+        );
+        return;
+      }
+      customInstance = url;
+    }
+
+    $customInstancePreference = customInstance;
+  }
 </script>
 
 <main>
@@ -164,6 +198,59 @@
           </div>
         </div>
       </section>
+      <section>
+        <div class="content__title">Custom instance</div>
+        <div class="content__message">
+          You can setup a custom Piped instance to use as an alternative of the
+          official ones. Useful if you are experiencing downtimes.
+        </div>
+        <div id="custom-instance-group">
+          <input
+            id="custom-instance-url"
+            type="text"
+            placeholder="https://piped.example.com"
+            bind:value={customInstance}
+            onfocus={(e) => {
+              (e.target as HTMLInputElement).select();
+            }}
+            onkeypress={(e) => {
+              if (e.key !== 'Enter') return;
+
+              saveInstance();
+
+              (e.target as HTMLInputElement).blur();
+            }}
+            use:focusable
+          />
+          <ActionButton
+            title="Save"
+            onclick={saveInstance}
+            scale="0.9"
+            disabled={customInstance === $customInstancePreference ||
+              !customInstanceValid}
+          />
+        </div>
+        <div class="content__message secondary">
+          {#if !customInstanceValid}
+            Please enter a valid instance URL.
+          {:else if customInstance !== $customInstancePreference}
+            {#if customInstance.trim() === ''}
+              Save to reset to default instance.
+            {:else}
+              Save to use the entered instance.
+            {/if}
+          {:else if customInstance === $customInstancePreference}
+            {#if customInstance.trim() === ''}
+              Currently using official instances.
+            {:else}
+              Currently using a custom instance. Clear the field and Save to use
+              default instances.
+            {/if}
+          {:else}
+            Save to reset to default instances.
+          {/if}
+        </div>
+      </section>
     </div>
   </div>
   <Footer size="small" />
@@ -219,5 +306,20 @@
   .forced_h-space > :global(div) {
     display: flex;
     justify-content: space-between;
+  }
+
+  #custom-instance-group {
+    display: flex;
+    gap: 0.25em;
+  }
+  #custom-instance-url {
+    width: 100%;
+    font-size: 1em;
+    padding: 0.2em 0.5em;
+    /*border: 1px solid #3e3e3e;*/
+    border: unset;
+    color: var(--text-color);
+    background-color: var(--bars-color);
+    border-radius: 5px;
   }
 </style>
