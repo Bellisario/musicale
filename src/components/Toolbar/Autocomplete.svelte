@@ -62,7 +62,9 @@
     }
   }
 
-  async function submit(item: string) {
+  function submit(e: MouseEvent, item: string) {
+    e.preventDefault();
+
     $query = item;
     dispatchSubmit();
   }
@@ -74,7 +76,7 @@
   {#each items as item, index}
     <li
       class:highlight={completionAcceptedIndex === index}
-      onclick={() => submit(item)}
+      onmousedown={(e) => submit(e, item)}
     >
       {truncate(item, 30)}
     </li>

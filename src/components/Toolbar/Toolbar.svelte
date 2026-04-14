@@ -22,8 +22,8 @@
 
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-  function submit(e: SubmitEvent) {
-    e.preventDefault();
+  function submit(e?: SubmitEvent) {
+    e?.preventDefault();
     blur();
 
     $hash.search = $query;
