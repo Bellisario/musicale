@@ -1,0 +1,33 @@
+services:
+    piped-proxy:
+        image: 1337kavin/piped-proxy:latest
+        restart: unless-stopped
+        environment:
+            - UDS=0
+        volumes:
+            - piped-proxy:/app/socket
+        container_name: piped-proxy
+        ports:
+            - "8000:8080"
+    piped:
+        image: 1337kavin/piped:latest
+        restart: unless-stopped
+        volumes:
+            - ./config/config.properties:/app/config.properties:ro
+        depends_on:
+            - postgres
+        container_name: piped-backend
+        ports:
+            - "8080:8080"
+    postgres:
+        image: pgautoupgrade/pgautoupgrade:16-alpine
+        restart: unless-stopped
+        volumes:
+            - ./data/db:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_DB=piped
+            - POSTGRES_USER=piped
+            - POSTGRES_PASSWORD=changeme
+        container_name: postgres
+volumes:
+    piped-proxy: null

@@ -45,6 +45,27 @@ Musicale is a free and open source alternative to those players and streams musi
 
 The interesting thing about Musicale is that there is no backend and the API it's from [Piped](https://github.com/TeamPiped/Piped) (a privacy-friendly alternative YouTube frontend), which is well documented [here](https://piped-docs.kavin.rocks/).
 
+### Custom API hosting
+
+While you might still be lucky and use the default Piped APIs, due to [stricter policies](https://github.com/TeamPiped/Piped/issues/3658), most of the time they are currently not accessible and it's really suggested to host your own instance to experience Musicale with no downtime.
+
+To get started, make sure Docker and Docker Compose are available to you.\
+Clone this repository and `cd` it:
+
+```bash
+git clone https://github.com/Bellisario/musicale.git && cd musicale
+```
+
+Setup `docker-compose.yml` and `config/config.properties` to your own needs.
+
+Start your custom instance (as a daemon) with:
+
+```bash
+docker compose up -d
+```
+
+You can now switch to your custom instance on Musicale opening _Settings_, then _Custom instance_.
+
 ## Development
 
 To get started, make sure to have `git` and [`bun`](https://bun.sh/) installed.

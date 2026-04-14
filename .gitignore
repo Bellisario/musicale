@@ -27,3 +27,4 @@ dist/
 
 # vite-plugin-pwa dev files
 dev-dist
+data/
