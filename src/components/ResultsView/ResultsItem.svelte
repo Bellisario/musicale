@@ -25,8 +25,9 @@
 
   let loved: boolean = $derived($favorites.map((a) => a.id).includes(resultID));
 
-  function toggleFavorite(e: MouseEvent | undefined) {
-    if (e) e.preventDefault();
+  function toggleFavorite(e?: MouseEvent) {
+    e?.preventDefault();
+    e?.stopPropagation();
 
     if (loved) $favorites = $favorites.filter((a) => a.id !== resultID);
     else
