@@ -21,7 +21,7 @@
     "svelte-hash": "^2.0.0",
     "svelte-preprocess": "^6.0.3",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vite": "^7.3.1",
     "vite-plugin-pwa": "^1.2.0"
   },
